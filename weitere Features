@@ -1,0 +1,14 @@
+
+
+Wichtig:
+- größere Schrift in QPainter
+- Kreise anklicken "besser" machen
+- Levelinitialisierung outsorcen
+- anklicken verbessern (Idee: Nicht Bereich, sondern Farbe des Pixels prüfen UND DANN den Bereich
+
+
+
+
+
+Unwichtig:
+- bei Erfolg das schließen des Programms schöner machen
