@@ -43,7 +43,7 @@ class Kreis:
     def gruen_machen(self):
         self.farbe = QColor(0, 180, 0)
 
-    def nothing(self, n1, n2, n3):#
+    def nothing(self, n1, n2, n3):
         pass
 
     def level_zuruecksetzen(self, n1, n2, n3):
@@ -65,11 +65,12 @@ class Levelstruktur:
         self.kreise.append(kreis)
         kreis.zugehoerigesLevel = self
 
-    def weiteresZeichnen(self, painterF):             # Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnet.
+    def weiteresZeichnen(self, painterF):
+        """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll """
         pass
 
     def gewinnbedingung(self):
-        # Gewinnbedingung: Jedes Rechteck und jeder Kreis wird auf seine Farbe ueberprueft
+        """ Gewinnbedingung: Jedes Rechteck und jeder Kreis wird auf seine Farbe ueberprueft """
         for i in self.rechtecke:
             if i.farbe != QColor(0, 180, 0):
                 return False
@@ -128,7 +129,7 @@ class Window(QWidget):
         self.levels = []                # Speicher fuer Level
         self.levelCounter = 0           # Index des momentan zu bearbeitendem Level
         self.maxLevel = 2               # den maximal zu erreichenden Index der level-liste, heißt Anzahl der Level
-        self.gewonnen = False
+        self.levelGewonnen = False
 
         self.initalisierung()
         self.keyPressEvent = self.fn
@@ -145,7 +146,7 @@ class Window(QWidget):
         painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
         painter.drawText(rect1, 0, str(self.levelCounter))
 
-        if self.gewonnen:
+        if self.levelGewonnen:
             if self.levelCounter > self.maxLevel:
                 print("Glueckwunsch, du hast alle Level abgeschlossen")
                 self.close()
@@ -155,7 +156,7 @@ class Window(QWidget):
             rect3 = QRect( int(self.wW / 1.75), int(self.wW / 2), int(self.wW / 2), int(self.wW / 2) )
             painter.drawText(rect2, 0, "Glückwunsch, du hast Level        geschafft")
             painter.drawText(rect3, 0, str(self.levelCounter-1))
-            self.gewonnen = False
+            self.levelGewonnen = False
             QTimer.singleShot(1500, self.update)
             return
 
@@ -175,8 +176,8 @@ class Window(QWidget):
 
     def fn(self, e):
 
-        """ H druecken um Tastenbelegung anzuzeigen """
         if e.key() == Qt.Key_H:
+            """ H druecken um Tastenbelegung anzuzeigen """
             print("- Steuerung :",
                   "\n    - H (Hilfe) : Steuerung anzeigen",
                   "\n    - Esc (Escape) : Fenster schliessen",
@@ -186,23 +187,23 @@ class Window(QWidget):
                   "\n    - Pfeiltaste Links : Zum vorigen Level springen",
                   "\n    - Pfeiltaste Rechts : Zum naechsten Level springen")
 
-        """ Esc druecken um Fenster zu schliessen """
         if e.key() == Qt.Key_Escape:
+            """ Esc druecken um Fenster zu schliessen """
             self.close()
 
-        """ R druecken um Level neuzustarten """
         if e.key() == Qt.Key_R:
+            """ R druecken um Level neuzustarten """
             self.levelReset()
             self.update()
 
-        """ N druecken um Spiel neuzustarten """
         if e.key() == Qt.Key_N:
+            """ N druecken um Spiel neuzustarten """
             self.gameReset()
             self.levelCounter = 0
             self.update()
 
-        """ J druecken um zu gewuenschtem Level zu springen """
         if e.key() == Qt.Key_J:
+            """ J druecken um zu gewuenschtem Level zu springen """
             try:
                 jumpTarget = int(input("Nummer des Levels: "))
                 if 0 <= jumpTarget <= self.maxLevel:    # pruefen ob vorhandenes Level eingegeben wurde
@@ -213,8 +214,8 @@ class Window(QWidget):
             except ValueError:      # Fehler abfangen, falls kein Int eingegeben wurde
                 print("Fehler! Eingabe war nicht von Typ Int")
 
-        """ Pfeiltaste Links druecken um ein Level zurueck zu springen """
         if e.key() == Qt.Key_Left:
+            """ Pfeiltaste Links druecken um ein Level zurueck zu springen """
             if self.levelCounter == 0:
                 print("Fehler! Erstes Level wird bereits angezeigt")
             else:
@@ -223,8 +224,8 @@ class Window(QWidget):
                 self.levelReset()   # voriges Level zuruecksetzen
                 self.update()
 
-        """ Pfeiltaste Rechts druecken um zum naechsten Level zu springen """
         if e.key() == Qt.Key_Right:
+            """ Pfeiltaste Rechts druecken um zum naechsten Level zu springen """
             if self.levelCounter == self.maxLevel:
                 print("Fehler! Letztes Level wird bereits angezeigt")
             else:
@@ -289,7 +290,7 @@ class Window(QWidget):
 
     def nextLevel(self):
         self.levelCounter += 1
-        self.gewonnen = True
+        self.levelGewonnen = True
 
 
 

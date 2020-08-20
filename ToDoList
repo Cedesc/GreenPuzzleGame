@@ -3,10 +3,13 @@
 Wichtig:
 - größere Schrift in QPainter
 - Kreise anklicken "besser" machen
-- Levelinitialisierung outsorcen
-- anklicken verbessern (Idee: Nicht Bereich, sondern Farbe des Pixels prüfen UND DANN den Bereich
+- Levelinitialisierung outsourcen
+- Rechteck-Klasse und Kreis-Klasse uebersichtlicher machen
 
 
+
+Versucht, nicht hinbekommen:
+- anklicken verbessern (Idee: Nicht Bereich, sondern Farbe des Pixels prüfen UND DANN den Bereich)
 
 
 
