@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QImage, QPainterPath, QPolygonF
 from PyQt5.QtCore import Qt, QEvent, QRect, QPointF, QPropertyAnimation, QTimer
 import functionsBib
+import settings
 
 
 
@@ -110,19 +111,24 @@ class Levelstruktur:
 
 
 
+
+
+
+
+
 class Window(QWidget):
 
     def __init__(self):
         super().__init__()
 
-        self.wW = 800       # wW = windowWidth
+        self.wW = settings.BREITE       # windowWidth ; Fenster ist immer quadratisch
         self.setGeometry(600, 150, self.wW, self.wW)
         self.setWindowTitle("Spaß mit grünem")
-        self.originalLevels = []
-        self.levels = []
-        self.levelCounter = 0
-        self.maxLevel = 2
-        self.gewonnenAnzeige = False
+        self.originalLevels = []        # Speicher fuer die urspruenglichen Level (relevant beim level reset)
+        self.levels = []                # Speicher fuer Level
+        self.levelCounter = 0           # Index des momentan zu bearbeitendem Level
+        self.maxLevel = 2               # den maximal zu erreichenden Index der level-liste, heißt Anzahl der Level
+        self.gewonnen = False
 
         self.initalisierung()
         self.keyPressEvent = self.fn
@@ -139,7 +145,7 @@ class Window(QWidget):
         painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
         painter.drawText(rect1, 0, str(self.levelCounter))
 
-        if self.gewonnenAnzeige:
+        if self.gewonnen:
             if self.levelCounter > self.maxLevel:
                 print("Glueckwunsch, du hast alle Level abgeschlossen")
                 self.close()
@@ -149,7 +155,7 @@ class Window(QWidget):
             rect3 = QRect( int(self.wW / 1.75), int(self.wW / 2), int(self.wW / 2), int(self.wW / 2) )
             painter.drawText(rect2, 0, "Glückwunsch, du hast Level        geschafft")
             painter.drawText(rect3, 0, str(self.levelCounter-1))
-            self.gewonnenAnzeige = False
+            self.gewonnen = False
             QTimer.singleShot(1500, self.update)
             return
 
@@ -168,56 +174,122 @@ class Window(QWidget):
 
 
     def fn(self, e):
-        if e.key() == Qt.Key_Left:
-            print("du hast links gedrueckt")
+
+        """ H druecken um Tastenbelegung anzuzeigen """
+        if e.key() == Qt.Key_H:
+            print("- Steuerung :",
+                  "\n    - H (Hilfe) : Steuerung anzeigen",
+                  "\n    - Esc (Escape) : Fenster schliessen",
+                  "\n    - R (Reset) : Momentanes Level neustarten",
+                  "\n    - N (New) : Komplettest Spiel von neuem starten",
+                  "\n    - J (Jump) : Zu gewuenschtem Level springen",
+                  "\n    - Pfeiltaste Links : Zum vorigen Level springen",
+                  "\n    - Pfeiltaste Rechts : Zum naechsten Level springen")
+
+        """ Esc druecken um Fenster zu schliessen """
+        if e.key() == Qt.Key_Escape:
+            self.close()
 
         """ R druecken um Level neuzustarten """
         if e.key() == Qt.Key_R:
             self.levelReset()
             self.update()
 
+        """ N druecken um Spiel neuzustarten """
+        if e.key() == Qt.Key_N:
+            self.gameReset()
+            self.levelCounter = 0
+            self.update()
+
+        """ J druecken um zu gewuenschtem Level zu springen """
+        if e.key() == Qt.Key_J:
+            try:
+                jumpTarget = int(input("Nummer des Levels: "))
+                if 0 <= jumpTarget <= self.maxLevel:    # pruefen ob vorhandenes Level eingegeben wurde
+                    self.gameReset()
+                    self.levelCounter = jumpTarget
+                else:
+                    print("Fehler! Eingabe war kein Index eines bestenden Levels")
+            except ValueError:      # Fehler abfangen, falls kein Int eingegeben wurde
+                print("Fehler! Eingabe war nicht von Typ Int")
+
+        """ Pfeiltaste Links druecken um ein Level zurueck zu springen """
+        if e.key() == Qt.Key_Left:
+            if self.levelCounter == 0:
+                print("Fehler! Erstes Level wird bereits angezeigt")
+            else:
+                self.levelReset()   # momentanes Level zuruecksetzen
+                self.levelCounter -= 1
+                self.levelReset()   # voriges Level zuruecksetzen
+                self.update()
+
+        """ Pfeiltaste Rechts druecken um zum naechsten Level zu springen """
+        if e.key() == Qt.Key_Right:
+            if self.levelCounter == self.maxLevel:
+                print("Fehler! Letztes Level wird bereits angezeigt")
+            else:
+                self.levelReset()   # momentanes Level zuruecksetzen (unnoetig, aber "schoener")
+                self.levelCounter += 1
+                self.update()
+
+
 
     def mousePressEvent(self, QMouseEvent):
         pos = QMouseEvent.pos()
-        print("               ", pos.x(), pos.y())
+        #print("               ", pos.x(), pos.y())
 
         if self.levels[self.levelCounter].beruehrt(pos.x(), pos.y()):
             self.update()
 
 
-    def initalisierung(self):       # Anfaengliche Erstellung der Level
-        level0 = Levelstruktur(self)
+    def initalisierung(self):
+        """ Anfaengliche Erstellung der Level
+        Koordinaten sollten bestenfalls keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse """
+
+        level1 = Levelstruktur(self)
         for j in range(3):
             for i in range(2):
-                level0.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * i,
+                level1.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * i,
                                                      self.wW / 16 + self.wW * (3 / 16) * j,
                                                      self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
 
-        level1 = Levelstruktur(self)
+        level2 = Levelstruktur(self)
+        for j in range(3):
+            for i in range(2):
+                level2.kreis_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * i,
+                                                     self.wW / 16 + self.wW * (3 / 16) * j,
+                                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
+
+        level3 = Levelstruktur(self)
         for j in range(2):
             for i in range(1):
-                level1.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * (i + 2),
+                level3.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * (i + 2),
                                                      self.wW / 12 + self.wW * (3 / 16) * (j + 2),
                                                      self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
 
-        level00 = Levelstruktur(self)
-        # level00.kreis_hinzufuegen(Kreis(200, 200, 50, 50, QColor(0, 90, 0)))
-        for j in range(3):
-            for i in range(2):
-                level00.kreis_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * i,
-                                                     self.wW / 16 + self.wW * (3 / 16) * j,
-                                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
+        # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
+        self.originalLevels = [level1, level2, level3]
+        self.levels = [level1.kopieren(), level2.kopieren(), level3.kopieren()]
 
+    def levelReset(self, level: int = -1):
+        """ Ein spezielles Level zuruecksetzen
+        wird der Parameter frei gelassen, wird das momentane Level zurueckgesetzt """
+        if level == -1:
+            level = self.levelCounter
+        if 0 <= level <= self.maxLevel:
+            self.levels[level] = self.originalLevels[level].kopieren()
+        else:
+            pass
 
-        self.originalLevels = [level0, level00, level1]  # alle Level separat nochmals abspeichern fuers zuruecksetzen
-        self.levels = [level0.kopieren(), level00.kopieren(), level1.kopieren()]
-
-    def levelReset(self):
-        self.levels[self.levelCounter] = self.originalLevels[self.levelCounter].kopieren()
+    def gameReset(self):
+        """ Alle Level zuruecksetzen
+        simple Implementation: levelReset auf jedes Level angewandt """
+        for i in range(self.maxLevel):
+            self.levelReset(i)
 
     def nextLevel(self):
         self.levelCounter += 1
-        self.gewonnenAnzeige = True
+        self.gewonnen = True
 
 
 
