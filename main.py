@@ -53,6 +53,8 @@ class Kreis:
 class Levelstruktur:
 
     def __init__(self, zugehoerigesFenster):
+        """ Eine Levelstruktur beinhaltet beliebig viele Rechtecke und Kreise und hat eine Referenz auf das Fenster,
+        in welchem die Levelstruktur vorliegt """
         self.rechtecke = []
         self.kreise = []
         self.zugehoerigesFenster = zugehoerigesFenster
@@ -142,8 +144,11 @@ class Window(QWidget):
         painter = QPainter(self)
         painter.setPen(QPen(QColor(0, 180, 0), 1, Qt.SolidLine))
         painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 180, 0))
+
+        # Nummer des derzeitigen Levels oben schreiben
         rect1 = QRect(int(self.wW / 2), int(self.wW / 40), int(self.wW / 20), int(self.wW / 20))
-        painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
+        painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
+        painter.setFont(QFont("Times", int(self.wW / 32)))
         painter.drawText(rect1, 0, str(self.levelCounter))
 
         if self.levelGewonnen:
@@ -152,10 +157,11 @@ class Window(QWidget):
                 self.close()
 
             # Kurzer Übergang zum nächsten Level, verschwindet nach 3 Sekunden
-            rect2 = QRect( int(self.wW / 2.5), int(self.wW / 2), int(self.wW / 2), int(self.wW / 2) )
-            rect3 = QRect( int(self.wW / 1.75), int(self.wW / 2), int(self.wW / 2), int(self.wW / 2) )
-            painter.drawText(rect2, 0, "Glückwunsch, du hast Level        geschafft")
-            painter.drawText(rect3, 0, str(self.levelCounter-1))
+            rect2 = QRect( 0, int(self.wW / 2.5), self.wW, int(self.wW / 2) )
+            painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
+            painter.setFont(QFont("Times", int(self.wW / 22)))
+            painter.drawText(rect2, 4, "Glückwunsch,\n "
+                                       "du hast Level " + str(self.levelCounter - 1) + " geschafft")
             self.levelGewonnen = False
             QTimer.singleShot(1500, self.update)
             return
@@ -248,15 +254,15 @@ class Window(QWidget):
         Koordinaten sollten bestenfalls keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse """
 
         level1 = Levelstruktur(self)
-        for j in range(3):
-            for i in range(2):
+        for j in range(1):
+            for i in range(1):
                 level1.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * i,
                                                      self.wW / 16 + self.wW * (3 / 16) * j,
                                                      self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
 
         level2 = Levelstruktur(self)
-        for j in range(3):
-            for i in range(2):
+        for j in range(1):
+            for i in range(1):
                 level2.kreis_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * i,
                                                      self.wW / 16 + self.wW * (3 / 16) * j,
                                                      self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
