@@ -146,7 +146,7 @@ class Window(QWidget):
         painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 180, 0))
 
         # Nummer des derzeitigen Levels oben schreiben
-        rect1 = QRect(int(self.wW / 2), int(self.wW / 40), int(self.wW / 20), int(self.wW / 20))
+        rect1 = QRect(int(self.wW / 2), int(self.wW / 100), int(self.wW / 20), int(self.wW / 20))
         painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
         painter.setFont(QFont("Times", int(self.wW / 32)))
         painter.drawText(rect1, 0, str(self.levelCounter))
@@ -254,14 +254,14 @@ class Window(QWidget):
         Koordinaten sollten bestenfalls keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse """
 
         level1 = Levelstruktur(self)
-        for j in range(1):
-            for i in range(1):
+        for j in range(2):
+            for i in range(3):
                 level1.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * i,
                                                      self.wW / 16 + self.wW * (3 / 16) * j,
                                                      self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
 
         level2 = Levelstruktur(self)
-        for j in range(1):
+        for j in range(2):
             for i in range(1):
                 level2.kreis_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * i,
                                                      self.wW / 16 + self.wW * (3 / 16) * j,
