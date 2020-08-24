@@ -17,3 +17,8 @@ groessere Schrift in QPainter hinbekommen
 
 C
 Kleinigkeiten
+
+C
+Neue Datei 'classes' fuer 'Rechteck', 'Kreis' und 'Levelstruktur'
+Neue Klasse 'Form' hinzugefuegt, von der 'Rechteck' und 'Kreis' erben
+Levelinitialisierung jetzt statt komplett in main, als Funktionen in functionsBib eingegliedert

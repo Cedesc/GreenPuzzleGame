@@ -2,113 +2,13 @@ import sys
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QImage, QPainterPath, QPolygonF
 from PyQt5.QtCore import Qt, QEvent, QRect, QPointF, QPropertyAnimation, QTimer
-import functionsBib
+import functionsBib as fb
 import settings
+from classes import Rechteck, Kreis, Levelstruktur
 
 
 
-class Rechteck:
 
-    def __init__(self, xKoordinate, yKoordinate, weite, hoehe, farbe):
-        self.xKoordinate = xKoordinate
-        self.yKoordinate = yKoordinate
-        self.weite = weite
-        self.hoehe = hoehe
-        self.farbe = farbe
-        self.zugehoerigesLevel = None
-        self.func = functionsBib.heyho
-
-    # grundlegende Funktionen
-    def gruen_machen(self):
-        self.farbe = QColor(0, 180, 0)
-
-    def nothing(self, n1, n2, n3):
-        pass
-
-    def level_zuruecksetzen(self, n1, n2, n3):
-        self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
-
-
-class Kreis:
-
-    def __init__(self, xKoordinate, yKoordinate, weite, hoehe, farbe):
-        self.xKoordinate = xKoordinate
-        self.yKoordinate = yKoordinate
-        self.weite = weite
-        self.hoehe = hoehe
-        self.farbe = farbe
-        self.zugehoerigesLevel = None
-        self.func = functionsBib.heyho2
-
-    def gruen_machen(self):
-        self.farbe = QColor(0, 180, 0)
-
-    def nothing(self, n1, n2, n3):
-        pass
-
-    def level_zuruecksetzen(self, n1, n2, n3):
-        self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
-
-
-class Levelstruktur:
-
-    def __init__(self, zugehoerigesFenster):
-        """ Eine Levelstruktur beinhaltet beliebig viele Rechtecke und Kreise und hat eine Referenz auf das Fenster,
-        in welchem die Levelstruktur vorliegt """
-        self.rechtecke = []
-        self.kreise = []
-        self.zugehoerigesFenster = zugehoerigesFenster
-
-    def rechteck_hinzufuegen(self, rechteck):
-        self.rechtecke.append(rechteck)
-        rechteck.zugehoerigesLevel = self
-
-    def kreis_hinzufuegen(self, kreis):
-        self.kreise.append(kreis)
-        kreis.zugehoerigesLevel = self
-
-    def weiteresZeichnen(self, painterF):
-        """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll """
-        pass
-
-    def gewinnbedingung(self):
-        """ Gewinnbedingung: Jedes Rechteck und jeder Kreis wird auf seine Farbe ueberprueft """
-        for i in self.rechtecke:
-            if i.farbe != QColor(0, 180, 0):
-                return False
-        for j in self.kreise:
-            if j.farbe != QColor(0, 180, 0):
-                return False
-        return True
-
-    def beruehrt(self, x, y):
-
-        for kreis in self.kreise:
-            if (kreis.xKoordinate <= x <= kreis.xKoordinate + kreis.weite) and (
-                    kreis.yKoordinate <= y <= kreis.yKoordinate + kreis.hoehe):
-                kreis.func(kreis, x, y)
-
-                if self.gewinnbedingung():      # setzt ein, wenn man das Level gewonnen hat
-                    self.zugehoerigesFenster.nextLevel()
-                return True
-
-        for rechteck in self.rechtecke:
-            if (rechteck.xKoordinate <= x <= rechteck.xKoordinate + rechteck.weite) and (
-                    rechteck.yKoordinate <= y <= rechteck.yKoordinate + rechteck.hoehe):
-                rechteck.func(rechteck, x, y)
-
-                if self.gewinnbedingung():      # setzt ein, wenn man das Level gewonnen hat
-                    self.zugehoerigesFenster.nextLevel()
-                return True
-        return False
-
-    def kopieren(self):     # kopiert die Levelstruktur, deepcopy hat nicht funktioniert
-        neue = Levelstruktur(self.zugehoerigesFenster)
-        for rec in self.rechtecke:
-            neue.rechteck_hinzufuegen(Rechteck(rec.xKoordinate, rec.yKoordinate, rec.weite, rec.hoehe, rec.farbe))
-        for kreis in self.kreise:
-            neue.kreis_hinzufuegen(Kreis(kreis.xKoordinate, kreis.yKoordinate, kreis.weite, kreis.hoehe, kreis.farbe))
-        return neue
 
 
 
@@ -143,7 +43,7 @@ class Window(QWidget):
         # Hintergrund zeichnen
         painter = QPainter(self)
         painter.setPen(QPen(QColor(0, 180, 0), 1, Qt.SolidLine))
-        painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 180, 0))
+        painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 160, 0))
 
         # Nummer des derzeitigen Levels oben schreiben
         rect1 = QRect(int(self.wW / 2), int(self.wW / 100), int(self.wW / 20), int(self.wW / 20))
@@ -250,33 +150,15 @@ class Window(QWidget):
 
 
     def initalisierung(self):
-        """ Anfaengliche Erstellung der Level
-        Koordinaten sollten bestenfalls keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse """
+        """ Anfaengliche Erstellung der Level """
 
-        level1 = Levelstruktur(self)
-        for j in range(2):
-            for i in range(3):
-                level1.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * i,
-                                                     self.wW / 16 + self.wW * (3 / 16) * j,
-                                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
-
-        level2 = Levelstruktur(self)
-        for j in range(2):
-            for i in range(1):
-                level2.kreis_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * i,
-                                                     self.wW / 16 + self.wW * (3 / 16) * j,
-                                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
-
-        level3 = Levelstruktur(self)
-        for j in range(2):
-            for i in range(1):
-                level3.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * (i + 2),
-                                                     self.wW / 12 + self.wW * (3 / 16) * (j + 2),
-                                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0)))
+        level0 = fb.level0Erstellen(self)
+        level1 = fb.level1Erstellen(self)
+        level2 = fb.level2Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level1, level2, level3]
-        self.levels = [level1.kopieren(), level2.kopieren(), level3.kopieren()]
+        self.originalLevels = [level0, level1, level2]
+        self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren()]
 
     def levelReset(self, level: int = -1):
         """ Ein spezielles Level zuruecksetzen
