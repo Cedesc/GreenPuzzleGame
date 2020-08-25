@@ -3,7 +3,9 @@ from PyQt5.QtGui import QColor
 
 class Form:
 
-    def __init__(self, xKoordinate, yKoordinate, weite, hoehe, farbe, func):
+    def __init__(self, nummer, xKoordinate, yKoordinate, weite, hoehe, farbe, func):
+        # 'nummer' soll gleich des Index sein, welchen die Form in der Levelstruktur hat.
+        self.nummer = nummer
         self.xKoordinate = xKoordinate
         self.yKoordinate = yKoordinate
         self.weite = weite
@@ -11,24 +13,19 @@ class Form:
         self.farbe = farbe
         self.func = func
         self.zugehoerigesLevel = None
+        # Referenz auf andere Form, damit beim anklicken auch Aenderungen an dieser getaetigt werden koennen
+        self.verbundeneForm = None
 
     def gruen_machen(self):
         self.farbe = QColor(0, 180, 0)
 
-    # grundlegende zuweisbare Funktionen
-
-    def nothing(self, self2):
-        """ Wenn draufgeklickt wird, soll nichts ausgefuehrt werden """
-        return 0
-    def level_zuruecksetzen(self, self2):
-        """ Falls zB ein Fehler gemacht wurde, wird das Level zurueckgesetzt """
-        self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
 
 class Rechteck(Form):
     pass
 
 class Kreis(Form):
     pass
+
 
 
 class Levelstruktur:
@@ -54,6 +51,7 @@ class Levelstruktur:
 
     def gewinnbedingung(self):
         """ Gewinnbedingung: Jedes Rechteck und jeder Kreis wird auf seine Farbe ueberprueft """
+
         for i in self.rechtecke:
             if i.farbe != QColor(0, 180, 0):
                 return False
@@ -63,33 +61,64 @@ class Levelstruktur:
         return True
 
     def beruehrt(self, x, y):
+        """ Pruefen ob eine Form angeklickt wurde """
 
+        # fuer jeden Kreis pruefen, ob der Mausklick in jeweiligem ist (nicht gut implementiert, da rechteckig!)
         for kreis in self.kreise:
             if (kreis.xKoordinate <= x <= kreis.xKoordinate + kreis.weite) and (
                     kreis.yKoordinate <= y <= kreis.yKoordinate + kreis.hoehe):
+                # falls Kreis getroffen, wird seine Funktion ausgefuehrt
                 kreis.func(kreis)
-
-                if self.gewinnbedingung():      # setzt ein, wenn man das Level gewonnen hat
+                # pruefen ob Level gewonnen
+                if self.gewinnbedingung():
                     self.zugehoerigesFenster.nextLevel()
                 return True
 
+        # fuer jedes Rechteck pruefen, ob der Mausklick in jeweiligem ist
         for rechteck in self.rechtecke:
             if (rechteck.xKoordinate <= x <= rechteck.xKoordinate + rechteck.weite) and (
                     rechteck.yKoordinate <= y <= rechteck.yKoordinate + rechteck.hoehe):
+                # falls Rechteck getroffen, wird seine Funktion ausgefuehrt
                 rechteck.func(rechteck)
-
-                if self.gewinnbedingung():      # setzt ein, wenn man das Level gewonnen hat
+                # pruefen ob Level gewonnen
+                if self.gewinnbedingung():
                     self.zugehoerigesFenster.nextLevel()
                 return True
+
         return False
 
     def kopieren(self):
-        """ Kopiert die Levelstruktur, deepcopy hat nicht funktioniert """
+        """ Kopiert die Levelstruktur
+        deepcopy hat nicht funktioniert """
+
         neue = Levelstruktur(self.zugehoerigesFenster)
+
+        """ neue Rechtecke und Kreise erstellen """
         for rec in self.rechtecke:
-            neue.rechteck_hinzufuegen(Rechteck(rec.xKoordinate, rec.yKoordinate,
+            neue.rechteck_hinzufuegen(Rechteck(rec.nummer, rec.xKoordinate, rec.yKoordinate,
                                                rec.weite, rec.hoehe, rec.farbe, rec.func))
         for kreis in self.kreise:
-            neue.kreis_hinzufuegen(Kreis(kreis.xKoordinate, kreis.yKoordinate,
+            neue.kreis_hinzufuegen(Kreis(kreis.nummer, kreis.xKoordinate, kreis.yKoordinate,
                                          kreis.weite, kreis.hoehe, kreis.farbe, kreis.func))
+
+        """ verbundene Formen zuweisen 
+        ist so kompliziert noetig, da sonst 'verbundeneForm' auf die nicht kopierten Rechtecke referenziert """
+        # originale Rechtecke nach Rechteck durchsuchen, welches eine verbundene Form besitzt
+        for recAlt in self.rechtecke:
+            if recAlt.verbundeneForm is not None:
+                # Kopien nach uebereinstimmendem Rechteck (gleiche Nummer) durchsuchen
+                for recNeu in neue.rechtecke:
+                    if recAlt.verbundeneForm.nummer == recNeu.nummer:
+                        # bei Uebereinstimmung die richtige Zuweisung fuer 'verbundeForm' uebernehmen
+                        neue.rechtecke[recAlt.nummer].verbundeneForm = recNeu
+        # originale Kreise nach Kreis durchsuchen, welches eine verbundene Form besitzt
+        for kreisAlt in self.kreise:
+            if kreisAlt.verbundeneForm is not None:
+                # Kopien nach uebereinstimmendem Kreis (gleiche Nummer) durchsuchen
+                for kreisNeu in neue.kreise:
+                    if kreisAlt.verbundeneForm.nummer == kreisNeu.nummer:
+                        # bei Uebereinstimmung die richtige Zuweisung fuer 'verbundeForm' uebernehmen
+                        neue.rechtecke[kreisAlt.nummer].verbundeneForm = kreisNeu
+
         return neue
+

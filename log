@@ -22,3 +22,11 @@ C
 Neue Datei 'classes' fuer 'Rechteck', 'Kreis' und 'Levelstruktur'
 Neue Klasse 'Form' hinzugefuegt, von der 'Rechteck' und 'Kreis' erben
 Levelinitialisierung jetzt statt komplett in main, als Funktionen in functionsBib eingegliedert
+
+C
+Level 3 hinzugefuegt (erstes Level mit Referenzen auf andere als die angeklickten Formen)
+Kommentare angepasst
+'verbundeneForm' als Eigenschaft zur Klasse 'Form' hinzugefuegt (Referenz auf andere Form)
+'nummer' als Eigenschaft zur Klasse 'Form' hinzugefuegt (soll Index in Liste wiederspiegeln)
+'kopieren' der Levelstruktur angepasst, sodass 'verbundeneForm' auch kopiert wird
+ToDoList und settings angepasst

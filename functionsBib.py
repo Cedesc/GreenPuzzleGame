@@ -3,18 +3,30 @@ from classes import Levelstruktur, Rechteck, Kreis, QColor
 
 
 # Funktionen fuer Rechtecke und Kreise
+                # Aufpassen, wenn man nach der Zeile "level_zuruecksetzen(self)" noch was schreiben will.
+                # Wird im allgemeinen nicht funktionieren, da dadurch ein komplett neues Level erstellt wird und
+                # die Referenzen dann veraltet sind
 
-def heyho(self):
-    self.gruen_machen()
-    self.func = self.level_zuruecksetzen
-    self.func = self.nothing
+def nothing(self):
+    """ Wenn draufgeklickt wird, soll nichts ausgefuehrt werden """
     return
 
-def heyho2(self):
-    self.gruen_machen()
-    self.func = self.level_zuruecksetzen
-    return
+def level_zuruecksetzen(self):
+    """ Falls zB ein Fehler gemacht wurde, wird das Level zurueckgesetzt """
+    self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
 
+def richtig_fertig(self):
+    """ Feld korrekt faerben und keine weitere eingabe darauf ermoeglichen """
+    self.gruen_machen()
+    self.func = nothing
+
+def richtig_fehlererkennung(self):
+    """ Feld korrekt faerben und level zuruecksetzen, falls Feld nochmal geklickt wird"""
+    self.gruen_machen()
+    self.func = level_zuruecksetzen
+
+def anderesRichtigUndAendern(self):
+    self.verbundeneForm.gruen_machen()
 
 
 
@@ -23,29 +35,54 @@ def heyho2(self):
 
 def level0Erstellen(self):
     level = Levelstruktur(self)
-    for j in range(2):
-        for i in range(3):
-            level.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * i,
-                                                 self.wW / 16 + self.wW * (3 / 16) * j,
-                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), heyho))
+    for x in range(2):
+        for y in range(3):
+            level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                self.wW / 16 + self.wW * (3 / 16) * x,
+                                                self.wW / 16 + self.wW * (3 / 16) * y,
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
     return level
 
 def level1Erstellen(self):
     level = Levelstruktur(self)
-    for j in range(3):
-        for i in range(1):
-            level.kreis_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * i,
-                                           self.wW / 16 + self.wW * (3 / 16) * j,
-                                           self.wW / 8, self.wW / 8, QColor(0, 90, 0), heyho2))
+    for x in range(3):
+        for y in range(1):
+            level.kreis_hinzufuegen(Kreis(len(level.kreise),  # spiegelt Index in der Liste wieder
+                                          self.wW / 16 + self.wW * (3 / 16) * x,
+                                          self.wW / 16 + self.wW * (3 / 16) * y,
+                                          self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
     return level
 
 def level2Erstellen(self):
     level = Levelstruktur(self)
-    for j in range(2):
-        for i in range(1):
-            level.rechteck_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * (i + 2),
-                                                 self.wW / 12 + self.wW * (3 / 16) * (j + 2),
-                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), heyho2))
+    for x in range(2):
+        for y in range(1):
+            level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                self.wW / 16 + self.wW * (3 / 16) * (x + 2),
+                                                self.wW / 12 + self.wW * (3 / 16) * (y + 2),
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
     return level
 
+def level3Erstellen(self):
+    level = Levelstruktur(self)
+    for x in range(3):
+        for y in range(4):
+            level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                self.wW / 16 + self.wW * (3 / 16) * x,
+                                                self.wW / 16 + self.wW * (3 / 16) * y,
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), anderesRichtigUndAendern))
+
+    level.rechtecke[0].verbundeneForm = level.rechtecke[1]
+    level.rechtecke[1].verbundeneForm = level.rechtecke[2]
+    level.rechtecke[2].verbundeneForm = level.rechtecke[3]
+    level.rechtecke[3].verbundeneForm = level.rechtecke[4]
+    level.rechtecke[4].verbundeneForm = level.rechtecke[5]
+    level.rechtecke[5].verbundeneForm = level.rechtecke[6]
+    level.rechtecke[6].verbundeneForm = level.rechtecke[7]
+    level.rechtecke[7].verbundeneForm = level.rechtecke[8]
+    level.rechtecke[8].verbundeneForm = level.rechtecke[9]
+    level.rechtecke[9].verbundeneForm = level.rechtecke[10]
+    level.rechtecke[10].verbundeneForm = level.rechtecke[11]
+    level.rechtecke[11].verbundeneForm = level.rechtecke[0]
+    return level
 

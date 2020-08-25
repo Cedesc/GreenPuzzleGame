@@ -4,19 +4,7 @@ from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QImage, QPainterP
 from PyQt5.QtCore import Qt, QEvent, QRect, QPointF, QPropertyAnimation, QTimer
 import functionsBib as fb
 import settings
-from classes import Rechteck, Kreis, Levelstruktur
-
-
-
-
-
-
-
-
-
-
-
-
+# from classes import Rechteck, Kreis, Levelstruktur
 
 
 class Window(QWidget):
@@ -30,7 +18,7 @@ class Window(QWidget):
         self.originalLevels = []        # Speicher fuer die urspruenglichen Level (relevant beim level reset)
         self.levels = []                # Speicher fuer Level
         self.levelCounter = 0           # Index des momentan zu bearbeitendem Level
-        self.maxLevel = 2               # den maximal zu erreichenden Index der level-liste, heißt Anzahl der Level
+        self.maxLevel = settings.ANZAHLLEVEL # den maximal zu erreichenden Index der level-Liste
         self.levelGewonnen = False
 
         self.initalisierung()
@@ -140,7 +128,6 @@ class Window(QWidget):
                 self.update()
 
 
-
     def mousePressEvent(self, QMouseEvent):
         pos = QMouseEvent.pos()
         #print("               ", pos.x(), pos.y())
@@ -155,10 +142,11 @@ class Window(QWidget):
         level0 = fb.level0Erstellen(self)
         level1 = fb.level1Erstellen(self)
         level2 = fb.level2Erstellen(self)
+        level3 = fb.level3Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level0, level1, level2]
-        self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren()]
+        self.originalLevels = [level0, level1, level2, level3]
+        self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren()]
 
     def levelReset(self, level: int = -1):
         """ Ein spezielles Level zuruecksetzen
@@ -168,7 +156,7 @@ class Window(QWidget):
         if 0 <= level <= self.maxLevel:
             self.levels[level] = self.originalLevels[level].kopieren()
         else:
-            pass
+            print("Die Eingabe ist Schwachsinn")
 
     def gameReset(self):
         """ Alle Level zuruecksetzen
