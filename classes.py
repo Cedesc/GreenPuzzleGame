@@ -132,3 +132,14 @@ class Levelstruktur:
                         neue.rechtecke[kreisAlt.nummer].verbundeneFormen.append(kreisNeu)
         return neue
 
+    def recReferenzenHinzufuegen(self, anzahlRecs: int, recRefsNummern: List[List[int]]) -> None:
+        """ Schnell mehrere Referenzen auf mehrere Rechtecke hinzufuegen
+        'anzahlRecs' ist die Anzahl an Rechtecken (also letzter Index + 1)
+        'recRefs' ist Liste von Listen mit den jeweilig zuzuweisenden Referenzen
+        Wichtig ist, dass die Indizes uebereinstimmen, heisst:
+        0. Rechteck bekommt recRefs[0] zugewiesen, 1. Rechteck bekommt recRefs[1] zugewiesen, etc. """
+        for clickedRecNummer in range(anzahlRecs):
+            for bindRecNummer in recRefsNummern[clickedRecNummer]:
+                self.rechtecke[clickedRecNummer].verbundeneFormen.append(self.rechtecke[bindRecNummer])
+
+

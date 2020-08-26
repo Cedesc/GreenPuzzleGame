@@ -1,7 +1,6 @@
 
 
 Wichtig:
-- Typen bei Funktionen, Variablen, Klassen etc vorgeben (wie es in C++ gefordert wird)
 - Es ist noch nicht moeglich Kreise und Rechtecke auf die jeweils andere Form referenzieren zu lassen
 - Kreise anklicken "besser" machen
 
@@ -17,3 +16,12 @@ Unwichtig:
 - Hinweise implementieren (auf Knopfdruck einen Hinweis zum momentanen Level bekommen)
 - bei Erfolg das schließen des Programms schöner machen
 - Creater Mode (leicht neue Level erstellen)
+
+
+
+Levelideen:
+- immer auf gerade neu gruen gefaerbtes klicken muessen, sonst level zuruecksetzen
+- (wie bei yellow) erst rechts vom geklickten geaendert, dann unter dem naechstgeklickten,
+  dann links vom naechstegeklickten, dann ueber dem naechstegeklickten, dann wieder unter dem naechstgeklickten, usw.
+- (wie bei yellow) erste Reihe muss 1 mal pro Form geklickt werden, 2. je 2 mal, 3. je 3 mal, usw.
+- Rechtecke uebereinander, grosses ganz hinten, davor kleineres, davor kleineres, usw.

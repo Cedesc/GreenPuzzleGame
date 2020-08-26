@@ -1,4 +1,4 @@
-from classes import Levelstruktur, Form, Rechteck, Kreis, QColor, List, Callable
+from classes import Levelstruktur, Form, Rechteck, Kreis, QColor, List
 """ Bibliothek fuer Funktionen der Formen und Levelerstellung """
 
 
@@ -25,7 +25,7 @@ def richtig_fehlererkennung(self) -> None:
     self.gruen_machen()
     self.func = level_zuruecksetzen
 
-def anderesRichtigUndAendern(self: Form) -> None:
+def verbundeneAendern(self: Form) -> None:
     for verForm in self.verbundeneFormen:
         verForm.umkehren()
 
@@ -36,8 +36,8 @@ def anderesRichtigUndAendern(self: Form) -> None:
 
 def level0Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
-    for x in range(2):
-        for y in range(3):
+    for y in range(2):
+        for x in range(3):
             level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
                                                 self.wW / 16 + self.wW * (3 / 16) * x,
                                                 self.wW / 16 + self.wW * (3 / 16) * y,
@@ -46,8 +46,8 @@ def level0Erstellen(self) -> Levelstruktur:
 
 def level1Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
-    for x in range(3):
-        for y in range(1):
+    for y in range(3):
+        for x in range(1):
             level.kreis_hinzufuegen(Kreis(len(level.kreise),  # spiegelt Index in der Liste wieder
                                           self.wW / 16 + self.wW * (3 / 16) * x,
                                           self.wW / 16 + self.wW * (3 / 16) * y,
@@ -56,8 +56,8 @@ def level1Erstellen(self) -> Levelstruktur:
 
 def level2Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
-    for x in range(2):
-        for y in range(1):
+    for y in range(2):
+        for x in range(1):
             level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
                                                 self.wW / 16 + self.wW * (3 / 16) * (x + 2),
                                                 self.wW / 12 + self.wW * (3 / 16) * (y + 2),
@@ -65,27 +65,19 @@ def level2Erstellen(self) -> Levelstruktur:
     return level
 
 def level3Erstellen(self) -> Levelstruktur:
+    """ Bei anklicken eines Rechtecks werden alle umliegenden Rechtecke geaendert """
     level = Levelstruktur(self)
-    for x in range(3):
-        for y in range(4):
+    for y in range(3):
+        for x in range(4):
             level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
                                                 self.wW / 16 + self.wW * (3 / 16) * x,
                                                 self.wW / 16 + self.wW * (3 / 16) * y,
-                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), anderesRichtigUndAendern))
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), verbundeneAendern))
+    # verbundene Rechtecke zuweisen
+    zuweisungsListe = [ [1, 4, 5] , [0, 2, 4, 5, 6] , [1, 3, 5, 6, 7] , [2, 6, 7] ,
+              [0, 1, 5, 8, 9] , [0, 1, 2, 4, 6, 8, 9, 10] , [1, 2, 3, 5, 7, 9, 10, 11] , [2, 3, 6, 10, 11] ,
+              [4, 5, 9] , [4, 5, 6, 8, 10] , [5, 6, 7, 9, 11] , [6, 7, 10] ]
+    level.recReferenzenHinzufuegen(12, zuweisungsListe)
 
-    level.rechtecke[0].verbundeneFormen.append(level.rechtecke[1])
-    level.rechtecke[0].verbundeneFormen.append(level.rechtecke[2])
-
-    level.rechtecke[1].verbundeneFormen.append(level.rechtecke[2])
-    level.rechtecke[2].verbundeneFormen.append(level.rechtecke[3])
-    level.rechtecke[3].verbundeneFormen.append(level.rechtecke[4])
-    level.rechtecke[4].verbundeneFormen.append(level.rechtecke[5])
-    level.rechtecke[5].verbundeneFormen.append(level.rechtecke[6])
-    level.rechtecke[6].verbundeneFormen.append(level.rechtecke[7])
-    level.rechtecke[7].verbundeneFormen.append(level.rechtecke[8])
-    level.rechtecke[8].verbundeneFormen.append(level.rechtecke[9])
-    level.rechtecke[9].verbundeneFormen.append(level.rechtecke[10])
-    level.rechtecke[10].verbundeneFormen.append(level.rechtecke[11])
-    level.rechtecke[11].verbundeneFormen.append(level.rechtecke[0])
     return level
 

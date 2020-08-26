@@ -1,10 +1,10 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QImage, QPainterPath, QPolygonF
-from PyQt5.QtCore import Qt, QEvent, QRect, QPointF, QPropertyAnimation, QTimer
+from PyQt5.QtGui import QPainter, QColor, QFont, QPen, QBrush, QImage, QPainterPath, QPolygonF
+from PyQt5.QtCore import Qt, QRect, QTimer, QPointF, QPropertyAnimation, QEvent
 import functionsBib as fb
 import settings
-from classes import Rechteck, Kreis, Levelstruktur, List
+from classes import Levelstruktur, List
 
 
 class Window(QWidget):
@@ -51,7 +51,7 @@ class Window(QWidget):
             painter.drawText(rect2, 4, "Glückwunsch,\n "
                                        "du hast Level " + str(self.levelCounter - 1) + " geschafft")
             self.levelGewonnen = False
-            QTimer.singleShot(1500, self.update)
+            QTimer.singleShot(settings.UEBERGANGSZEIT, self.update)
             return
 
         # Level zeichnen
