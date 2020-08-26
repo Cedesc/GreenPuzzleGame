@@ -142,4 +142,11 @@ class Levelstruktur:
             for bindRecNummer in recRefsNummern[clickedRecNummer]:
                 self.rechtecke[clickedRecNummer].verbundeneFormen.append(self.rechtecke[bindRecNummer])
 
+    def recFuncsAendern(self, zielFunc: Callable[[Form], None], zuAenderndeFormen: List[int] = 'Alle'):
+        """ Bestimmten Rechtecken neue Funktion zuweisen
+        Wird keine Liste an Rechteck-Indizes angegeben, so werden allen die Funktion zugeordnet """
+        if zuAenderndeFormen == 'Alle':
+            zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
+        for i in zuAenderndeFormen:
+            self.rechtecke[i].func = zielFunc
 

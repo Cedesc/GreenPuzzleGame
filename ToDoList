@@ -1,6 +1,7 @@
 
 
 Wichtig:
+- Timer einbauen, sodass man das Ergebnis (komplett gruen) sehen kann ODER Glueckwunsch-Screen abaendern / drueberlegen
 - Es ist noch nicht moeglich Kreise und Rechtecke auf die jeweils andere Form referenzieren zu lassen
 - Kreise anklicken "besser" machen
 
@@ -20,7 +21,6 @@ Unwichtig:
 
 
 Levelideen:
-- immer auf gerade neu gruen gefaerbtes klicken muessen, sonst level zuruecksetzen
 - (wie bei yellow) erst rechts vom geklickten geaendert, dann unter dem naechstgeklickten,
   dann links vom naechstegeklickten, dann ueber dem naechstegeklickten, dann wieder unter dem naechstgeklickten, usw.
 - (wie bei yellow) erste Reihe muss 1 mal pro Form geklickt werden, 2. je 2 mal, 3. je 3 mal, usw.

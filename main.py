@@ -34,10 +34,10 @@ class Window(QWidget):
         painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 160, 0))
 
         # Nummer des derzeitigen Levels oben schreiben
-        rect1 = QRect(int(self.wW / 2), int(self.wW / 100), int(self.wW / 20), int(self.wW / 20))
+        rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))
         painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
         painter.setFont(QFont("Times", int(self.wW / 32)))
-        painter.drawText(rect1, 0, str(self.levelCounter))
+        painter.drawText(rect1, 4, str(self.levelCounter))
 
         if self.levelGewonnen:
             if self.levelCounter > self.maxLevel:
@@ -143,10 +143,11 @@ class Window(QWidget):
         level1 : Levelstruktur = fb.level1Erstellen(self)
         level2 : Levelstruktur = fb.level2Erstellen(self)
         level3 : Levelstruktur = fb.level3Erstellen(self)
+        level4 : Levelstruktur = fb.level4Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level0, level1, level2, level3]
-        self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren()]
+        self.originalLevels = [level0, level1, level2, level3, level4]
+        self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren(), level4.kopieren()]
 
     def levelReset(self, levelNummer: int = -1) -> None:
         """ Ein spezielles Level zuruecksetzen
