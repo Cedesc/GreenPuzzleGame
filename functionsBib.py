@@ -39,6 +39,14 @@ def funcL4(self: Form) -> None:
     self.zugehoerigesLevel.recFuncsAendern(level_zuruecksetzen)
     self.verbundeneFormen[0].func = funcL4
 
+# Level 5
+def funcL5(self: Form) -> None:
+    """ Je nach Zustand des Levels wird ein anderes nebenstehendes Feld korrekt gefaerbt
+    0: rechts, 1: unten, 2: links, 3: oben """
+    levelZustand : int = self.zugehoerigesLevel.internerSpeicherL
+    self.verbundeneFormen[levelZustand].umkehren()
+    self.zugehoerigesLevel.internerSpeicherL = (levelZustand + 1) % 4
+
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
@@ -90,7 +98,8 @@ def level3Erstellen(self) -> Levelstruktur:
     return level
 
 def level4Erstellen(self) -> Levelstruktur:
-    """ """
+    """ Beim anklicken eines Rechtecks wird ein anderes Rechteck korrekt gefaerbt. Wird dieses gefaerbte dann geklickt,
+    wird ein anderes korrekt gefaerbt usw. Bei anklicken eines anderen Felds, wird das Level zurueckgesetzt """
     level = Levelstruktur(self)
     for y in range(4):
         for x in range(4):
@@ -104,3 +113,23 @@ def level4Erstellen(self) -> Levelstruktur:
     level.recReferenzenHinzufuegen(16, zuweisungsListe)
     return level
 
+def level5Erstellen(self) -> Levelstruktur:
+    """ Je nach Zustand des Levels wird ein anderes nebenstehendes Feld korrekt gefaerbt
+    in der Reihenfolge rechts, unten, links, oben """
+    level = Levelstruktur(self)
+    for y in range(5):
+        for x in range(5):
+            level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                self.wW / 16 + self.wW * (3 / 16) * x,
+                                                self.wW / 16 + self.wW * (3 / 16) * y,
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL5))
+    # verbundene Rechtecke zuweisen
+    zuweisungsListe = [ [1, 5, 4, 20] , [2, 6, 0, 21] , [3, 7, 1, 22] , [4, 8, 2, 23] , [0, 9, 3, 24] ,
+                        [6, 10, 9, 0] , [7, 11, 5, 1] , [8, 12, 6, 2] , [9, 13, 7, 3] , [5, 14, 8, 4] ,
+                        [11, 15, 14, 5] , [12, 16, 10, 6] , [13, 17, 11, 7] , [14, 18, 12, 8] , [10, 19, 13, 9] ,
+                        [16, 20, 19, 10] , [17, 21, 15, 11] , [18, 22, 16, 12] , [19, 23, 17, 13] , [15, 24, 18, 14] ,
+                        [21, 0, 24, 15] , [22, 1, 20, 16] , [23, 2, 21, 17] , [24, 3, 22, 18] , [20, 4, 23, 19] ]
+    level.recReferenzenHinzufuegen(25, zuweisungsListe)
+    # internen Speicher des Levels festlegen
+    level.internerSpeicherL = 0
+    return level

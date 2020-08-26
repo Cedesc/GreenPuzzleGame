@@ -47,3 +47,7 @@ C
 'recFuncsAendern' als Funktion zur Klasse 'Levelstruktur' hinzugefuegt
 Level 4 abgeschlossen
 Kleinere Anpassungen an den Positionen in Level 3 und der Levelanzeige
+
+C
+internen Speicher als Eigenschaft zu 'Form' und 'Levelstruktur' hinzugefuegt
+Level 5 abgeschlossen

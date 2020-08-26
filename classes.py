@@ -16,6 +16,9 @@ class Form:
         self.zugehoerigesLevel : Levelstruktur = None
         # Referenz auf andere Form, damit beim anklicken auch Aenderungen an dieser getaetigt werden koennen
         self.verbundeneFormen : List[Form] = []
+        # interner Speicher jeder Form fuer etwaige Zustaende der Form
+        # zB: muss 3 mal geklickt werden, bis es korrekt gefaerbt wird
+        self.internerSpeicherF = None
 
     def gruen_machen(self) -> None:
         """ Farbe wird zu richtig geaendert """
@@ -45,6 +48,9 @@ class Levelstruktur:
         self.rechtecke : List[Rechteck] = []
         self.kreise : List[Kreis] = []
         self.zugehoerigesFenster = zugehoerigesFenster
+        # interner Speicher jeder Form fuer etwaige Zustaende des Levels
+        # zB: Position, die beim klicken betroffen ist, aendert sich jedes mal (bewegt sich im Kreis drum)
+        self.internerSpeicherL = None
 
     def rechteck_hinzufuegen(self, rechteck: Rechteck) -> None:
         self.rechtecke.append(rechteck)
@@ -102,13 +108,18 @@ class Levelstruktur:
 
         neue = Levelstruktur(self.zugehoerigesFenster)
 
-        """ neue Rechtecke und Kreise erstellen """
+        """ internen Speicher vom alten Level uebernehmen """
+        neue.internerSpeicherL = self.internerSpeicherL
+
+        """ neue Rechtecke und Kreise erstellen und dann den internen Speicher beim gerade erstellten uebernehmen"""
         for rec in self.rechtecke:
             neue.rechteck_hinzufuegen(Rechteck(rec.nummer, rec.xKoordinate, rec.yKoordinate,
                                                rec.weite, rec.hoehe, rec.farbe, rec.func))
+            neue.rechtecke[-1].internerSpeicherF = rec.internerSpeicherF
         for kreis in self.kreise:
             neue.kreis_hinzufuegen(Kreis(kreis.nummer, kreis.xKoordinate, kreis.yKoordinate,
                                          kreis.weite, kreis.hoehe, kreis.farbe, kreis.func))
+            neue.kreise[-1].internerSpeicherF = kreis.internerSpeicherF
 
         """ verbundene Formen zuweisen 
         ist so kompliziert noetig, da sonst 'verbundeneFormen' auf die nicht kopierten Formen referenziert """
