@@ -13,6 +13,7 @@ Versucht, nicht hinbekommen:
 
 
 Unwichtig:
+- Typinformationen zb von Window in classes ermoeglichen (Problem mit import)
 - Hinweise implementieren (auf Knopfdruck einen Hinweis zum momentanen Level bekommen)
 - bei Erfolg das schließen des Programms schöner machen
 - Creater Mode (leicht neue Level erstellen)

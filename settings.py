@@ -1,7 +1,7 @@
 
 
 # Breite des Fensters
-BREITE = 800
+BREITE : int = 800
 
 # Anzahl der spielbaren Level im Spiel
-ANZAHLLEVEL = 3
+ANZAHLLEVEL : int = 3

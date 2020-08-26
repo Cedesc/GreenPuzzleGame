@@ -1,23 +1,32 @@
 from PyQt5.QtGui import QColor
+from typing import List, Callable
 
 
 class Form:
 
-    def __init__(self, nummer, xKoordinate, yKoordinate, weite, hoehe, farbe, func):
+    def __init__(self, nummer: int, xKoordinate: int, yKoordinate: int, weite: int, hoehe: int, farbe: QColor, func):
         # 'nummer' soll gleich des Index sein, welchen die Form in der Levelstruktur hat.
-        self.nummer = nummer
-        self.xKoordinate = xKoordinate
-        self.yKoordinate = yKoordinate
-        self.weite = weite
-        self.hoehe = hoehe
-        self.farbe = farbe
-        self.func = func
-        self.zugehoerigesLevel = None
+        self.nummer : int = nummer
+        self.xKoordinate : int = xKoordinate
+        self.yKoordinate : int = yKoordinate
+        self.weite : int = weite
+        self.hoehe : int = hoehe
+        self.farbe : QColor = farbe
+        self.func : Callable[[Form], None] = func
+        self.zugehoerigesLevel : Levelstruktur = None
         # Referenz auf andere Form, damit beim anklicken auch Aenderungen an dieser getaetigt werden koennen
-        self.verbundeneFormen = []
+        self.verbundeneFormen : List[Form] = []
 
-    def gruen_machen(self):
+    def gruen_machen(self) -> None:
+        """ Farbe wird zu richtig geaendert """
         self.farbe = QColor(0, 180, 0)
+
+    def umkehren(self) -> None:
+        """ Farbe wird umgekehrt: Falls richtig wird es zu falsch, falls falsch wird es zu richtig """
+        if self.farbe == QColor(0, 180, 0):
+            self.farbe = QColor(0, 90, 0)
+        elif self.farbe == QColor(0, 90, 0):
+            self.farbe = QColor(0, 180, 0)
 
 
 class Rechteck(Form):
@@ -33,23 +42,23 @@ class Levelstruktur:
     def __init__(self, zugehoerigesFenster):
         """ Eine Levelstruktur beinhaltet beliebig viele Rechtecke und Kreise
         und hat eine Referenz auf das Fenster, in welchem die Levelstruktur vorliegt """
-        self.rechtecke = []
-        self.kreise = []
+        self.rechtecke : List[Rechteck] = []
+        self.kreise : List[Kreis] = []
         self.zugehoerigesFenster = zugehoerigesFenster
 
-    def rechteck_hinzufuegen(self, rechteck):
+    def rechteck_hinzufuegen(self, rechteck: Rechteck) -> None:
         self.rechtecke.append(rechteck)
         rechteck.zugehoerigesLevel = self
 
-    def kreis_hinzufuegen(self, kreis):
+    def kreis_hinzufuegen(self, kreis: Kreis) -> None:
         self.kreise.append(kreis)
         kreis.zugehoerigesLevel = self
 
-    def weiteresZeichnen(self, painterF):
+    def weiteresZeichnen(self, painterF) -> None:
         """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll """
         pass
 
-    def gewinnbedingung(self):
+    def gewinnbedingung(self) -> bool:
         """ Gewinnbedingung: Jedes Rechteck und jeder Kreis wird auf seine Farbe ueberprueft """
 
         for i in self.rechtecke:
@@ -60,7 +69,7 @@ class Levelstruktur:
                 return False
         return True
 
-    def beruehrt(self, x, y):
+    def beruehrt(self, x: int, y: int) -> bool:
         """ Pruefen ob eine Form angeklickt wurde """
 
         # fuer jeden Kreis pruefen, ob der Mausklick in jeweiligem ist (nicht gut implementiert, da rechteckig!)

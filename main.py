@@ -4,7 +4,7 @@ from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QImage, QPainterP
 from PyQt5.QtCore import Qt, QEvent, QRect, QPointF, QPropertyAnimation, QTimer
 import functionsBib as fb
 import settings
-# from classes import Rechteck, Kreis, Levelstruktur
+from classes import Rechteck, Kreis, Levelstruktur, List
 
 
 class Window(QWidget):
@@ -12,14 +12,14 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.wW = settings.BREITE       # windowWidth ; Fenster ist immer quadratisch
+        self.wW : int = settings.BREITE                 # windowWidth ; Fenster ist immer quadratisch
         self.setGeometry(600, 150, self.wW, self.wW)
         self.setWindowTitle("Spaß mit grünem")
-        self.originalLevels = []        # Speicher fuer die urspruenglichen Level (relevant beim level reset)
-        self.levels = []                # Speicher fuer Level
-        self.levelCounter = 0           # Index des momentan zu bearbeitendem Level
-        self.maxLevel = settings.ANZAHLLEVEL # den maximal zu erreichenden Index der level-Liste
-        self.levelGewonnen = False
+        self.originalLevels : List[Levelstruktur] = []  # Speicher fuer urspruengliche Level (relevant beim level reset)
+        self.levels : List[Levelstruktur] = []          # Speicher fuer Level
+        self.levelCounter : int = 0                     # Index des momentan zu bearbeitendem Level
+        self.maxLevel : int = settings.ANZAHLLEVEL      # den maximal zu erreichenden Index der level-Liste
+        self.levelGewonnen : bool = False
 
         self.initalisierung()
         self.keyPressEvent = self.fn
@@ -27,7 +27,7 @@ class Window(QWidget):
         self.show()
 
 
-    def paintEvent(self, event):
+    def paintEvent(self, event) -> None:
         # Hintergrund zeichnen
         painter = QPainter(self)
         painter.setPen(QPen(QColor(0, 180, 0), 1, Qt.SolidLine))
@@ -68,7 +68,7 @@ class Window(QWidget):
         self.levels[self.levelCounter].weiteresZeichnen(painter)
 
 
-    def fn(self, e):
+    def fn(self, e) -> None:
 
         if e.key() == Qt.Key_H:
             """ H druecken um Tastenbelegung anzuzeigen """
@@ -128,7 +128,7 @@ class Window(QWidget):
                 self.update()
 
 
-    def mousePressEvent(self, QMouseEvent):
+    def mousePressEvent(self, QMouseEvent) -> None:
         pos = QMouseEvent.pos()
         #print("               ", pos.x(), pos.y())
 
@@ -136,35 +136,35 @@ class Window(QWidget):
             self.update()
 
 
-    def initalisierung(self):
+    def initalisierung(self) -> None:
         """ Anfaengliche Erstellung der Level """
 
-        level0 = fb.level0Erstellen(self)
-        level1 = fb.level1Erstellen(self)
-        level2 = fb.level2Erstellen(self)
-        level3 = fb.level3Erstellen(self)
+        level0 : Levelstruktur = fb.level0Erstellen(self)
+        level1 : Levelstruktur = fb.level1Erstellen(self)
+        level2 : Levelstruktur = fb.level2Erstellen(self)
+        level3 : Levelstruktur = fb.level3Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
         self.originalLevels = [level0, level1, level2, level3]
         self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren()]
 
-    def levelReset(self, level: int = -1):
+    def levelReset(self, levelNummer: int = -1) -> None:
         """ Ein spezielles Level zuruecksetzen
         wird der Parameter frei gelassen, wird das momentane Level zurueckgesetzt """
-        if level == -1:
-            level = self.levelCounter
-        if 0 <= level <= self.maxLevel:
-            self.levels[level] = self.originalLevels[level].kopieren()
+        if levelNummer == -1:
+            levelNummer = self.levelCounter
+        if 0 <= levelNummer <= self.maxLevel:
+            self.levels[levelNummer] = self.originalLevels[levelNummer].kopieren()
         else:
             print("Die Eingabe ist Schwachsinn")
 
-    def gameReset(self):
+    def gameReset(self) -> None:
         """ Alle Level zuruecksetzen
         simple Implementation: levelReset auf jedes Level angewandt """
-        for i in range(self.maxLevel):
+        for i in range(self.maxLevel + 1):
             self.levelReset(i)
 
-    def nextLevel(self):
+    def nextLevel(self) -> None:
         self.levelCounter += 1
         self.levelGewonnen = True
 

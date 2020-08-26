@@ -1,4 +1,4 @@
-from classes import Levelstruktur, Rechteck, Kreis, QColor
+from classes import Levelstruktur, Form, Rechteck, Kreis, QColor, List, Callable
 """ Bibliothek fuer Funktionen der Formen und Levelerstellung """
 
 
@@ -7,34 +7,34 @@ from classes import Levelstruktur, Rechteck, Kreis, QColor
                 # Wird im allgemeinen nicht funktionieren, da dadurch ein komplett neues Level erstellt wird und
                 # die Referenzen dann veraltet sind
 
-def nothing(self):
+def nothing(self) -> None:
     """ Wenn draufgeklickt wird, soll nichts ausgefuehrt werden """
     return
 
-def level_zuruecksetzen(self):
+def level_zuruecksetzen(self) -> None:
     """ Falls zB ein Fehler gemacht wurde, wird das Level zurueckgesetzt """
     self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
 
-def richtig_fertig(self):
+def richtig_fertig(self) -> None:
     """ Feld korrekt faerben und keine weitere eingabe darauf ermoeglichen """
     self.gruen_machen()
     self.func = nothing
 
-def richtig_fehlererkennung(self):
+def richtig_fehlererkennung(self) -> None:
     """ Feld korrekt faerben und level zuruecksetzen, falls Feld nochmal geklickt wird"""
     self.gruen_machen()
     self.func = level_zuruecksetzen
 
-def anderesRichtigUndAendern(self):
+def anderesRichtigUndAendern(self: Form) -> None:
     for verForm in self.verbundeneFormen:
-        verForm.gruen_machen()
+        verForm.umkehren()
 
 
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
 
-def level0Erstellen(self):
+def level0Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for x in range(2):
         for y in range(3):
@@ -44,7 +44,7 @@ def level0Erstellen(self):
                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
     return level
 
-def level1Erstellen(self):
+def level1Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for x in range(3):
         for y in range(1):
@@ -54,7 +54,7 @@ def level1Erstellen(self):
                                           self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
     return level
 
-def level2Erstellen(self):
+def level2Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for x in range(2):
         for y in range(1):
@@ -64,7 +64,7 @@ def level2Erstellen(self):
                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
     return level
 
-def level3Erstellen(self):
+def level3Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for x in range(3):
         for y in range(4):
