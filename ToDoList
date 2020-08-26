@@ -1,7 +1,6 @@
 
 
 Wichtig:
-- 'verbundeneForm' zu Liste umaendern, sodass mehrere Formen verbunden sind (ueberall im Code anpassen)
 - Typen bei Funktionen, Variablen, Klassen etc vorgeben (wie es in C++ gefordert wird)
 - Es ist noch nicht moeglich Kreise und Rechtecke auf die jeweils andere Form referenzieren zu lassen
 - Kreise anklicken "besser" machen

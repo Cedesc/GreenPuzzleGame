@@ -14,7 +14,7 @@ class Form:
         self.func = func
         self.zugehoerigesLevel = None
         # Referenz auf andere Form, damit beim anklicken auch Aenderungen an dieser getaetigt werden koennen
-        self.verbundeneForm = None
+        self.verbundeneFormen = []
 
     def gruen_machen(self):
         self.farbe = QColor(0, 180, 0)
@@ -102,23 +102,24 @@ class Levelstruktur:
                                          kreis.weite, kreis.hoehe, kreis.farbe, kreis.func))
 
         """ verbundene Formen zuweisen 
-        ist so kompliziert noetig, da sonst 'verbundeneForm' auf die nicht kopierten Rechtecke referenziert """
-        # originale Rechtecke nach Rechteck durchsuchen, welches eine verbundene Form besitzt
+        ist so kompliziert noetig, da sonst 'verbundeneFormen' auf die nicht kopierten Formen referenziert """
+        # pro originales Rechteck, welches verbundene Formen besitzt, werden diese dort
+        # referenzierten-originalen-Rechtecke ('recAltRefRec') durchgegangen
         for recAlt in self.rechtecke:
-            if recAlt.verbundeneForm is not None:
+            for recAltRefRec in recAlt.verbundeneFormen:
                 # Kopien nach uebereinstimmendem Rechteck (gleiche Nummer) durchsuchen
                 for recNeu in neue.rechtecke:
-                    if recAlt.verbundeneForm.nummer == recNeu.nummer:
-                        # bei Uebereinstimmung die richtige Zuweisung fuer 'verbundeForm' uebernehmen
-                        neue.rechtecke[recAlt.nummer].verbundeneForm = recNeu
-        # originale Kreise nach Kreis durchsuchen, welches eine verbundene Form besitzt
+                    if recAltRefRec.nummer == recNeu.nummer:
+                        # bei Uebereinstimmung die richtige Zuweisung zu 'verbundeneFormen' der Kopie hinzufuegen
+                        neue.rechtecke[recAlt.nummer].verbundeneFormen.append(recNeu)
+        # pro originalem Kreis, welcher verbundene Formen besitzt, werden diese dort
+        # referenzierten-originalen-Kreise ('kreisAltRefKreis') durchgegangen
         for kreisAlt in self.kreise:
-            if kreisAlt.verbundeneForm is not None:
+            for kreisAltRefKreis in kreisAlt.verbundeneFormen:
                 # Kopien nach uebereinstimmendem Kreis (gleiche Nummer) durchsuchen
                 for kreisNeu in neue.kreise:
-                    if kreisAlt.verbundeneForm.nummer == kreisNeu.nummer:
-                        # bei Uebereinstimmung die richtige Zuweisung fuer 'verbundeForm' uebernehmen
-                        neue.rechtecke[kreisAlt.nummer].verbundeneForm = kreisNeu
-
+                    if kreisAltRefKreis.nummer == kreisNeu.nummer:
+                        # bei Uebereinstimmung die richtige Zuweisung zu 'verbundeFormen' der Kopie hinzufuegen
+                        neue.rechtecke[kreisAlt.nummer].verbundeneFormen.append(kreisNeu)
         return neue
 

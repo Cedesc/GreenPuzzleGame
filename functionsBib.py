@@ -26,7 +26,8 @@ def richtig_fehlererkennung(self):
     self.func = level_zuruecksetzen
 
 def anderesRichtigUndAendern(self):
-    self.verbundeneForm.gruen_machen()
+    for verForm in self.verbundeneFormen:
+        verForm.gruen_machen()
 
 
 
@@ -72,17 +73,19 @@ def level3Erstellen(self):
                                                 self.wW / 16 + self.wW * (3 / 16) * y,
                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), anderesRichtigUndAendern))
 
-    level.rechtecke[0].verbundeneForm = level.rechtecke[1]
-    level.rechtecke[1].verbundeneForm = level.rechtecke[2]
-    level.rechtecke[2].verbundeneForm = level.rechtecke[3]
-    level.rechtecke[3].verbundeneForm = level.rechtecke[4]
-    level.rechtecke[4].verbundeneForm = level.rechtecke[5]
-    level.rechtecke[5].verbundeneForm = level.rechtecke[6]
-    level.rechtecke[6].verbundeneForm = level.rechtecke[7]
-    level.rechtecke[7].verbundeneForm = level.rechtecke[8]
-    level.rechtecke[8].verbundeneForm = level.rechtecke[9]
-    level.rechtecke[9].verbundeneForm = level.rechtecke[10]
-    level.rechtecke[10].verbundeneForm = level.rechtecke[11]
-    level.rechtecke[11].verbundeneForm = level.rechtecke[0]
+    level.rechtecke[0].verbundeneFormen.append(level.rechtecke[1])
+    level.rechtecke[0].verbundeneFormen.append(level.rechtecke[2])
+
+    level.rechtecke[1].verbundeneFormen.append(level.rechtecke[2])
+    level.rechtecke[2].verbundeneFormen.append(level.rechtecke[3])
+    level.rechtecke[3].verbundeneFormen.append(level.rechtecke[4])
+    level.rechtecke[4].verbundeneFormen.append(level.rechtecke[5])
+    level.rechtecke[5].verbundeneFormen.append(level.rechtecke[6])
+    level.rechtecke[6].verbundeneFormen.append(level.rechtecke[7])
+    level.rechtecke[7].verbundeneFormen.append(level.rechtecke[8])
+    level.rechtecke[8].verbundeneFormen.append(level.rechtecke[9])
+    level.rechtecke[9].verbundeneFormen.append(level.rechtecke[10])
+    level.rechtecke[10].verbundeneFormen.append(level.rechtecke[11])
+    level.rechtecke[11].verbundeneFormen.append(level.rechtecke[0])
     return level
 
