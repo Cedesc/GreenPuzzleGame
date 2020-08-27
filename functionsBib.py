@@ -47,6 +47,20 @@ def funcL5(self: Form) -> None:
     self.verbundeneFormen[levelZustand].umkehren()
     self.zugehoerigesLevel.internerSpeicherL = (levelZustand + 1) % 4
 
+# Level 6
+def funcL6(self: Form) -> None:
+    """ Je nach Form (bzw internen Speicher) braucht es unterschiedlich viele Klicks, damit es korrekt gefaerbt wird
+    Wird das mittlere Feld korrekt, so werden alle anderen auch korrekt gefaerbt """
+    self.internerSpeicherF -= 1
+    if self.internerSpeicherF < 1:
+        self.gruen_machen()
+        self.klickbar = False
+        self.sichtbar = False
+        if self.nummer == 6:
+            for rec in self.zugehoerigesLevel.rechtecke:
+                rec.gruen_machen()
+
+
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
@@ -132,4 +146,24 @@ def level5Erstellen(self) -> Levelstruktur:
     level.recReferenzenHinzufuegen(25, zuweisungsListe)
     # internen Speicher des Levels festlegen
     level.internerSpeicherL = 0
+    return level
+
+def level6Erstellen(self) -> Levelstruktur:
+    """ Je nach Feld, muss es unterschiedlich oft geklickt werden bis es korrekt gefaerbt wird
+    Wird das letzte mittlere Feld korrekt gefaerbt, so werden alle anderen Felder auch gefaerbt
+    Umliegende Felder sind nur zur Verwirrung da """
+    level = Levelstruktur(self)
+    for i in range(1, 8):
+        level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),
+                                            self.wW / 16 * i, self.wW / 16 * i,
+                                            self.wW - self.wW / 8 * i, self.wW - self.wW / 8 * i,
+                                            QColor(0, 90, 0), funcL6))
+        level.rechtecke[-1].internerSpeicherF = int(i * 3/4)
+    for y in range(5):
+        for x in range(5):
+            if not ((x, y) in [(1, 0), (3, 0), (0, 1), (0, 3), (4, 1), (4, 3), (1, 4), (3, 4)]):
+                level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                    self.wW / 16 + self.wW * (3 / 16) * x,
+                                                    self.wW / 16 + self.wW * (3 / 16) * y,
+                                                    self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
     return level

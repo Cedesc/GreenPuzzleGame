@@ -51,3 +51,9 @@ Kleinere Anpassungen an den Positionen in Level 3 und der Levelanzeige
 C
 internen Speicher als Eigenschaft zu 'Form' und 'Levelstruktur' hinzugefuegt
 Level 5 abgeschlossen
+
+C
+'sichtbar' und 'klickbar' als Eigenschaften zur Klasse 'Form' hinzugefuegt
+'recInternerSpeicherAendern' und 'recInternerSpeicherAddieren' zur Klasse 'Levelstruktur' hinzugefuegt
+Level 6 abgeschlossen
+Glueckwunsch-Screen leicht angepasst, sodass das fertige Level im Hintergrund noch angezeigt wird

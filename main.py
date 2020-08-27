@@ -39,33 +39,36 @@ class Window(QWidget):
         painter.setFont(QFont("Times", int(self.wW / 32)))
         painter.drawText(rect1, 4, str(self.levelCounter))
 
-        if self.levelGewonnen:
-            if self.levelCounter > self.maxLevel:
-                print("Glueckwunsch, du hast alle Level abgeschlossen")
-                self.close()
+        # Level zeichnen
+        for rechteck in self.levels[self.levelCounter].rechtecke:
+            if rechteck.sichtbar:
+                painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
+                                 rechteck.weite, rechteck.hoehe, rechteck.farbe)
 
-            # Kurzer Übergang zum nächsten Level, verschwindet nach 3 Sekunden
+        for kreis in self.levels[self.levelCounter].kreise:
+            if kreis.sichtbar:
+                painter.setPen(QPen(kreis.farbe, 1, Qt.SolidLine))
+                painter.setBrush(kreis.farbe)
+                painter.drawEllipse(kreis.xKoordinate, kreis.yKoordinate,
+                                    kreis.weite, kreis.hoehe)
+        self.levels[self.levelCounter].weiteresZeichnen(painter)
+
+        # Glueckwuensche, falls Level beendet wurde
+        if self.levelGewonnen:
+            # Kurzer Übergang zum nächsten Level, verschwindet nach paar Sekunden
             rect2 = QRect( 0, int(self.wW / 2.5), self.wW, int(self.wW / 2) )
             painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
             painter.setFont(QFont("Times", int(self.wW / 22)))
             painter.drawText(rect2, 4, "Glückwunsch,\n "
-                                       "du hast Level " + str(self.levelCounter - 1) + " geschafft")
+                                       "du hast Level " + str(self.levelCounter) + " geschafft")
             self.levelGewonnen = False
             QTimer.singleShot(settings.UEBERGANGSZEIT, self.update)
+            # pruefen ob gesamtes Spiel beendet wurde
+            self.levelCounter += 1
+            if self.levelCounter > self.maxLevel:
+                print("Glueckwunsch, du hast alle Level abgeschlossen")
+                self.close()
             return
-
-        # Level zeichnen
-        for rechteck in self.levels[self.levelCounter].rechtecke:
-            painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
-                             rechteck.weite, rechteck.hoehe, rechteck.farbe)
-
-        for kreis in self.levels[self.levelCounter].kreise:
-            painter.setPen(QPen(kreis.farbe, 1, Qt.SolidLine))
-            painter.setBrush(kreis.farbe)
-            painter.drawEllipse(kreis.xKoordinate, kreis.yKoordinate,
-                             kreis.weite, kreis.hoehe)
-
-        self.levels[self.levelCounter].weiteresZeichnen(painter)
 
 
     def fn(self, e) -> None:
@@ -145,11 +148,12 @@ class Window(QWidget):
         level3 : Levelstruktur = fb.level3Erstellen(self)
         level4 : Levelstruktur = fb.level4Erstellen(self)
         level5 : Levelstruktur = fb.level5Erstellen(self)
+        level6 : Levelstruktur = fb.level6Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level0, level1, level2, level3, level4, level5]
+        self.originalLevels = [level0, level1, level2, level3, level4, level5, level6]
         self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren(), level4.kopieren(),
-                       level5.kopieren()]
+                       level5.kopieren(), level6.kopieren()]
 
     def levelReset(self, levelNummer: int = -1) -> None:
         """ Ein spezielles Level zuruecksetzen
@@ -167,9 +171,6 @@ class Window(QWidget):
         for i in range(self.maxLevel + 1):
             self.levelReset(i)
 
-    def nextLevel(self) -> None:
-        self.levelCounter += 1
-        self.levelGewonnen = True
 
 
 

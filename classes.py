@@ -19,6 +19,8 @@ class Form:
         # interner Speicher jeder Form fuer etwaige Zustaende der Form
         # zB: muss 3 mal geklickt werden, bis es korrekt gefaerbt wird
         self.internerSpeicherF = None
+        self.klickbar : bool = True
+        self.sichtbar : bool = True
 
     def gruen_machen(self) -> None:
         """ Farbe wird zu richtig geaendert """
@@ -80,24 +82,26 @@ class Levelstruktur:
 
         # fuer jeden Kreis pruefen, ob der Mausklick in jeweiligem ist (nicht gut implementiert, da rechteckig!)
         for kreis in self.kreise:
-            if (kreis.xKoordinate <= x <= kreis.xKoordinate + kreis.weite) and (
-                    kreis.yKoordinate <= y <= kreis.yKoordinate + kreis.hoehe):
+            if (kreis.klickbar and
+                kreis.xKoordinate <= x <= kreis.xKoordinate + kreis.weite) and (
+                kreis.yKoordinate <= y <= kreis.yKoordinate + kreis.hoehe):
                 # falls Kreis getroffen, wird seine Funktion ausgefuehrt
                 kreis.func(kreis)
                 # pruefen ob Level gewonnen
                 if self.gewinnbedingung():
-                    self.zugehoerigesFenster.nextLevel()
+                    self.zugehoerigesFenster.levelGewonnen = True
                 return True
 
         # fuer jedes Rechteck pruefen, ob der Mausklick in jeweiligem ist
         for rechteck in self.rechtecke:
-            if (rechteck.xKoordinate <= x <= rechteck.xKoordinate + rechteck.weite) and (
-                    rechteck.yKoordinate <= y <= rechteck.yKoordinate + rechteck.hoehe):
+            if (rechteck.klickbar and
+                rechteck.xKoordinate <= x <= rechteck.xKoordinate + rechteck.weite) and (
+                rechteck.yKoordinate <= y <= rechteck.yKoordinate + rechteck.hoehe):
                 # falls Rechteck getroffen, wird seine Funktion ausgefuehrt
                 rechteck.func(rechteck)
                 # pruefen ob Level gewonnen
                 if self.gewinnbedingung():
-                    self.zugehoerigesFenster.nextLevel()
+                    self.zugehoerigesFenster.levelGewonnen = True
                 return True
 
         return False
@@ -116,10 +120,14 @@ class Levelstruktur:
             neue.rechteck_hinzufuegen(Rechteck(rec.nummer, rec.xKoordinate, rec.yKoordinate,
                                                rec.weite, rec.hoehe, rec.farbe, rec.func))
             neue.rechtecke[-1].internerSpeicherF = rec.internerSpeicherF
+            neue.rechtecke[-1].klickbar = rec.klickbar
+            neue.rechtecke[-1].sichtbar = rec.sichtbar
         for kreis in self.kreise:
             neue.kreis_hinzufuegen(Kreis(kreis.nummer, kreis.xKoordinate, kreis.yKoordinate,
                                          kreis.weite, kreis.hoehe, kreis.farbe, kreis.func))
             neue.kreise[-1].internerSpeicherF = kreis.internerSpeicherF
+            neue.kreise[-1].klickbar = kreis.klickbar
+            neue.kreise[-1].sichtbar = kreis.sichtbar
 
         """ verbundene Formen zuweisen 
         ist so kompliziert noetig, da sonst 'verbundeneFormen' auf die nicht kopierten Formen referenziert """
@@ -160,4 +168,20 @@ class Levelstruktur:
             zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
         for i in zuAenderndeFormen:
             self.rechtecke[i].func = zielFunc
+
+    def recInternerSpeicherAendern(self, zielSpeicher, zuAenderndeFormen: List[int] = 'Alle'):
+        """ Den internen Speicher von bestimmten Rechtecken aendern
+        Wird keine Liste an Rechteck-Indizes angegeben, so wird jeder interne Speicher betroffen """
+        if zuAenderndeFormen == 'Alle':
+            zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
+        for i in zuAenderndeFormen:
+            self.rechtecke[i].internerSpeicherF = zielSpeicher
+
+    def recInternerSpeicherAddieren(self, summand: int, zuAenderndeFormen: List[int] = 'Alle'):
+        """ Einen Wert auf den internen Speicher bestimmter Rechtecke hinzuaddieren
+        Wird keine Liste an Rechteck-Indizes angegeben, so wird jeder interne Speicher betroffen """
+        if zuAenderndeFormen == 'Alle':
+            zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
+        for i in zuAenderndeFormen:
+            self.rechtecke[i].internerSpeicherF += summand
 
