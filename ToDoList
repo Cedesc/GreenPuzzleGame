@@ -4,6 +4,7 @@ Wichtig:
 - Timer einbauen, sodass man das Ergebnis (komplett gruen) sehen kann ODER Glueckwunsch-Screen abaendern / drueberlegen
 - Es ist noch nicht moeglich Kreise und Rechtecke auf die jeweils andere Form referenzieren zu lassen
 - Kreise anklicken "besser" machen
+- Drag and Drop einbauen
 
 
 
@@ -21,4 +22,8 @@ Unwichtig:
 
 
 Levelideen:
-- "verzoegertes faerben", also beim zweiten klick wird das zuerst geklickte gefaerbt etc
+- (wie bei yellow level 5) 2 Knoepfe, der 1. ist dafuer da, den Stempel zu bewegen, der 2. zum stempeln
+- (wie bei yellow level 9) form ausfuellen, nicht sich wie bei snake selbst beissen
+- (wie bei yellow level 20) jeweils kleiner hinweis auf dem feld, welches als naechstes kommt
+- (wie bei yellow level 28) gibt nur ein funktionierendes feld, welches jedes feld nacheinander wegmacht
+- (wie bei yellow level 30) nebenstehende felder, womit man das innere steuern kann

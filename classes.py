@@ -4,13 +4,14 @@ from typing import List, Callable
 
 class Form:
 
-    def __init__(self, nummer: int, xKoordinate: int, yKoordinate: int, weite: int, hoehe: int, farbe: QColor, func):
+    def __init__(self, nummer: float, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float,
+                 farbe: QColor, func):
         # 'nummer' soll gleich des Index sein, welchen die Form in der Levelstruktur hat.
-        self.nummer : int = nummer
-        self.xKoordinate : int = xKoordinate
-        self.yKoordinate : int = yKoordinate
-        self.weite : int = weite
-        self.hoehe : int = hoehe
+        self.nummer : int = int(nummer)
+        self.xKoordinate : int = int(xKoordinate)
+        self.yKoordinate : int = int(yKoordinate)
+        self.weite : int = int(weite)
+        self.hoehe : int = int(hoehe)
         self.farbe : QColor = farbe
         self.func : Callable[[Form], None] = func
         self.zugehoerigesLevel : Levelstruktur = None

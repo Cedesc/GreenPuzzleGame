@@ -60,6 +60,14 @@ def funcL6(self: Form) -> None:
             for rec in self.zugehoerigesLevel.rechtecke:
                 rec.gruen_machen()
 
+# Level 7
+def funcL7(self: Form) -> None:
+    """ Faerben ist immer ein Klick verzoegert """
+    naechstZuFaerbendes : int = self.zugehoerigesLevel.internerSpeicherL
+    if naechstZuFaerbendes != -1:
+        self.zugehoerigesLevel.rechtecke[naechstZuFaerbendes].umkehren()
+    self.zugehoerigesLevel.internerSpeicherL = self.nummer
+
 
 
 # Funktionen für die Levelerstellung
@@ -166,4 +174,17 @@ def level6Erstellen(self) -> Levelstruktur:
                                                     self.wW / 16 + self.wW * (3 / 16) * x,
                                                     self.wW / 16 + self.wW * (3 / 16) * y,
                                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
+    return level
+
+def level7Erstellen(self) -> Levelstruktur:
+    """ Das faerben ist immer um einen Klick verzoegert """
+    level = Levelstruktur(self)
+    for y in range(3):
+        for x in range(3):
+            level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                self.wW / 4 + self.wW * (3 / 16) * x,
+                                                self.wW / 4.5 + self.wW * (3 / 16) * y,
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL7))
+    # internen Speicher des Levels festlegen
+    level.internerSpeicherL = -1
     return level

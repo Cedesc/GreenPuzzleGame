@@ -149,11 +149,12 @@ class Window(QWidget):
         level4 : Levelstruktur = fb.level4Erstellen(self)
         level5 : Levelstruktur = fb.level5Erstellen(self)
         level6 : Levelstruktur = fb.level6Erstellen(self)
+        level7 : Levelstruktur = fb.level7Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level0, level1, level2, level3, level4, level5, level6]
+        self.originalLevels = [level0, level1, level2, level3, level4, level5, level6, level7]
         self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren(), level4.kopieren(),
-                       level5.kopieren(), level6.kopieren()]
+                       level5.kopieren(), level6.kopieren(), level7.kopieren()]
 
     def levelReset(self, levelNummer: int = -1) -> None:
         """ Ein spezielles Level zuruecksetzen
