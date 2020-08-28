@@ -1,5 +1,6 @@
 from PyQt5.QtGui import QColor
 from typing import List, Callable
+from math import sqrt
 
 
 class Form:
@@ -81,17 +82,24 @@ class Levelstruktur:
     def beruehrt(self, x: int, y: int) -> bool:
         """ Pruefen ob eine Form angeklickt wurde """
 
-        # fuer jeden Kreis pruefen, ob der Mausklick in jeweiligem ist (nicht gut implementiert, da rechteckig!)
+        # fuer jeden Kreis pruefen, ob der Mausklick in jeweiligem Rechteck drumrum ist
         for kreis in self.kreise:
             if (kreis.klickbar and
                 kreis.xKoordinate <= x <= kreis.xKoordinate + kreis.weite) and (
                 kreis.yKoordinate <= y <= kreis.yKoordinate + kreis.hoehe):
-                # falls Kreis getroffen, wird seine Funktion ausgefuehrt
-                kreis.func(kreis)
-                # pruefen ob Level gewonnen
-                if self.gewinnbedingung():
-                    self.zugehoerigesFenster.levelGewonnen = True
-                return True
+                # Satz des Pythagoras
+                abstand = sqrt((kreis.xKoordinate + kreis.weite / 2 - x)**2 +
+                               (kreis.yKoordinate + kreis.hoehe / 2 - y)**2)
+                # Maximalen Radius nutzen ist gut fuer Ovale, da sonst teils gefaerbte Flaeche nicht klickbar ist
+                radius = max(kreis.weite / 2, kreis.hoehe / 2)
+                # Abstand zwischen Mausklick und Kreismittelpunkt berechnen: perfekt bei Kreis, gut bei Oval
+                if abstand <= radius:
+                    # falls Kreis getroffen, wird seine Funktion ausgefuehrt
+                    kreis.func(kreis)
+                    # pruefen ob Level gewonnen
+                    if self.gewinnbedingung():
+                        self.zugehoerigesFenster.levelGewonnen = True
+                    return True
 
         # fuer jedes Rechteck pruefen, ob der Mausklick in jeweiligem ist
         for rechteck in self.rechtecke:
