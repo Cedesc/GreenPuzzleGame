@@ -18,7 +18,7 @@ class Window(QWidget):
         self.originalLevels : List[Levelstruktur] = []  # Speicher fuer urspruengliche Level (relevant beim level reset)
         self.levels : List[Levelstruktur] = []          # Speicher fuer Level
         self.levelCounter : int = 0                     # Index des momentan zu bearbeitendem Level
-        self.maxLevel : int = settings.ANZAHLLEVEL      # den maximal zu erreichenden Index der level-Liste
+        self.maxLevel : int = 0                         # den maximal zu erreichenden Index der level-Liste
         self.levelGewonnen : bool = False
 
         self.initalisierung()
@@ -79,7 +79,7 @@ class Window(QWidget):
                   "\n    - H (Hilfe) : Steuerung anzeigen",
                   "\n    - Esc (Escape) : Fenster schliessen",
                   "\n    - R (Reset) : Momentanes Level neustarten",
-                  "\n    - N (New) : Komplettest Spiel von neuem starten",
+                  "\n    - N (New) : Komplettes Spiel von neuem starten",
                   "\n    - J (Jump) : Zu gewuenschtem Level springen",
                   "\n    - Pfeiltaste Links : Zum vorigen Level springen",
                   "\n    - Pfeiltaste Rechts : Zum naechsten Level springen")
@@ -153,8 +153,11 @@ class Window(QWidget):
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
         self.originalLevels = [level0, level1, level2, level3, level4, level5, level6, level7]
-        self.levels = [level0.kopieren(), level1.kopieren(), level2.kopieren(), level3.kopieren(), level4.kopieren(),
-                       level5.kopieren(), level6.kopieren(), level7.kopieren()]
+        # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
+        for lev in self.originalLevels:
+            self.levels.append(lev.kopieren())
+        # hoechstes Level festlegen
+        self.maxLevel = len(self.originalLevels) - 1
 
     def levelReset(self, levelNummer: int = -1) -> None:
         """ Ein spezielles Level zuruecksetzen
