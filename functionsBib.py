@@ -1,4 +1,4 @@
-from classes import Levelstruktur, Form, Rechteck, Kreis, QColor, List
+from classes import Levelstruktur, Form, Rechteck, Kreis, QColor
 """ Bibliothek fuer Funktionen der Formen und Levelerstellung """
 
 

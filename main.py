@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QPainter, QColor, QFont, QPen, QBrush, QImage, QPainterPath, QPolygonF
-from PyQt5.QtCore import Qt, QRect, QTimer, QPointF, QPropertyAnimation, QEvent
+from PyQt5.QtGui import QPainter, QColor, QFont, QPen
+from PyQt5.QtCore import Qt, QRect, QTimer
 import functionsBib as fb
 import settings
 from classes import Levelstruktur, List
