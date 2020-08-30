@@ -33,12 +33,6 @@ class Window(QWidget):
         painter.setPen(QPen(QColor(0, 180, 0), 1, Qt.SolidLine))
         painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 160, 0))
 
-        # Nummer des derzeitigen Levels oben schreiben
-        rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))
-        painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
-        painter.setFont(QFont("Times", int(self.wW / 32)))
-        painter.drawText(rect1, 4, str(self.levelCounter))
-
         # Level zeichnen
         for rechteck in self.levels[self.levelCounter].rechtecke:
             if rechteck.sichtbar:
@@ -47,11 +41,17 @@ class Window(QWidget):
 
         for kreis in self.levels[self.levelCounter].kreise:
             if kreis.sichtbar:
-                painter.setPen(QPen(kreis.farbe, 1, Qt.SolidLine))
+                painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
                 painter.setBrush(kreis.farbe)
                 painter.drawEllipse(kreis.xKoordinate, kreis.yKoordinate,
                                     kreis.weite, kreis.hoehe)
         self.levels[self.levelCounter].weiteresZeichnen(painter)
+
+        # Nummer des derzeitigen Levels oben schreiben
+        rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))
+        painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
+        painter.setFont(QFont("Times", int(self.wW / 32)))
+        painter.drawText(rect1, 4, str(self.levelCounter))
 
         # Glueckwuensche, falls Level beendet wurde
         if self.levelGewonnen:
@@ -150,12 +150,16 @@ class Window(QWidget):
         level5 : Levelstruktur = fb.level5Erstellen(self)
         level6 : Levelstruktur = fb.level6Erstellen(self)
         level7 : Levelstruktur = fb.level7Erstellen(self)
+        level8 : Levelstruktur = fb.level8Erstellen(self)
+        level9 : Levelstruktur = fb.level9Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level0, level1, level2, level3, level4, level5, level6, level7]
+        self.originalLevels = [level0, level1, level2, level3, level4, level5, level6, level7, level8, level9]
+
         # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
         for lev in self.originalLevels:
             self.levels.append(lev.kopieren())
+
         # hoechstes Level festlegen
         self.maxLevel = len(self.originalLevels) - 1
 

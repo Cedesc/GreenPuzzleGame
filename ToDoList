@@ -13,6 +13,8 @@ Versucht, nicht hinbekommen:
 
 
 Unwichtig:
+- Klasse fuer die Koordinaten des Levels erstellen (mit zb Funktion womit man die Abstaende zwischen den Formen
+  bestimmen kann)
 - Typinformationen zb von Window in classes ermoeglichen (Problem mit import)
 - Hinweise implementieren (auf Knopfdruck einen Hinweis zum momentanen Level bekommen)
 - bei Erfolg das schließen des Programms schöner machen
@@ -21,8 +23,6 @@ Unwichtig:
 
 
 Levelideen:
-- (wie bei yellow level 5) 2 Knoepfe, der 1. ist dafuer da, den Stempel zu bewegen, der 2. zum stempeln
 - (wie bei yellow level 9) form ausfuellen, nicht sich wie bei snake selbst beissen
 - (wie bei yellow level 20) jeweils kleiner hinweis auf dem feld, welches als naechstes kommt
-- (wie bei yellow level 28) gibt nur ein funktionierendes feld, welches jedes feld nacheinander wegmacht
 - (wie bei yellow level 30) nebenstehende felder, womit man das innere steuern kann

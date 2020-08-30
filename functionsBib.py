@@ -17,12 +17,12 @@ def level_zuruecksetzen(self: Form) -> None:
 
 def richtig_fertig(self: Form) -> None:
     """ Feld korrekt faerben und keine weitere eingabe darauf ermoeglichen """
-    self.gruen_machen()
+    self.richtig_faerben()
     self.func = nothing
 
 def richtig_fehlererkennung(self: Form) -> None:
     """ Feld korrekt faerben und level zuruecksetzen, falls Feld nochmal geklickt wird"""
-    self.gruen_machen()
+    self.richtig_faerben()
     self.func = level_zuruecksetzen
 
 # Level 3
@@ -35,7 +35,7 @@ def verbundeneAendern(self: Form) -> None:
 def funcL4(self: Form) -> None:
     """ Eine andere Form (einzig verbundene) wird korrekt gefaerbt,
     alle Formen bekommen die Funktion 'level_zuruecksetzen' ausser der gefaerbten """
-    self.verbundeneFormen[0].gruen_machen()
+    self.verbundeneFormen[0].richtig_faerben()
     self.zugehoerigesLevel.recFuncsAendern(level_zuruecksetzen)
     self.verbundeneFormen[0].func = funcL4
 
@@ -53,12 +53,12 @@ def funcL6(self: Form) -> None:
     Wird das mittlere Feld korrekt, so werden alle anderen auch korrekt gefaerbt """
     self.internerSpeicherF -= 1
     if self.internerSpeicherF < 1:
-        self.gruen_machen()
+        self.richtig_faerben()
         self.klickbar = False
         self.sichtbar = False
         if self.nummer == 6:
             for rec in self.zugehoerigesLevel.rechtecke:
-                rec.gruen_machen()
+                rec.richtig_faerben()
 
 # Level 7
 def funcL7(self: Form) -> None:
@@ -67,6 +67,31 @@ def funcL7(self: Form) -> None:
     if naechstZuFaerbendes != -1:
         self.zugehoerigesLevel.rechtecke[naechstZuFaerbendes].umkehren()
     self.zugehoerigesLevel.internerSpeicherL = self.nummer
+
+# Level 8
+def funcL8_1(self: Form) -> None:
+    """ Funktion fuer den ersten Knopf, der den Stempel bewegt """
+    stempelPosition : int = self.zugehoerigesLevel.internerSpeicherL
+    # Alte Position in falsche Farbe aendern, falls nicht gestempelt (anderer Knopf gedrueckt) wurde
+    self.zugehoerigesLevel.rechtecke[stempelPosition].falsch_faerben()
+    # Eine Position weiter
+    self.zugehoerigesLevel.internerSpeicherL = (stempelPosition + 1) % 5
+    # Jetzige Position des Stempels korrekt faerben
+    self.zugehoerigesLevel.rechtecke[self.zugehoerigesLevel.internerSpeicherL].richtig_faerben()
+
+def funcL8_2(self: Form) -> None:
+    """ Funktion fuer den zweiten Knopf, der stempelt """
+    stempelPosition : int = self.zugehoerigesLevel.internerSpeicherL
+    if stempelPosition != -1:
+        self.zugehoerigesLevel.rechtecke[stempelPosition].richtig_faerben()
+        self.zugehoerigesLevel.internerSpeicherL = 0
+        self.zugehoerigesLevel.rechtecke[0].richtig_faerben()
+
+# Level 9
+def funcL9(self: Form) -> None:
+    """ verbundene Formen eine nach der anderen abarbeiten """
+    self.verbundeneFormen[self.internerSpeicherF].richtig_faerben()
+    self.internerSpeicherF += 1
 
 
 
@@ -187,4 +212,44 @@ def level7Erstellen(self) -> Levelstruktur:
                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL7))
     # internen Speicher des Levels festlegen
     level.internerSpeicherL = -1
+    return level
+
+def level8Erstellen(self) -> Levelstruktur:
+    """ 2 Knoepfe, der 1. ist dafuer da, den Stempel zu bewegen, der 2. zum stempeln. Bewegt sich der Stempel
+    ueber ein schon gefaerbtes Feld hinweg, so wird das wieder falsch gefaerbt """
+    level = Levelstruktur(self)
+    for y in range(5):
+        level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                            0,
+                                            self.wW / 5 * y,
+                                            self.wW, self.wW / 5, QColor(0, 90, 0), nothing))
+    level.kreis_hinzufuegen(Kreis(len(level.kreise),
+                                  self.wW / 10,
+                                  self.wW / 5,
+                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_1))
+    level.kreis_hinzufuegen(Kreis(len(level.kreise),
+                                  self.wW / 10,
+                                  self.wW * 3 / 8,
+                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_2))
+    level.internerSpeicherL = -1
+    return level
+
+def level9Erstellen(self) -> Levelstruktur:
+    """ Nur ein Feld ist relevant. Klickt man mehrmals darauf wird das Level Stueck fuer Stueck richtig gefaerbt """
+    level = Levelstruktur(self)
+    for y in range(3):
+        for x in range(4):
+            verschiebungNachOben : int = 0
+            if x % 2 == 0:
+                verschiebungNachOben = self.wW / 12
+            level.kreis_hinzufuegen(Kreis(len(level.kreise),  # spiegelt Index in der Liste wieder
+                                          self.wW / 16 + self.wW / 4 * x,
+                                          self.wW / 8 + verschiebungNachOben + self.wW / 4 * y,
+                                          self.wW / 8, self.wW / 8, QColor(0, 90, 0), level_zuruecksetzen))
+    # Bei einem (willkuerlich gewaehltem) Kreis die Funktion einbauen
+    level.kreise[9].func = funcL9
+    level.kreise[9].verbundeneFormen = [level.kreise[3], level.kreise[8], level.kreise[5], level.kreise[6],
+                                        level.kreise[11], level.kreise[0], level.kreise[1], level.kreise[4],
+                                        level.kreise[10], level.kreise[2], level.kreise[7], level.kreise[9]]
+    level.kreise[9].internerSpeicherF = 0
     return level

@@ -24,9 +24,18 @@ class Form:
         self.klickbar : bool = True
         self.sichtbar : bool = True
 
-    def gruen_machen(self) -> None:
+    def richtig_faerben(self) -> None:
         """ Farbe wird zu richtig geaendert """
         self.farbe = QColor(0, 180, 0)
+
+    def falsch_faerben(self) -> None:
+        """ Farbe wird zu falsch geaendert """
+        self.farbe = QColor(0, 90, 0)
+
+    def richtig_faerben_verschwinden(self) -> None:
+        """ Farbe wird korrekt gefaerbt, angezeigt wird jedoch der Hintergrund """
+        self.farbe = QColor(0, 180, 0)
+        self.sichtbar = False
 
     def umkehren(self) -> None:
         """ Farbe wird umgekehrt: Falls richtig wird es zu falsch, falls falsch wird es zu richtig """
@@ -157,7 +166,7 @@ class Levelstruktur:
                 for kreisNeu in neue.kreise:
                     if kreisAltRefKreis.nummer == kreisNeu.nummer:
                         # bei Uebereinstimmung die richtige Zuweisung zu 'verbundeFormen' der Kopie hinzufuegen
-                        neue.rechtecke[kreisAlt.nummer].verbundeneFormen.append(kreisNeu)
+                        neue.kreise[kreisAlt.nummer].verbundeneFormen.append(kreisNeu)
         return neue
 
     def recReferenzenHinzufuegen(self, anzahlRecs: int, recRefsNummern: List[List[int]]) -> None:
@@ -170,26 +179,26 @@ class Levelstruktur:
             for bindRecNummer in recRefsNummern[clickedRecNummer]:
                 self.rechtecke[clickedRecNummer].verbundeneFormen.append(self.rechtecke[bindRecNummer])
 
-    def recFuncsAendern(self, zielFunc: Callable[[Form], None], zuAenderndeFormen: List[int] = 'Alle'):
+    def recFuncsAendern(self, zielFunc: Callable[[Form], None], zuAenderndeFormen: List[int] = 'Alle Rechtecke'):
         """ Bestimmten Rechtecken neue Funktion zuweisen
         Wird keine Liste an Rechteck-Indizes angegeben, so werden allen die Funktion zugeordnet """
-        if zuAenderndeFormen == 'Alle':
+        if zuAenderndeFormen == 'Alle Rechtecke':
             zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
         for i in zuAenderndeFormen:
             self.rechtecke[i].func = zielFunc
 
-    def recInternerSpeicherAendern(self, zielSpeicher, zuAenderndeFormen: List[int] = 'Alle'):
+    def recInternerSpeicherAendern(self, zielSpeicher, zuAenderndeFormen: List[int] = 'Alle Rechtecke'):
         """ Den internen Speicher von bestimmten Rechtecken aendern
         Wird keine Liste an Rechteck-Indizes angegeben, so wird jeder interne Speicher betroffen """
-        if zuAenderndeFormen == 'Alle':
+        if zuAenderndeFormen == 'Alle Rechtecke':
             zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
         for i in zuAenderndeFormen:
             self.rechtecke[i].internerSpeicherF = zielSpeicher
 
-    def recInternerSpeicherAddieren(self, summand: int, zuAenderndeFormen: List[int] = 'Alle'):
+    def recInternerSpeicherAddieren(self, summand: int, zuAenderndeFormen: List[int] = 'Alle Rechtecke'):
         """ Einen Wert auf den internen Speicher bestimmter Rechtecke hinzuaddieren
         Wird keine Liste an Rechteck-Indizes angegeben, so wird jeder interne Speicher betroffen """
-        if zuAenderndeFormen == 'Alle':
+        if zuAenderndeFormen == 'Alle Rechtecke':
             zuAenderndeFormen = [i for i in range(len(self.rechtecke))]
         for i in zuAenderndeFormen:
             self.rechtecke[i].internerSpeicherF += summand
