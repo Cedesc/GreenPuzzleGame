@@ -33,19 +33,37 @@ class Window(QWidget):
         painter.setPen(QPen(QColor(0, 180, 0), 1, Qt.SolidLine))
         painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 160, 0))
 
+        # Variable, damit der QTimer zeitlich vom aufleuchten und End-Screen getrennt ist.
+        # Wenn es diese nicht gaebe, wuerde der End-Screen so lange wie das aufleuchten angezeigt werden
+        warte : bool = False
+
         # Level zeichnen
+        self.levels[self.levelCounter].weiteresZeichnen(painter)
+        # Rechtecke einzeichnen
         for rechteck in self.levels[self.levelCounter].rechtecke:
             if rechteck.sichtbar:
-                painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
+                if rechteck.aufleuchten:
+                    painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
+                                 rechteck.weite, rechteck.hoehe, QColor(200, 200, 200))
+                    QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
+                    rechteck.aufleuchten = False
+                    warte = True
+                else:
+                    painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
                                  rechteck.weite, rechteck.hoehe, rechteck.farbe)
-
+        # Kreise einzeichnen
         for kreis in self.levels[self.levelCounter].kreise:
             if kreis.sichtbar:
                 painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
-                painter.setBrush(kreis.farbe)
+                if kreis.aufleuchten:
+                    painter.setBrush(QColor(255, 255, 255))
+                    QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
+                    kreis.aufleuchten = False
+                    warte = True
+                else:
+                    painter.setBrush(kreis.farbe)
                 painter.drawEllipse(kreis.xKoordinate, kreis.yKoordinate,
                                     kreis.weite, kreis.hoehe)
-        self.levels[self.levelCounter].weiteresZeichnen(painter)
 
         # Nummer des derzeitigen Levels oben schreiben
         rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))
@@ -54,7 +72,7 @@ class Window(QWidget):
         painter.drawText(rect1, 4, str(self.levelCounter))
 
         # Glueckwuensche, falls Level beendet wurde
-        if self.levelGewonnen:
+        if not warte and self.levelGewonnen:
             # Kurzer Übergang zum nächsten Level, verschwindet nach paar Sekunden
             rect2 = QRect( 0, int(self.wW / 2.5), self.wW, int(self.wW / 2) )
             painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
@@ -142,19 +160,22 @@ class Window(QWidget):
     def initalisierung(self) -> None:
         """ Anfaengliche Erstellung der Level """
 
-        level0 : Levelstruktur = fb.level0Erstellen(self)
-        level1 : Levelstruktur = fb.level1Erstellen(self)
-        level2 : Levelstruktur = fb.level2Erstellen(self)
-        level3 : Levelstruktur = fb.level3Erstellen(self)
-        level4 : Levelstruktur = fb.level4Erstellen(self)
-        level5 : Levelstruktur = fb.level5Erstellen(self)
-        level6 : Levelstruktur = fb.level6Erstellen(self)
-        level7 : Levelstruktur = fb.level7Erstellen(self)
-        level8 : Levelstruktur = fb.level8Erstellen(self)
-        level9 : Levelstruktur = fb.level9Erstellen(self)
+        level00 : Levelstruktur = fb.level0Erstellen(self)
+        level01 : Levelstruktur = fb.level1Erstellen(self)
+        level02 : Levelstruktur = fb.level2Erstellen(self)
+        level03 : Levelstruktur = fb.level3Erstellen(self)
+        level04 : Levelstruktur = fb.level4Erstellen(self)
+        level05 : Levelstruktur = fb.level5Erstellen(self)
+        level06 : Levelstruktur = fb.level6Erstellen(self)
+        level07 : Levelstruktur = fb.level7Erstellen(self)
+        level08 : Levelstruktur = fb.level8Erstellen(self)
+        level09 : Levelstruktur = fb.level9Erstellen(self)
+        level10 : Levelstruktur = fb.level10Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level0, level1, level2, level3, level4, level5, level6, level7, level8, level9]
+        self.originalLevels = [level00, level01, level02, level03, level04,
+                               level05, level06, level07, level08, level09,
+                               level10]
 
         # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
         for lev in self.originalLevels:

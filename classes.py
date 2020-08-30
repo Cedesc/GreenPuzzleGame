@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QColor
 from typing import List, Callable
 from math import sqrt
+from copy import copy
 
 
 class Form:
@@ -23,9 +24,16 @@ class Form:
         self.internerSpeicherF = None
         self.klickbar : bool = True
         self.sichtbar : bool = True
+        self.aufleuchten : bool = False
 
     def richtig_faerben(self) -> None:
         """ Farbe wird zu richtig geaendert """
+        self.farbe = QColor(0, 180, 0)
+        self.aufleuchten = True
+
+    def richtig_faerben_ohneAufleuchten(self) -> None:
+        """ Farbe wird zu richtig geaendert
+        Aufleuchten deaktiviert """
         self.farbe = QColor(0, 180, 0)
 
     def falsch_faerben(self) -> None:
@@ -43,7 +51,15 @@ class Form:
             self.farbe = QColor(0, 90, 0)
         elif self.farbe == QColor(0, 90, 0):
             self.farbe = QColor(0, 180, 0)
+        self.aufleuchten = True
 
+    def umkehren_ohneAufleuchten(self) -> None:
+        """ Farbe wird umgekehrt: Falls richtig wird es zu falsch, falls falsch wird es zu richtig
+        Aufleuchten deaktiviert """
+        if self.farbe == QColor(0, 180, 0):
+            self.farbe = QColor(0, 90, 0)
+        elif self.farbe == QColor(0, 90, 0):
+            self.farbe = QColor(0, 180, 0)
 
 class Rechteck(Form):
     pass
@@ -131,21 +147,23 @@ class Levelstruktur:
         neue = Levelstruktur(self.zugehoerigesFenster)
 
         """ internen Speicher vom alten Level uebernehmen """
-        neue.internerSpeicherL = self.internerSpeicherL
+        neue.internerSpeicherL = copy(self.internerSpeicherL)
 
         """ neue Rechtecke und Kreise erstellen und dann den internen Speicher beim gerade erstellten uebernehmen"""
         for rec in self.rechtecke:
             neue.rechteck_hinzufuegen(Rechteck(rec.nummer, rec.xKoordinate, rec.yKoordinate,
                                                rec.weite, rec.hoehe, rec.farbe, rec.func))
-            neue.rechtecke[-1].internerSpeicherF = rec.internerSpeicherF
+            neue.rechtecke[-1].internerSpeicherF = copy(rec.internerSpeicherF)
             neue.rechtecke[-1].klickbar = rec.klickbar
             neue.rechtecke[-1].sichtbar = rec.sichtbar
+            neue.rechtecke[-1].aufleuchten = rec.aufleuchten
         for kreis in self.kreise:
             neue.kreis_hinzufuegen(Kreis(kreis.nummer, kreis.xKoordinate, kreis.yKoordinate,
                                          kreis.weite, kreis.hoehe, kreis.farbe, kreis.func))
-            neue.kreise[-1].internerSpeicherF = kreis.internerSpeicherF
+            neue.kreise[-1].internerSpeicherF = copy(kreis.internerSpeicherF)
             neue.kreise[-1].klickbar = kreis.klickbar
             neue.kreise[-1].sichtbar = kreis.sichtbar
+            neue.kreise[-1].aufleuchten = kreis.aufleuchten
 
         """ verbundene Formen zuweisen 
         ist so kompliziert noetig, da sonst 'verbundeneFormen' auf die nicht kopierten Formen referenziert """

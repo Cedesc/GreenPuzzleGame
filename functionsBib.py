@@ -29,7 +29,7 @@ def richtig_fehlererkennung(self: Form) -> None:
 def verbundeneAendern(self: Form) -> None:
     """ Alle verbundenen Formen umkehren """
     for verForm in self.verbundeneFormen:
-        verForm.umkehren()
+        verForm.umkehren_ohneAufleuchten()
 
 # Level 4
 def funcL4(self: Form) -> None:
@@ -58,7 +58,7 @@ def funcL6(self: Form) -> None:
         self.sichtbar = False
         if self.nummer == 6:
             for rec in self.zugehoerigesLevel.rechtecke:
-                rec.richtig_faerben()
+                rec.richtig_faerben_ohneAufleuchten()
 
 # Level 7
 def funcL7(self: Form) -> None:
@@ -93,6 +93,30 @@ def funcL9(self: Form) -> None:
     self.verbundeneFormen[self.internerSpeicherF].richtig_faerben()
     self.internerSpeicherF += 1
 
+# Level 10
+def funcL10(self: Form) -> None:
+    """ Aeussere Felder steuern die inneren: Rechts nach rechts, unten nach unten, etc """
+    position = self.zugehoerigesLevel.internerSpeicherL
+    # nach rechts
+    if self.internerSpeicherF == 0 and position[0] + 1 <= 2:
+        position[0] += 1
+    # nach unten
+    elif self.internerSpeicherF == 1 and position[1] + 1 <= 2:
+        position[1] += 1
+    # nach links
+    elif self.internerSpeicherF == 2 and 0 <= position[0] - 1:
+        position[0] -= 1
+    # nach oben
+    elif self.internerSpeicherF == 3 and 0 <= position[1] - 1:
+        position[1] -= 1
+    # jetzige Position faerben
+    self.zugehoerigesLevel.rechtecke[ position[0] + position[1] * 3 ].richtig_faerben()
+    # falls alle in der Mitte korrekt gefaerbt wurden, werden die aussenstehenden auch korrekt gefaerbt
+    for i in self.zugehoerigesLevel.rechtecke[:9]:
+        if i.farbe != QColor(0, 180, 0):
+            return
+    for aeusseresRechteck in self.zugehoerigesLevel.rechtecke[9:]:
+        aeusseresRechteck.richtig_faerben_ohneAufleuchten()
 
 
 # Funktionen für die Levelerstellung
@@ -252,4 +276,37 @@ def level9Erstellen(self) -> Levelstruktur:
                                         level.kreise[11], level.kreise[0], level.kreise[1], level.kreise[4],
                                         level.kreise[10], level.kreise[2], level.kreise[7], level.kreise[9]]
     level.kreise[9].internerSpeicherF = 0
+    return level
+
+def level10Erstellen(self) -> Levelstruktur:
+    """ Nebenstehende Felder vorhanden, womit man das innere steuern kann """
+    level = Levelstruktur(self)
+    for y in range(3):
+        for x in range(3):
+            level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),  # spiegelt Index in der Liste wieder
+                                                self.wW / 4 + self.wW * (3 / 16) * x,
+                                                self.wW / 4 + self.wW * (3 / 16) * y,
+                                                self.wW / 8, self.wW / 8, QColor(0, 90, 0), nothing))
+    level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),
+                                        self.wW / 4 + self.wW * (3 / 16) * 3,
+                                        self.wW / 4 + self.wW * (3 / 16),
+                                        self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
+    level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),
+                                        self.wW / 4 + self.wW * (3 / 16),
+                                        self.wW / 4 + self.wW * (3 / 16) * 3,
+                                        self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
+    level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),
+                                        self.wW / 4 - self.wW * (3 / 16),
+                                        self.wW / 4 + self.wW * (3 / 16),
+                                        self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
+    level.rechteck_hinzufuegen(Rechteck(len(level.rechtecke),
+                                        self.wW / 4 + self.wW * (3 / 16),
+                                        self.wW / 4 - self.wW * (3 / 16),
+                                        self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
+    level.rechtecke[9].internerSpeicherF = 0
+    level.rechtecke[10].internerSpeicherF = 1
+    level.rechtecke[11].internerSpeicherF = 2
+    level.rechtecke[12].internerSpeicherF = 3
+    level.internerSpeicherL = [1, 1]
+    level.rechtecke[4].richtig_faerben()
     return level
