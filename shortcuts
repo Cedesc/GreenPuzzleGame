@@ -1,0 +1,122 @@
+--- Will ich lernen ---
+
+Alt + Links / Rechts
+    Zwischen Dateien wechseln
+
+
+
+Strg + B
+    zur Deklaration jumpen
+
+Strg + Links / Rechts
+    zu Anfang / Ende von Worten springen
+
+Strg + Hoch / Runter
+    Scrollen
+
+Shift + Shift
+    Nach irgendwas suchen
+
+
+
+Strg + /
+    Zeile auskommentieren
+
+Strg + Shift + Hoch / Runter
+    Zeile hoch oder runter bewegen
+
+Shift + Pfeiltasten
+    mehreres markieren
+
+Alt + F7
+    Verwendung der momentanen Variable hervorheben
+
+
+
+
+
+
+
+
+--- Zwischen Dateien wechseln ---
+
+5
+Alt + Links / Rechts
+    Zwischen Dateien wechseln
+
+3
+Strg + E
+    Uebersicht anzeigen (insbesondere recent files)
+
+1
+Strg + Alt + Links / Rechts
+    letzt bearbeitete Datei durchspringen
+
+1
+Alt + 1
+    Fokus des Zeigers auf Projektdateien
+Esc
+    Fokus zurueck auf Code
+
+
+
+
+--- Im Code bewegen ---
+
+5
+Strg + B
+    zur Deklaration jumpen
+
+5
+Strg + Links / Rechts
+    zu Anfang / Ende von Worten springen
+
+5
+Strg + Hoch / Runter
+    Scrollen
+
+5
+Shift + Shift
+    Nach irgendwas suchen
+
+2
+F2
+    zum naechsten Error jumpen
+
+
+
+
+--- Hilfen beim Schreiben ---
+
+5
+Strg + /
+    Zeile auskommentieren
+
+5
+Strg + Shift + Hoch / Runter
+    Zeile hoch oder runter bewegen
+
+5
+Shift + Pfeiltasten
+    mehreres markieren
+
+4
+Alt + F7
+    Verwendung der momentanen Variable hervorheben
+
+3
+Alt + Enter
+    erkannte Fehler beheben (statt auf Laempchen zu druecken)
+
+3
+Strg + W / Strg + Shift + W
+    aufsteigend / absteigend Code-Sections markieren
+
+2
+Shift + Strg + Enter
+    momentanes Statement vervollstaendigen
+
+1
+Strg + Alt + L
+    Datei zu Coding-Standard formatieren
+

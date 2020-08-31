@@ -83,7 +83,6 @@ def funcL8_2(self: Form) -> None:
     """ Funktion fuer den zweiten Knopf, der stempelt """
     stempelPosition : int = self.zugehoerigesLevel.internerSpeicherL
     if stempelPosition != -1:
-        self.zugehoerigesLevel.rechtecke[stempelPosition].richtig_faerben()
         self.zugehoerigesLevel.internerSpeicherL = 0
         self.zugehoerigesLevel.rechtecke[0].richtig_faerben()
 
