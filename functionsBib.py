@@ -118,6 +118,28 @@ def funcL10(self: Form) -> None:
     for aeusseresRechteck in self.zugehoerigesLevel.enthalteneFormen[9:]:
         aeusseresRechteck.richtig_faerben_ohneAufleuchten()
 
+# Level 11
+def funcL11(self: Form) -> None:
+    """ Verbundene Form umkehren """
+    for verForm in self.verbundeneFormen:
+        verForm.umkehren()
+
+# Level 12
+def funcL12_1(self: Form) -> None:
+    """ Funktion fuer den ersten Knopf, der den unsichtbaren Stempel bewegt """
+    self.aufleuchten = True
+    # Eine Position weiter
+    self.zugehoerigesLevel.internerSpeicherL = (self.zugehoerigesLevel.internerSpeicherL + 1) % 5
+
+def funcL12_2(self: Form) -> None:
+    """ Funktion fuer den zweiten Knopf, der unterm Stempel umkehrt """
+    self.aufleuchten = True
+    stempelPosition : int = self.zugehoerigesLevel.internerSpeicherL
+    if stempelPosition != -1:
+        self.zugehoerigesLevel.enthalteneFormen[stempelPosition].umkehren()
+        self.zugehoerigesLevel.internerSpeicherL = -1
+
+
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
@@ -312,4 +334,43 @@ def level10Erstellen(self) -> Levelstruktur:
     level.enthalteneFormen[12].internerSpeicherF = 3
     level.internerSpeicherL = [1, 1]
     level.enthalteneFormen[4].richtig_faerben()
+    return level
+
+def level11Erstellen(self) -> Levelstruktur:
+    """ Eine Form soll immer genau ein Gegenstueck haben, welche sich gegenseitig richtig faerben """
+    level = Levelstruktur(self)
+    for y in range(4):
+        for x in range(4):
+            level.form_hinzufuegen(Form(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
+                                            self.wW / 6.4 + self.wW * (3 / 16) * x,
+                                            self.wW / 6.4 + self.wW * (3 / 16) * y,
+                                            self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL11))
+            if (x + y) % 2 == 0:
+                level.enthalteneFormen[-1].welcheForm = 1
+            else:
+                level.enthalteneFormen[-1].welcheForm = 2
+    level.formReferenzenHinzufuegen(16, [ [12], [15], [7], [14], [6], [8], [4], [2],
+                                          [5], [11], [13], [9], [0], [10], [3], [1]])
+    return level
+
+def level12Erstellen(self) -> Levelstruktur:
+    """ 2 Knoepfe, der 1. ist dafuer da, den Stempel zu bewegen, der 2. zum stempeln. Der Stempel selbst ist unsichtbar
+    und er kehrt um statt korrekt zu faerben. """
+    level = Levelstruktur(self)
+    for y in range(5):
+        level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
+                                        0,
+                                        self.wW / 5 * y,
+                                        self.wW, self.wW / 5, QColor(0, 90, 0), nothing))
+        # gerade hinzugefuegtes Rechteck nicht-klickbar machen
+        level.enthalteneFormen[-1].klickbar = False
+    level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
+                                 self.wW / 10,
+                                 self.wW / 5,
+                                 self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL12_1))
+    level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
+                                 self.wW / 10,
+                                 self.wW * 3 / 8,
+                                 self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL12_2))
+    level.internerSpeicherL = -1
     return level
