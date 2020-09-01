@@ -39,31 +39,35 @@ class Window(QWidget):
 
         # Level zeichnen
         self.levels[self.levelCounter].weiteresZeichnen(painter)
-        # Rechtecke einzeichnen
-        for rechteck in self.levels[self.levelCounter].rechtecke:
-            if rechteck.sichtbar:
-                if rechteck.aufleuchten:
-                    painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
-                                 rechteck.weite, rechteck.hoehe, QColor(200, 200, 200))
-                    QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
-                    rechteck.aufleuchten = False
-                    warte = True
-                else:
-                    painter.fillRect(rechteck.xKoordinate, rechteck.yKoordinate,
-                                 rechteck.weite, rechteck.hoehe, rechteck.farbe)
-        # Kreise einzeichnen
-        for kreis in self.levels[self.levelCounter].kreise:
-            if kreis.sichtbar:
-                painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
-                if kreis.aufleuchten:
-                    painter.setBrush(QColor(255, 255, 255))
-                    QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
-                    kreis.aufleuchten = False
-                    warte = True
-                else:
-                    painter.setBrush(kreis.farbe)
-                painter.drawEllipse(kreis.xKoordinate, kreis.yKoordinate,
-                                    kreis.weite, kreis.hoehe)
+        # Rechtecke und Kreise einzeichnen
+        painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))      # Umrandung der Kreise
+        for form in self.levels[self.levelCounter].enthalteneFormen:
+            if form.sichtbar:
+
+                # Falls Rechteck
+                if form.welcheForm == 1:
+                    if form.aufleuchten:
+                        painter.fillRect(form.xKoordinate, form.yKoordinate,
+                                     form.weite, form.hoehe, settings.AUFLEUCHTFARBE)
+                        QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
+                        form.aufleuchten = False
+                        warte = True
+                    else:
+                        painter.fillRect(form.xKoordinate, form.yKoordinate,
+                                     form.weite, form.hoehe, form.farbe)
+
+                # Falls Kreis
+                elif form.welcheForm == 2:
+                    if form.sichtbar:
+                        if form.aufleuchten:
+                            painter.setBrush(settings.AUFLEUCHTFARBE)
+                            QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
+                            form.aufleuchten = False
+                            warte = True
+                        else:
+                            painter.setBrush(form.farbe)
+                        painter.drawEllipse(form.xKoordinate, form.yKoordinate,
+                                            form.weite, form.hoehe)
 
         # Nummer des derzeitigen Levels oben schreiben
         rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))

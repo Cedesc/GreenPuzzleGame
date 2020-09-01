@@ -15,7 +15,10 @@ Strg + Hoch / Runter
     Scrollen
 
 Shift + Shift
-    Nach irgendwas suchen
+    nach irgendwas suchen
+
+Alt + Hoch / Runter
+    zwischen Funktionen scrollen
 
 
 
@@ -28,7 +31,7 @@ Strg + Shift + Hoch / Runter
 Shift + Pfeiltasten
     mehreres markieren
 
-Alt + F7
+Alt + F7   // Strg + F7 ????
     Verwendung der momentanen Variable hervorheben
 
 
