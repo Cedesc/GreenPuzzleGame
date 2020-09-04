@@ -129,7 +129,7 @@ def funcL12_1(self: Form) -> None:
     """ Funktion fuer den ersten Knopf, der den unsichtbaren Stempel bewegt """
     self.aufleuchten = True
     # Eine Position weiter
-    self.zugehoerigesLevel.internerSpeicherL = (self.zugehoerigesLevel.internerSpeicherL + 1) % 5
+    self.zugehoerigesLevel.internerSpeicherL = (self.zugehoerigesLevel.internerSpeicherL + 1) % 4
 
 def funcL12_2(self: Form) -> None:
     """ Funktion fuer den zweiten Knopf, der unterm Stempel umkehrt """
@@ -357,11 +357,11 @@ def level12Erstellen(self) -> Levelstruktur:
     """ 2 Knoepfe, der 1. ist dafuer da, den Stempel zu bewegen, der 2. zum stempeln. Der Stempel selbst ist unsichtbar
     und er kehrt um statt korrekt zu faerben. """
     level = Levelstruktur(self)
-    for y in range(5):
+    for y in range(4):
         level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
                                         0,
-                                        self.wW / 5 * y,
-                                        self.wW, self.wW / 5, QColor(0, 90, 0), nothing))
+                                        self.wW / 4 * y,
+                                        self.wW, self.wW / 4, QColor(0, 90, 0), nothing))
         # gerade hinzugefuegtes Rechteck nicht-klickbar machen
         level.enthalteneFormen[-1].klickbar = False
     level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),

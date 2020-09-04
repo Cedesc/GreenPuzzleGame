@@ -26,6 +26,10 @@ class Form:
         self.sichtbar : bool = True
         self.aufleuchten : bool = False
         self.welcheForm : int = 0           # 0: Platzhalter , 1: Rechteck , 2: Kreis
+        self.rotation : int = 0
+        self.mittelpunkt : (int, int) = (int(self.xKoordinate + weite // 2), int(self.yKoordinate + hoehe // 2))
+        self.xRelZuMitte : int = self.xKoordinate - self.mittelpunkt[0]
+        self.yRelZuMitte : int = self.yKoordinate - self.mittelpunkt[1]
 
     def richtig_faerben(self) -> None:
         """ Farbe wird zu richtig geaendert """
@@ -119,8 +123,7 @@ class Levelstruktur:
                     form.func(form)
                 elif form.welcheForm == 2:
                     # Satz des Pythagoras
-                    abstand = sqrt((form.xKoordinate + form.weite / 2 - x) ** 2 +
-                                   (form.yKoordinate + form.hoehe / 2 - y) ** 2)
+                    abstand = sqrt((form.mittelpunkt[0] - x) ** 2 + (form.mittelpunkt[1] - y) ** 2)
                     # Maximalen Radius nutzen ist gut fuer Ovale, da sonst teils gefaerbte Flaeche nicht klickbar ist
                     radius = max(form.weite / 2, form.hoehe / 2)
                     # Abstand zwischen Mausklick und Kreismittelpunkt berechnen: perfekt bei Kreis, gut bei Oval

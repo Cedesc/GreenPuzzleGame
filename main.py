@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QPainter, QColor, QFont, QPen
+from PyQt5.QtGui import QPainter, QColor, QFont, QPen, QPolygon, QPainterPath, QBrush, QMatrix3x3, QMatrix2x2
 from PyQt5.QtCore import Qt, QRect, QTimer
 import functionsBib as fb
 import settings
@@ -24,6 +24,8 @@ class Window(QWidget):
         self.initalisierung()
         self.keyPressEvent = self.fn
 
+        self.debugKoordinatenPrinten : bool = False
+
         self.show()
 
 
@@ -46,15 +48,22 @@ class Window(QWidget):
 
                 # Falls Rechteck
                 if form.welcheForm == 1:
+                    # Fuers rotieren
+                    painter.translate(form.mittelpunkt[0], form.mittelpunkt[1])
+                    painter.rotate(form.rotation)
+                    # Falls es aufleuchten soll, wird die Flaeche fuer eine gewisse Zeit weiss gefaerbt
                     if form.aufleuchten:
-                        painter.fillRect(form.xKoordinate, form.yKoordinate,
+                        painter.fillRect(form.xRelZuMitte, form.yRelZuMitte,
                                      form.weite, form.hoehe, settings.AUFLEUCHTFARBE)
                         QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
                         form.aufleuchten = False
                         warte = True
                     else:
-                        painter.fillRect(form.xKoordinate, form.yKoordinate,
+                        painter.fillRect(form.xRelZuMitte, form.yRelZuMitte,
                                      form.weite, form.hoehe, form.farbe)
+                    # Fuers rotieren
+                    painter.rotate(- form.rotation)
+                    painter.translate(- form.mittelpunkt[0], - form.mittelpunkt[1])
 
                 # Falls Kreis
                 elif form.welcheForm == 2:
@@ -94,6 +103,20 @@ class Window(QWidget):
 
 
     def fn(self, e) -> None:
+
+        # Keybindings fuers Debuggen
+        if e.key() == Qt.Key_1:
+            print("- Debug-Hilfen :",
+                  "\n    - 2 (Drehen) : (Die erste) Form des Levels drehen",
+                  "\n    - 3 (Position printen) : Position des Klicks printen An")
+        if e.key() == Qt.Key_2:
+            self.levels[0].enthalteneFormen[0].rotation += 1
+            self.update()
+        if e.key() == Qt.Key_3:
+            if not self.debugKoordinatenPrinten:
+                print("Position des Klicks wird ab jetzt geprintet")
+                self.debugKoordinatenPrinten = True
+
 
         if e.key() == Qt.Key_H:
             """ H druecken um Tastenbelegung anzuzeigen """
@@ -155,7 +178,8 @@ class Window(QWidget):
 
     def mousePressEvent(self, QMouseEvent) -> None:
         pos = QMouseEvent.pos()
-        #print("               ", pos.x(), pos.y())
+        if self.debugKoordinatenPrinten:
+            print("               ", pos.x(), pos.y())
 
         if self.levels[self.levelCounter].beruehrt(pos.x(), pos.y()):
             self.update()

@@ -94,3 +94,8 @@ grosse Aenderung: Trennung von den Listen 'kreise' und 'rechtecke' in 'Levelstru
 C
 Level 11 abgeschlossen
 Level 12 abgeschlossen
+
+C
+Keybindings fuers debuggen hinzugefuegt
+'rotation', 'mittelpunkt', 'xRelZuMitte' und 'yRelZuMitte' als Attribute zu 'Form' hinzugefuegt
+Rotation beim paintevent hinzugefuegt
