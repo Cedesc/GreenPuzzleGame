@@ -1,4 +1,5 @@
 from classes import Levelstruktur, Form, Rechteck, Kreis, Polygon, QColor
+from random import randint
 """ Bibliothek fuer Funktionen der Formen und Levelerstellung """
 
 
@@ -57,8 +58,7 @@ def funcL6(self: Form) -> None:
         self.klickbar = False
         self.sichtbar = False
         if self.nummer == 6:
-            for rec in self.zugehoerigesLevel.enthalteneFormen:
-                rec.richtig_faerben_ohneAufleuchten()
+            self.zugehoerigesLevel.alleRichtigFaerben()
 
 # Level 7
 def funcL7(self: Form) -> None:
@@ -139,6 +139,27 @@ def funcL12_2(self: Form) -> None:
         self.zugehoerigesLevel.enthalteneFormen[stempelPosition].umkehren()
         self.zugehoerigesLevel.internerSpeicherL = -1
 
+def funcL13(self: Form) -> None:
+    """ Wenn auf das richtige Feld geklickt wurde, wird zufaellig das naechste bestimmt und die Dreiecke
+    entsprechend ausgerichtet """
+    self.richtig_faerben()
+    self.func = level_zuruecksetzen
+    naechstesFeld = randint(5, 8)
+    while self.zugehoerigesLevel.enthalteneFormen[naechstesFeld].farbe == QColor(0, 180, 0):
+        naechstesFeld = randint(5, 8)
+        # pruefen ob schon fertig
+        anzahlRichtigeFelder = 0
+        for i in range(4):
+            if self.zugehoerigesLevel.enthalteneFormen[i + 5].farbe == QColor(0, 180, 0):
+                anzahlRichtigeFelder += 1
+        if anzahlRichtigeFelder == 4:
+            self.zugehoerigesLevel.alleRichtigFaerben()
+            return
+    # wenn naechstes Feld gefunden wurde
+    self.zugehoerigesLevel.enthalteneFormen[naechstesFeld].func = funcL13
+    for dreieckIndex in range(5):
+        self.zugehoerigesLevel.enthalteneFormen[dreieckIndex].rotation = \
+            self.zugehoerigesLevel.internerSpeicherL[naechstesFeld - 5][dreieckIndex]
 
 
 # Funktionen für die Levelerstellung
@@ -376,10 +397,24 @@ def level12Erstellen(self) -> Levelstruktur:
     return level
 
 def level13Erstellen(self) -> Levelstruktur:
-    """ """
+    """ Dreiecke zeigen auf den Kreis, den man als naechstes druecken muss """
     level = Levelstruktur(self)
-
-    level.form_hinzufuegen(Polygon(len(level.enthalteneFormen), (500, 500 , 550, 600 , 450, 650, 400, 400),
-                                   QColor(0, 90, 0), nothing))
-
+    for xDreieck in range(5):
+        level.form_hinzufuegen(Polygon(len(level.enthalteneFormen),
+                                       (self.wW / 8 + self.wW * 3 / 16 * xDreieck, self.wW / 10 + self.wW / 12,
+                                        self.wW / 16 + self.wW * 3 / 16 * xDreieck, self.wW / 4  + self.wW / 12,
+                                        self.wW * 3 / 16 +  self.wW * 3 / 16 * xDreieck, self.wW / 4 + self.wW / 12),
+                                       QColor(0, 90, 0), nothing))
+    for xKreis in range(4):
+        level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
+                                     self.wW * 5 / 32 + self.wW * 3 / 16 * xKreis, self.wW / 2,
+                                     self.wW / 8, self.wW / 8,
+                                     QColor(0, 90, 0), level_zuruecksetzen))
+    level.internerSpeicherL = ( (162, 199, 225, 240, 247) , (135, 162, 199, 225, 240) ,
+                                (120, 135, 162, 199, 225) , (113, 120, 135, 162, 199) )
+    ersteForm : int = randint(5, 8)
+    level.enthalteneFormen[ersteForm].func = funcL13
+    for dreieckIndex in range(5):
+        level.enthalteneFormen[dreieckIndex].rotation = level.internerSpeicherL[ersteForm - 5][dreieckIndex]
     return level
+

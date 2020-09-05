@@ -100,13 +100,19 @@ class Window(QWidget):
         if e.key() == Qt.Key_1:
             print("- Debug-Hilfen :",
                   "\n    - 2 (Position printen) : Position des Klicks printen An",
-                  "\n    - 3 (Drehen) : (Die erste) Form des Levels drehen")
+                  "\n    - 3 (Drehen Links) : (Die erste) Form des Levels nach links drehen",
+                  "\n    - 4 (Drehen Rechts) : (Die erste) Form des Levels nach rechts drehen")
         if e.key() == Qt.Key_2:
             if not self.debugKoordinatenPrinten:
                 print("Position des Klicks wird ab jetzt geprintet")
                 self.debugKoordinatenPrinten = True
         if e.key() == Qt.Key_3:
+            self.levels[self.levelCounter].enthalteneFormen[0].rotation -= 1
+            print(self.levels[self.levelCounter].enthalteneFormen[0].rotation)
+            self.update()
+        if e.key() == Qt.Key_4:
             self.levels[self.levelCounter].enthalteneFormen[0].rotation += 1
+            print(self.levels[self.levelCounter].enthalteneFormen[0].rotation)
             self.update()
 
 
@@ -193,11 +199,12 @@ class Window(QWidget):
         level10 : Levelstruktur = fb.level10Erstellen(self)
         level11 : Levelstruktur = fb.level11Erstellen(self)
         level12 : Levelstruktur = fb.level12Erstellen(self)
+        level13 : Levelstruktur = fb.level13Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
         self.originalLevels = [level00, level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
-                               level10, level11, level12]
+                               level10, level11, level12, level13]
 
         # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
         for lev in self.originalLevels:

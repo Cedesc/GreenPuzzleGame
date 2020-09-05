@@ -99,8 +99,8 @@ class Polygon(Form):
         self.welcheForm = 3
         self.klickbar = False
         self.eckpunkte = eckpunktKoordinaten
-        self.mittelpunkt = (sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2,
-                            sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2)
+        self.mittelpunkt = (int(sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2),
+                            int(sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2))
         self.xRelZuMitte = self.xKoordinate - self.mittelpunkt[0]
         self.yRelZuMitte = self.yKoordinate - self.mittelpunkt[1]
 
@@ -253,4 +253,9 @@ class Levelstruktur:
             zuAenderndeFormen = [i for i in range(len(self.enthalteneFormen))]
         for i in zuAenderndeFormen:
             self.enthalteneFormen[i].internerSpeicherF += summand
+
+    def alleRichtigFaerben(self):
+        """ Funktion um in einem Level schnell alle Formen richtig zu faerben """
+        for i in range(len(self.enthalteneFormen)):
+            self.enthalteneFormen[i].richtig_faerben_ohneAufleuchten()
 
