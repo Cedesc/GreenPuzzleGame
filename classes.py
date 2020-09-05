@@ -97,6 +97,7 @@ class Polygon(Form):
         if len(eckpunktKoordinaten) % 2 == 1:
             print("Fehlende yKoordinate in eckpunktKoordinaten!")
         self.welcheForm = 3
+        self.klickbar = False
         self.eckpunkte = eckpunktKoordinaten
         self.mittelpunkt = (sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2,
                             sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2)

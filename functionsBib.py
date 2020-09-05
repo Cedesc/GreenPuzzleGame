@@ -349,8 +349,8 @@ def level11Erstellen(self) -> Levelstruktur:
                 level.enthalteneFormen[-1].welcheForm = 1
             else:
                 level.enthalteneFormen[-1].welcheForm = 2
-    level.formReferenzenHinzufuegen(16, [ [12], [15], [7], [14], [6], [8], [4], [2],
-                                          [5], [11], [13], [9], [0], [10], [3], [1]])
+    level.formReferenzenHinzufuegen(16, [ [3], [2], [1], [0], [7], [6], [5], [4],
+                                          [11], [10], [9], [8], [15], [14], [13], [12]])
     return level
 
 def level12Erstellen(self) -> Levelstruktur:
