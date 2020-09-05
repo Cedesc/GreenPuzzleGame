@@ -1,4 +1,4 @@
-from classes import Levelstruktur, Form, Rechteck, Kreis, QColor
+from classes import Levelstruktur, Form, Rechteck, Kreis, Polygon, QColor
 """ Bibliothek fuer Funktionen der Formen und Levelerstellung """
 
 
@@ -273,11 +273,11 @@ def level8Erstellen(self) -> Levelstruktur:
         level.enthalteneFormen[-1].klickbar = False
     level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
                                   self.wW / 10,
-                                  self.wW / 5,
+                                  self.wW * 4 / 25,
                                   self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_1))
     level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
                                   self.wW / 10,
-                                  self.wW * 3 / 8,
+                                  self.wW * 1 / 3,
                                   self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_2))
     level.internerSpeicherL = -1
     return level
@@ -366,11 +366,20 @@ def level12Erstellen(self) -> Levelstruktur:
         level.enthalteneFormen[-1].klickbar = False
     level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
                                  self.wW / 10,
-                                 self.wW / 5,
+                                 self.wW * 4 / 25,
                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL12_1))
     level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
                                  self.wW / 10,
-                                 self.wW * 3 / 8,
+                                 self.wW * 1 / 3,
                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL12_2))
     level.internerSpeicherL = -1
+    return level
+
+def level13Erstellen(self) -> Levelstruktur:
+    """ """
+    level = Levelstruktur(self)
+
+    level.form_hinzufuegen(Polygon(len(level.enthalteneFormen), (500, 500 , 550, 600 , 450, 650, 400, 400),
+                                   QColor(0, 90, 0), nothing))
+
     return level

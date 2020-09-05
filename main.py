@@ -46,37 +46,29 @@ class Window(QWidget):
         for form in self.levels[self.levelCounter].enthalteneFormen:
             if form.sichtbar:
 
+                # Fuers rotieren
+                painter.translate(form.mittelpunkt[0], form.mittelpunkt[1])
+                painter.rotate(form.rotation)
+                # Falls es aufleuchten soll, wird die Flaeche fuer eine gewisse Zeit weiss gefaerbt
+                if form.aufleuchten:
+                    painter.setBrush(settings.AUFLEUCHTFARBE)
+                    QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
+                    form.aufleuchten = False
+                    warte = True
+                else:
+                    painter.setBrush(form.farbe)
                 # Falls Rechteck
                 if form.welcheForm == 1:
-                    # Fuers rotieren
-                    painter.translate(form.mittelpunkt[0], form.mittelpunkt[1])
-                    painter.rotate(form.rotation)
-                    # Falls es aufleuchten soll, wird die Flaeche fuer eine gewisse Zeit weiss gefaerbt
-                    if form.aufleuchten:
-                        painter.fillRect(form.xRelZuMitte, form.yRelZuMitte,
-                                     form.weite, form.hoehe, settings.AUFLEUCHTFARBE)
-                        QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
-                        form.aufleuchten = False
-                        warte = True
-                    else:
-                        painter.fillRect(form.xRelZuMitte, form.yRelZuMitte,
-                                     form.weite, form.hoehe, form.farbe)
-                    # Fuers rotieren
-                    painter.rotate(- form.rotation)
-                    painter.translate(- form.mittelpunkt[0], - form.mittelpunkt[1])
-
+                    painter.drawRect(form.xRelZuMitte, form.yRelZuMitte, form.weite, form.hoehe)
                 # Falls Kreis
                 elif form.welcheForm == 2:
-                    if form.sichtbar:
-                        if form.aufleuchten:
-                            painter.setBrush(settings.AUFLEUCHTFARBE)
-                            QTimer.singleShot(settings.AUFLEUCHTZEIT, self.update)
-                            form.aufleuchten = False
-                            warte = True
-                        else:
-                            painter.setBrush(form.farbe)
-                        painter.drawEllipse(form.xKoordinate, form.yKoordinate,
-                                            form.weite, form.hoehe)
+                    painter.drawEllipse(form.xRelZuMitte, form.yRelZuMitte, form.weite, form.hoehe)
+                # Falls Polygon
+                elif form.welcheForm == 3:
+                    painter.drawPolygon(QPolygon(list(form.eckpunkteRelZuMitte)))
+                # Fuers rotieren
+                painter.rotate(- form.rotation)
+                painter.translate(- form.mittelpunkt[0], - form.mittelpunkt[1])
 
         # Nummer des derzeitigen Levels oben schreiben
         rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))
@@ -107,15 +99,15 @@ class Window(QWidget):
         # Keybindings fuers Debuggen
         if e.key() == Qt.Key_1:
             print("- Debug-Hilfen :",
-                  "\n    - 2 (Drehen) : (Die erste) Form des Levels drehen",
-                  "\n    - 3 (Position printen) : Position des Klicks printen An")
+                  "\n    - 2 (Position printen) : Position des Klicks printen An",
+                  "\n    - 3 (Drehen) : (Die erste) Form des Levels drehen")
         if e.key() == Qt.Key_2:
-            self.levels[0].enthalteneFormen[0].rotation += 1
-            self.update()
-        if e.key() == Qt.Key_3:
             if not self.debugKoordinatenPrinten:
                 print("Position des Klicks wird ab jetzt geprintet")
                 self.debugKoordinatenPrinten = True
+        if e.key() == Qt.Key_3:
+            self.levels[self.levelCounter].enthalteneFormen[0].rotation += 1
+            self.update()
 
 
         if e.key() == Qt.Key_H:

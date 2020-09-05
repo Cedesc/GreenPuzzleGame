@@ -99,3 +99,9 @@ C
 Keybindings fuers debuggen hinzugefuegt
 'rotation', 'mittelpunkt', 'xRelZuMitte' und 'yRelZuMitte' als Attribute zu 'Form' hinzugefuegt
 Rotation beim paintevent hinzugefuegt
+
+C
+ToDoList aktualisiert
+'Polygon' als Klasse hinzugefuegt, die von 'Form' erbt
+'drawRect' fuer 'fillRect' eingesetzt
+'eckpunkte' und 'eckpunkteRelZuMitte' als Attribute zu 'Form' hinzugefuegt

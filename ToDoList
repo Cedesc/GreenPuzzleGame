@@ -1,16 +1,16 @@
 
 
 Wichtig:
-- Timer einbauen, sodass man das Ergebnis (komplett gruen) sehen kann ODER Glueckwunsch-Screen abaendern / drueberlegen
-- Es ist noch nicht moeglich Kreise und Rechtecke auf die jeweils andere Form referenzieren zu lassen
-- Drag and Drop einbauen
-- Dreiecke hinzufuegen
-- schwarze Umrandung fuer Rechtecke hinbekommen
+- [1] Timer einbauen, sodass man das Ergebnis (komplett gruen) sehen kann
+      ODER Glueckwunsch-Screen abaendern / drueberlegen
+- [5] Drag and Drop einbauen
+- [5] klicken bei Rotationen richtig hinbekommen
+- [5] klicken auf Polygone richtig hinbekommen
 
 
 
 Versucht, nicht hinbekommen:
-- anklicken verbessern (Idee: Nicht Bereich, sondern Farbe des Pixels prüfen UND DANN den Bereich)
+- Farbe des Pixels beim anklicken prüfen
 
 
 
@@ -31,3 +31,9 @@ Levelideen:
   zwei Kreisen als Eingabe (entweder links oder rechts von der Linie
 - [3] (wie bei yellow level 39) schwer zu erklaeren... je nach dem wo zuletzt geklickt jetzt relative position wichtig
 - [4] (wie bei yellow level 49) unsichtbares Feld, was nur kurz aufleuchtet
+
+
+
+
+NOTIZEN FUER NAECHSTES MAL:
+self.Eckpunkte zu Form hinzufuegen statt punktA etc bei Dreieck und das dann in kopieren einbinden

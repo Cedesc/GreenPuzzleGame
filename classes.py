@@ -25,11 +25,15 @@ class Form:
         self.klickbar : bool = True
         self.sichtbar : bool = True
         self.aufleuchten : bool = False
-        self.welcheForm : int = 0           # 0: Platzhalter , 1: Rechteck , 2: Kreis
+        self.welcheForm : int = 0           # 0: Platzhalter , 1: Rechteck , 2: Kreis , 3: Polygon
+        self.eckpunkte : tuple = tuple()
         self.rotation : int = 0
+
+        # Berechnung bei Erstellung
         self.mittelpunkt : (int, int) = (int(self.xKoordinate + weite // 2), int(self.yKoordinate + hoehe // 2))
         self.xRelZuMitte : int = self.xKoordinate - self.mittelpunkt[0]
         self.yRelZuMitte : int = self.yKoordinate - self.mittelpunkt[1]
+        self.eckpunkteRelZuMitte : tuple = tuple()
 
     def richtig_faerben(self) -> None:
         """ Farbe wird zu richtig geaendert """
@@ -71,6 +75,10 @@ class Rechteck(Form):
     def __init__(self, nummer: float, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float, farbe: QColor, func):
         super().__init__(nummer, xKoordinate, yKoordinate, weite, hoehe, farbe, func)
         self.welcheForm = 1
+        self.eckpunkte = ((self.xKoordinate, self.yKoordinate),
+                          (self.xKoordinate + self.weite, self.yKoordinate),
+                          (self.xKoordinate, self.yKoordinate + self.hoehe),
+                          (self.xKoordinate + self.weite, self.yKoordinate + self.hoehe))
 
 class Kreis(Form):
 
@@ -78,6 +86,30 @@ class Kreis(Form):
         super().__init__(nummer, xKoordinate, yKoordinate, weite, hoehe, farbe, func)
         self.welcheForm = 2
 
+class Polygon(Form):
+
+    def __init__(self, nummer: float, eckpunktKoordinaten: tuple,farbe: QColor, func):
+        super().__init__(nummer, min(eckpunktKoordinaten[0::2]),
+                         min(eckpunktKoordinaten[1::2]),
+                         max(eckpunktKoordinaten[0::2]) - min(eckpunktKoordinaten[0::2]),
+                         max(eckpunktKoordinaten[1::2]) - min(eckpunktKoordinaten[1::2]),
+                         farbe, func)
+        if len(eckpunktKoordinaten) % 2 == 1:
+            print("Fehlende yKoordinate in eckpunktKoordinaten!")
+        self.welcheForm = 3
+        self.eckpunkte = eckpunktKoordinaten
+        self.mittelpunkt = (sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2,
+                            sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2)
+        self.xRelZuMitte = self.xKoordinate - self.mittelpunkt[0]
+        self.yRelZuMitte = self.yKoordinate - self.mittelpunkt[1]
+
+        hilfsListe = []
+        for index in range(len(self.eckpunkte)):
+            if index % 2 == 0:
+                hilfsListe.append(self.eckpunkte[index] - self.mittelpunkt[0])
+            else:
+                hilfsListe.append(self.eckpunkte[index] - self.mittelpunkt[1])
+        self.eckpunkteRelZuMitte = tuple(hilfsListe)
 
 
 class Levelstruktur:
@@ -142,6 +174,12 @@ class Levelstruktur:
         """ Kopiert die Levelstruktur
         deepcopy hat nicht funktioniert """
 
+        # self.eckpunkte: tuple = tuple()
+        # self.rotation: int = 0
+        # self.mittelpunkt: (int, int) = (int(self.xKoordinate + weite // 2), int(self.yKoordinate + hoehe // 2))
+        # self.xRelZuMitte: int = self.xKoordinate - self.mittelpunkt[0]
+        # self.yRelZuMitte: int = self.yKoordinate - self.mittelpunkt[1]
+
         neue = Levelstruktur(self.zugehoerigesFenster)
 
         """ internen Speicher vom alten Level uebernehmen """
@@ -157,10 +195,16 @@ class Levelstruktur:
             if form.welcheForm == 2:
                 neue.form_hinzufuegen(Kreis(form.nummer, form.xKoordinate, form.yKoordinate,
                                             form.weite, form.hoehe, form.farbe, form.func))
+            # Falls Original Polygon ist: Polygon hinzufuegen
+            if form.welcheForm == 3:
+                neue.form_hinzufuegen(Polygon(form.nummer, form.eckpunkte, form.farbe, form.func))
             neue.enthalteneFormen[-1].internerSpeicherF = copy(form.internerSpeicherF)
             neue.enthalteneFormen[-1].klickbar = form.klickbar
             neue.enthalteneFormen[-1].sichtbar = form.sichtbar
             neue.enthalteneFormen[-1].aufleuchten = form.aufleuchten
+            neue.enthalteneFormen[-1].eckpunkte = form.eckpunkte
+            neue.enthalteneFormen[-1].rotation = form.rotation
+            neue.enthalteneFormen[-1].eckpunkteRelZuMitte = form.eckpunkteRelZuMitte
 
         """ verbundene Formen zuweisen 
         ist so kompliziert noetig, da sonst 'verbundeneFormen' auf die nicht kopierten Formen referenziert """
