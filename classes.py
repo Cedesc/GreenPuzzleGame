@@ -6,10 +6,10 @@ from copy import copy
 
 class Form:
 
-    def __init__(self, nummer: float, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float,
+    def __init__(self, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float,
                  farbe: QColor, func):
         # 'nummer' soll gleich des Index sein, welchen die Form in der Levelstruktur hat.
-        self.nummer : int = int(nummer)
+        self.nummer : int = 0
         self.xKoordinate : int = int(xKoordinate)
         self.yKoordinate : int = int(yKoordinate)
         self.weite : int = int(weite)
@@ -25,6 +25,7 @@ class Form:
         self.klickbar : bool = True
         self.sichtbar : bool = True
         self.aufleuchten : bool = False
+        self.klickKoordinatenMerken : bool = False
         self.welcheForm : int = 0           # 0: Platzhalter , 1: Rechteck , 2: Kreis , 3: Polygon
         self.eckpunkte : tuple = tuple()
         self.rotation : int = 0
@@ -72,8 +73,8 @@ class Form:
 
 class Rechteck(Form):
 
-    def __init__(self, nummer: float, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float, farbe: QColor, func):
-        super().__init__(nummer, xKoordinate, yKoordinate, weite, hoehe, farbe, func)
+    def __init__(self, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float, farbe: QColor, func):
+        super().__init__(xKoordinate, yKoordinate, weite, hoehe, farbe, func)
         self.welcheForm = 1
         self.eckpunkte = ((self.xKoordinate, self.yKoordinate),
                           (self.xKoordinate + self.weite, self.yKoordinate),
@@ -82,14 +83,14 @@ class Rechteck(Form):
 
 class Kreis(Form):
 
-    def __init__(self, nummer: float, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float, farbe: QColor, func):
-        super().__init__(nummer, xKoordinate, yKoordinate, weite, hoehe, farbe, func)
+    def __init__(self, xKoordinate: float, yKoordinate: float, weite: float, hoehe: float, farbe: QColor, func):
+        super().__init__(xKoordinate, yKoordinate, weite, hoehe, farbe, func)
         self.welcheForm = 2
 
 class Polygon(Form):
 
-    def __init__(self, nummer: float, eckpunktKoordinaten: tuple,farbe: QColor, func):
-        super().__init__(nummer, min(eckpunktKoordinaten[0::2]),
+    def __init__(self, eckpunktKoordinaten: tuple,farbe: QColor, func):
+        super().__init__(min(eckpunktKoordinaten[0::2]),
                          min(eckpunktKoordinaten[1::2]),
                          max(eckpunktKoordinaten[0::2]) - min(eckpunktKoordinaten[0::2]),
                          max(eckpunktKoordinaten[1::2]) - min(eckpunktKoordinaten[1::2]),
@@ -126,8 +127,9 @@ class Levelstruktur:
         self.tastenGesteuert : bool = False
 
     def form_hinzufuegen(self, form: Form) -> None:
-        self.enthalteneFormen.append(form)
         form.zugehoerigesLevel = self
+        form.nummer = len(self.enthalteneFormen)
+        self.enthalteneFormen.append(form)
 
     def weiteresZeichnen(self, painterF, win) -> None:
         """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll """
@@ -153,8 +155,12 @@ class Levelstruktur:
                 form.yKoordinate <= y <= form.yKoordinate + form.hoehe):
                 # pruefen welche Art von Form getroffen wurde
                 if form.welcheForm == 1:
-                    # falls Rechteck getroffen wurde, wird seine Funktion ausgefuehrt
-                    form.func(form)
+                    # falls Rechteck getroffen wurde, wird seine Funktion ausgefuehrt.
+                    # Wenn Koordinaten wichtig sind, werden diese auch mitgegeben
+                    if form.klickKoordinatenMerken:
+                        form.func(form, x, y)
+                    else:
+                        form.func(form)
                 elif form.welcheForm == 2:
                     # Satz des Pythagoras
                     abstand = sqrt((form.mittelpunkt[0] - x) ** 2 + (form.mittelpunkt[1] - y) ** 2)
@@ -163,7 +169,11 @@ class Levelstruktur:
                     # Abstand zwischen Mausklick und Kreismittelpunkt berechnen: perfekt bei Kreis, gut bei Oval
                     if abstand <= radius:
                         # falls Kreis getroffen wurde, wird seine Funktion ausgefuehrt
-                        form.func(form)
+                        # Wenn Koordinaten wichtig sind, werden diese auch mitgegeben
+                        if form.klickKoordinatenMerken:
+                            form.func(form, x, y)
+                        else:
+                            form.func(form)
 
                 # pruefen ob Level gewonnen, da hier auf jeden Fall eine Form getroffen wurde
                 if self.gewinnbedingung():
@@ -176,12 +186,6 @@ class Levelstruktur:
         """ Kopiert die Levelstruktur
         deepcopy hat nicht funktioniert """
 
-        # self.eckpunkte: tuple = tuple()
-        # self.rotation: int = 0
-        # self.mittelpunkt: (int, int) = (int(self.xKoordinate + weite // 2), int(self.yKoordinate + hoehe // 2))
-        # self.xRelZuMitte: int = self.xKoordinate - self.mittelpunkt[0]
-        # self.yRelZuMitte: int = self.yKoordinate - self.mittelpunkt[1]
-
         neue = Levelstruktur(self.zugehoerigesFenster)
 
         """ internen Speicher und tastenGesteuert vom alten Level uebernehmen """
@@ -193,15 +197,15 @@ class Levelstruktur:
         for form in self.enthalteneFormen:
             # Falls Original Rechteck ist: Rechteck hinzufuegen
             if form.welcheForm == 1:
-                neue.form_hinzufuegen(Rechteck(form.nummer, form.xKoordinate, form.yKoordinate,
+                neue.form_hinzufuegen(Rechteck(form.xKoordinate, form.yKoordinate,
                                                form.weite, form.hoehe, form.farbe, form.func))
             # Falls Original Kreis ist: Kreis hinzufuegen
             if form.welcheForm == 2:
-                neue.form_hinzufuegen(Kreis(form.nummer, form.xKoordinate, form.yKoordinate,
+                neue.form_hinzufuegen(Kreis(form.xKoordinate, form.yKoordinate,
                                             form.weite, form.hoehe, form.farbe, form.func))
             # Falls Original Polygon ist: Polygon hinzufuegen
             if form.welcheForm == 3:
-                neue.form_hinzufuegen(Polygon(form.nummer, form.eckpunkte, form.farbe, form.func))
+                neue.form_hinzufuegen(Polygon(form.eckpunkte, form.farbe, form.func))
             neue.enthalteneFormen[-1].internerSpeicherF = copy(form.internerSpeicherF)
             neue.enthalteneFormen[-1].klickbar = form.klickbar
             neue.enthalteneFormen[-1].sichtbar = form.sichtbar
@@ -209,6 +213,7 @@ class Levelstruktur:
             neue.enthalteneFormen[-1].eckpunkte = form.eckpunkte
             neue.enthalteneFormen[-1].rotation = form.rotation
             neue.enthalteneFormen[-1].eckpunkteRelZuMitte = form.eckpunkteRelZuMitte
+            neue.enthalteneFormen[-1].klickKoordinatenMerken = form.klickKoordinatenMerken
 
         """ verbundene Formen zuweisen 
         ist so kompliziert noetig, da sonst 'verbundeneFormen' auf die nicht kopierten Formen referenziert """

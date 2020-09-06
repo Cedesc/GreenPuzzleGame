@@ -215,7 +215,7 @@ def funcL14_2Level(self: Levelstruktur) -> None:
         self.alleRichtigFaerben()
         self.zugehoerigesFenster.levelGewonnen = True
 
-def func14WeiteresZeichnen(painterF: QPainter, win) -> None:
+def funcL14WeiteresZeichnen(painterF: QPainter, win) -> None:
 
 
     # Nummer des derzeitigen Levels oben schreiben
@@ -247,6 +247,50 @@ def func14WeiteresZeichnen(painterF: QPainter, win) -> None:
                                    win.wW * 635 / 800, win.wW * 385 / 800, win.wW * 740 / 800, win.wW * 490 / 800,
                                    win.wW * 635 / 800, win.wW * 455 / 800]))
 
+# Level 15
+def funcL15(self: Form, xKlick: int, yKlick: int) -> None:
+    momentanesLevel : Levelstruktur = self.zugehoerigesLevel
+
+    # Wenn erster Klick (relative Position  nicht wichtig)
+    if self.internerSpeicherF == (0, 0):
+        self.internerSpeicherF = (xKlick, yKlick)
+        return
+
+    vorgabe = momentanesLevel.internerSpeicherL[0]
+    zustand = momentanesLevel.internerSpeicherL[1]
+
+    richtig : bool = False
+
+    # Soll rechts davon sein
+    if vorgabe[zustand] == 0:
+        if xKlick > self.internerSpeicherF[0]:
+            richtig = True
+    # Soll drunter sein
+    elif vorgabe[zustand] == 1:
+        if yKlick > self.internerSpeicherF[1]:
+            richtig = True
+    # Soll links davon sein
+    elif vorgabe[zustand] == 2:
+        if xKlick < self.internerSpeicherF[0]:
+            richtig = True
+    # Soll drueber sein
+    elif vorgabe[zustand] == 3:
+        if yKlick < self.internerSpeicherF[1]:
+            richtig = True
+
+    if richtig:
+        print('richtig  ', self.zugehoerigesLevel.internerSpeicherL[1])
+        self.internerSpeicherF = (xKlick, yKlick)
+        self.zugehoerigesLevel.internerSpeicherL[1] += 1
+    else:
+        print('falsch   ', self.zugehoerigesLevel.internerSpeicherL[1])
+        self.zugehoerigesLevel.internerSpeicherL[1] = 0
+        self.internerSpeicherF = (0, 0)
+
+    # Gewinnbedingung
+    if momentanesLevel.internerSpeicherL[1] == 10:
+        momentanesLevel.alleRichtigFaerben()
+
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
@@ -255,8 +299,7 @@ def level0Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(2):
         for x in range(3):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 16 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * x,
                                             self.wW / 16 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
     return level
@@ -265,18 +308,16 @@ def level1Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(3):
         for x in range(1):
-            level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                          self.wW / 16 + self.wW * (3 / 16) * x,
-                                          self.wW / 16 + self.wW * (3 / 16) * y,
-                                          self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
+            level.form_hinzufuegen(Kreis(self.wW / 16 + self.wW * (3 / 16) * x,
+                                         self.wW / 16 + self.wW * (3 / 16) * y,
+                                         self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
     return level
 
 def level2Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(2):
         for x in range(1):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 16 + self.wW * (3 / 16) * (x + 2),
+            level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * (x + 2),
                                             self.wW / 12 + self.wW * (3 / 16) * (y + 2),
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fehlererkennung))
     return level
@@ -286,8 +327,7 @@ def level3Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(3):
         for x in range(4):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 6.4 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Rechteck(self.wW / 6.4 + self.wW * (3 / 16) * x,
                                             self.wW / 5 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), verbundeneAendern))
     # verbundene Rechtecke zuweisen
@@ -303,8 +343,7 @@ def level4Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(4):
         for x in range(4):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 6.4 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Rechteck(self.wW / 6.4 + self.wW * (3 / 16) * x,
                                             self.wW / 6.4 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL4))
     # verbundene Rechtecke zuweisen
@@ -319,8 +358,7 @@ def level5Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(5):
         for x in range(5):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 16 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * x,
                                             self.wW / 16 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL5))
     # verbundene Rechtecke zuweisen
@@ -340,16 +378,14 @@ def level6Erstellen(self) -> Levelstruktur:
     Umliegende Felder sind nur zur Verwirrung da """
     level = Levelstruktur(self)
     for i in range(1, 8):
-        level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
-                                        self.wW / 16 * i, self.wW / 16 * i,
+        level.form_hinzufuegen(Rechteck(self.wW / 16 * i, self.wW / 16 * i,
                                         self.wW - self.wW / 8 * i, self.wW - self.wW / 8 * i,
                                         QColor(0, 90, 0), funcL6))
         level.enthalteneFormen[-1].internerSpeicherF = int(i * 3 / 4)
     for y in range(5):
         for x in range(5):
             if not ((x, y) in [(1, 0), (3, 0), (0, 1), (0, 3), (4, 1), (4, 3), (1, 4), (3, 4)]):
-                level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                                self.wW / 16 + self.wW * (3 / 16) * x,
+                level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * x,
                                                 self.wW / 16 + self.wW * (3 / 16) * y,
                                                 self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
     return level
@@ -359,8 +395,7 @@ def level7Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(3):
         for x in range(3):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 4 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16) * x,
                                             self.wW / 4.5 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL7))
     # internen Speicher des Levels festlegen
@@ -372,20 +407,15 @@ def level8Erstellen(self) -> Levelstruktur:
     ueber ein schon gefaerbtes Feld hinweg, so wird das wieder falsch gefaerbt """
     level = Levelstruktur(self)
     for y in range(5):
-        level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                        0,
-                                        self.wW / 5 * y,
-                                        self.wW, self.wW / 5, QColor(0, 90, 0), nothing))
+        level.form_hinzufuegen(Rechteck(0, self.wW / 5 * y, self.wW, self.wW / 5, QColor(0, 90, 0), nothing))
         # gerade hinzugefuegtes Rechteck nicht-klickbar machen
         level.enthalteneFormen[-1].klickbar = False
-    level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
-                                  self.wW / 10,
-                                  self.wW * 4 / 25,
-                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_1))
-    level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
-                                  self.wW / 10,
-                                  self.wW * 1 / 3,
-                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_2))
+    level.form_hinzufuegen(Kreis(self.wW / 10,
+                                 self.wW * 4 / 25,
+                                 self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_1))
+    level.form_hinzufuegen(Kreis(self.wW / 10,
+                                 self.wW * 1 / 3,
+                                 self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL8_2))
     level.internerSpeicherL = -1
     return level
 
@@ -397,10 +427,9 @@ def level9Erstellen(self) -> Levelstruktur:
             verschiebungNachOben : int = 0
             if x % 2 == 0:
                 verschiebungNachOben = self.wW / 12
-            level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                          self.wW / 16 + self.wW / 4 * x,
-                                          self.wW / 8 + verschiebungNachOben + self.wW / 4 * y,
-                                          self.wW / 8, self.wW / 8, QColor(0, 90, 0), level_zuruecksetzen))
+            level.form_hinzufuegen(Kreis(self.wW / 16 + self.wW / 4 * x,
+                                         self.wW / 8 + verschiebungNachOben + self.wW / 4 * y,
+                                         self.wW / 8, self.wW / 8, QColor(0, 90, 0), level_zuruecksetzen))
     # Bei einem (willkuerlich gewaehltem) Kreis die Funktion einbauen
     level.enthalteneFormen[9].func = funcL9
     level.enthalteneFormen[9].verbundeneFormen = [
@@ -415,24 +444,19 @@ def level10Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(3):
         for x in range(3):
-            level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 4 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16) * x,
                                             self.wW / 4 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), nothing))
-    level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
-                                    self.wW / 4 + self.wW * (3 / 16) * 3,
+    level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16) * 3,
                                     self.wW / 4 + self.wW * (3 / 16),
                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
-    level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
-                                    self.wW / 4 + self.wW * (3 / 16),
+    level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16),
                                     self.wW / 4 + self.wW * (3 / 16) * 3,
                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
-    level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
-                                    self.wW / 4 - self.wW * (3 / 16),
+    level.form_hinzufuegen(Rechteck(self.wW / 4 - self.wW * (3 / 16),
                                     self.wW / 4 + self.wW * (3 / 16),
                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
-    level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
-                                    self.wW / 4 + self.wW * (3 / 16),
+    level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16),
                                     self.wW / 4 - self.wW * (3 / 16),
                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL10))
     level.enthalteneFormen[9].internerSpeicherF = 0
@@ -448,10 +472,9 @@ def level11Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(4):
         for x in range(4):
-            level.form_hinzufuegen(Form(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                            self.wW / 6.4 + self.wW * (3 / 16) * x,
-                                            self.wW / 6.4 + self.wW * (3 / 16) * y,
-                                            self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL11))
+            level.form_hinzufuegen(Form(self.wW / 6.4 + self.wW * (3 / 16) * x,
+                                        self.wW / 6.4 + self.wW * (3 / 16) * y,
+                                        self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL11))
             if (x + y) % 2 == 0:
                 level.enthalteneFormen[-1].welcheForm = 1
             else:
@@ -465,18 +488,13 @@ def level12Erstellen(self) -> Levelstruktur:
     und er kehrt um statt korrekt zu faerben. """
     level = Levelstruktur(self)
     for y in range(4):
-        level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),  # spiegelt Index in der Liste wieder
-                                        0,
-                                        self.wW / 4 * y,
-                                        self.wW, self.wW / 4, QColor(0, 90, 0), nothing))
+        level.form_hinzufuegen(Rechteck(0, self.wW / 4 * y, self.wW, self.wW / 4, QColor(0, 90, 0), nothing))
         # gerade hinzugefuegtes Rechteck nicht-klickbar machen
         level.enthalteneFormen[-1].klickbar = False
-    level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
-                                 self.wW / 10,
+    level.form_hinzufuegen(Kreis(self.wW / 10,
                                  self.wW * 4 / 25,
                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL12_1))
-    level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
-                                 self.wW / 10,
+    level.form_hinzufuegen(Kreis(self.wW / 10,
                                  self.wW * 1 / 3,
                                  self.wW / 8, self.wW / 8, QColor(0, 180, 0), funcL12_2))
     level.internerSpeicherL = -1
@@ -486,14 +504,12 @@ def level13Erstellen(self) -> Levelstruktur:
     """ Dreiecke zeigen auf den Kreis, den man als naechstes druecken muss """
     level = Levelstruktur(self)
     for xDreieck in range(5):
-        level.form_hinzufuegen(Polygon(len(level.enthalteneFormen),
-                                       (self.wW / 8 + self.wW * 3 / 16 * xDreieck, self.wW / 10 + self.wW / 12,
+        level.form_hinzufuegen(Polygon((self.wW / 8 + self.wW * 3 / 16 * xDreieck, self.wW / 10 + self.wW / 12,
                                         self.wW / 16 + self.wW * 3 / 16 * xDreieck, self.wW / 4  + self.wW / 12,
                                         self.wW * 3 / 16 +  self.wW * 3 / 16 * xDreieck, self.wW / 4 + self.wW / 12),
                                        QColor(0, 90, 0), nothing))
     for xKreis in range(4):
-        level.form_hinzufuegen(Kreis(len(level.enthalteneFormen),
-                                     self.wW * 5 / 32 + self.wW * 3 / 16 * xKreis, self.wW / 2,
+        level.form_hinzufuegen(Kreis(self.wW * 5 / 32 + self.wW * 3 / 16 * xKreis, self.wW / 2,
                                      self.wW / 8, self.wW / 8,
                                      QColor(0, 90, 0), level_zuruecksetzen))
     level.internerSpeicherL = ( (162, 199, 225, 240, 247) , (135, 162, 199, 225, 240) ,
@@ -508,16 +524,14 @@ def level14Erstellen(self) -> Levelstruktur:
     """ 3 Formen zum drehen mit X und Y vorhanden """
     level = Levelstruktur(self)
     for xRechteck in range(3):
-        level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
-                                        self.wW / 8 + self.wW * (5 / 16) * xRechteck,
+        level.form_hinzufuegen(Rechteck(self.wW / 8 + self.wW * (5 / 16) * xRechteck,
                                         self.wW / 5,
                                         self.wW / 8, self.wW / 8, QColor(0, 90, 0), nothing))
     level.enthalteneFormen[0].func = funcL14_1
     level.enthalteneFormen[1].func = funcL14_2
     level.enthalteneFormen[2].func = funcL14_3
     for xPolygon in range(3):
-        level.form_hinzufuegen(Polygon(len(level.enthalteneFormen),
-                                       (self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
+        level.form_hinzufuegen(Polygon((self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
                                         self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
                                         self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
                                         self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
@@ -525,5 +539,15 @@ def level14Erstellen(self) -> Levelstruktur:
                                        QColor(0, 90, 0), nothing))
     level.tastenGesteuert = True
     level.internerSpeicherL = [funcL14_1Level, funcL14_2Level, 1]
-    level.weiteresZeichnen = func14WeiteresZeichnen
+    level.weiteresZeichnen = funcL14WeiteresZeichnen
+    return level
+
+def level15Erstellen(self) -> Levelstruktur:
+    """ Nur interessant wo relativ zum vorherigen Klick geklickt wurde """
+    level = Levelstruktur(self)
+    level.form_hinzufuegen(Rechteck(0, 0, self.wW, self.wW, QColor(0, 90, 0), funcL15))
+    level.enthalteneFormen[0].internerSpeicherF = (0, 0)
+    level.enthalteneFormen[0].klickKoordinatenMerken = True
+    level.internerSpeicherL = [ (3, 3, 1, 2, 0, 2, 2, 1, 3, 0), 0]
+    print(level.internerSpeicherL)
     return level
