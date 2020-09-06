@@ -123,12 +123,13 @@ class Levelstruktur:
         # interner Speicher jeder Form fuer etwaige Zustaende des Levels
         # zB: Position, die beim klicken betroffen ist, aendert sich jedes mal (bewegt sich im Kreis drum)
         self.internerSpeicherL = None
+        self.tastenGesteuert : bool = False
 
     def form_hinzufuegen(self, form: Form) -> None:
         self.enthalteneFormen.append(form)
         form.zugehoerigesLevel = self
 
-    def weiteresZeichnen(self, painterF) -> None:
+    def weiteresZeichnen(self, painterF, win) -> None:
         """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll """
         pass
 
@@ -183,8 +184,10 @@ class Levelstruktur:
 
         neue = Levelstruktur(self.zugehoerigesFenster)
 
-        """ internen Speicher vom alten Level uebernehmen """
+        """ internen Speicher und tastenGesteuert vom alten Level uebernehmen """
         neue.internerSpeicherL = copy(self.internerSpeicherL)
+        neue.tastenGesteuert = self.tastenGesteuert
+        neue.weiteresZeichnen = self.weiteresZeichnen
 
         """ neue Rechtecke und Kreise erstellen und dann den internen Speicher beim gerade erstellten uebernehmen"""
         for form in self.enthalteneFormen:

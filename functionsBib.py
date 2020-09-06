@@ -1,5 +1,7 @@
 from classes import Levelstruktur, Form, Rechteck, Kreis, Polygon, QColor
 from random import randint
+from PyQt5.QtGui import QPainter, QPen, QPolygon, QFont
+from PyQt5.QtCore import Qt, QRect
 """ Bibliothek fuer Funktionen der Formen und Levelerstellung """
 
 
@@ -139,6 +141,7 @@ def funcL12_2(self: Form) -> None:
         self.zugehoerigesLevel.enthalteneFormen[stempelPosition].umkehren()
         self.zugehoerigesLevel.internerSpeicherL = -1
 
+# Level 13
 def funcL13(self: Form) -> None:
     """ Wenn auf das richtige Feld geklickt wurde, wird zufaellig das naechste bestimmt und die Dreiecke
     entsprechend ausgerichtet """
@@ -160,6 +163,89 @@ def funcL13(self: Form) -> None:
     for dreieckIndex in range(5):
         self.zugehoerigesLevel.enthalteneFormen[dreieckIndex].rotation = \
             self.zugehoerigesLevel.internerSpeicherL[naechstesFeld - 5][dreieckIndex]
+
+# Level 14
+def funcL14_1(self: Form) -> None:
+    self.aufleuchten = True
+    self.zugehoerigesLevel.internerSpeicherL[2] = 0
+
+def funcL14_2(self: Form) -> None:
+    self.aufleuchten = True
+    self.zugehoerigesLevel.internerSpeicherL[2] = 1
+
+def funcL14_3(self: Form) -> None:
+    self.aufleuchten = True
+    self.zugehoerigesLevel.internerSpeicherL[2] = 2
+
+def funcL14_1Level(self: Levelstruktur) -> None:
+    """ nach links drehen """
+    if self.internerSpeicherL[2] == 0:
+        self.enthalteneFormen[3].rotation -= 3
+        self.enthalteneFormen[4].rotation -= 3
+    elif self.internerSpeicherL[2] == 1:
+        self.enthalteneFormen[3].rotation -= 3
+        self.enthalteneFormen[4].rotation -= 3
+        self.enthalteneFormen[5].rotation -= 3
+    elif self.internerSpeicherL[2] == 2:
+        self.enthalteneFormen[4].rotation -= 3
+        self.enthalteneFormen[5].rotation -= 3
+
+    if self.enthalteneFormen[3].rotation % 360 == 45 \
+            and self.enthalteneFormen[4].rotation % 360 == 180 \
+            and self.enthalteneFormen[5].rotation % 360 == 315:
+        self.alleRichtigFaerben()
+        self.zugehoerigesFenster.levelGewonnen = True
+
+def funcL14_2Level(self: Levelstruktur) -> None:
+    """ nach rechts drehen """
+    if self.internerSpeicherL[2] == 0:
+        self.enthalteneFormen[3].rotation += 3
+        self.enthalteneFormen[4].rotation += 3
+    elif self.internerSpeicherL[2] == 1:
+        self.enthalteneFormen[3].rotation += 3
+        self.enthalteneFormen[4].rotation += 3
+        self.enthalteneFormen[5].rotation += 3
+    elif self.internerSpeicherL[2] == 2:
+        self.enthalteneFormen[4].rotation += 3
+        self.enthalteneFormen[5].rotation += 3
+
+    if self.enthalteneFormen[3].rotation % 360 == 45 \
+            and self.enthalteneFormen[4].rotation % 360 == 180 \
+            and self.enthalteneFormen[5].rotation % 360 == 315:
+        self.alleRichtigFaerben()
+        self.zugehoerigesFenster.levelGewonnen = True
+
+def func14WeiteresZeichnen(painterF: QPainter, win) -> None:
+
+
+    # Nummer des derzeitigen Levels oben schreiben
+    rect1 = QRect(0, int(win.wW * 8 / 10), win.wW, int(win.wW / 10))
+    painterF.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
+    painterF.setFont(QFont("Times", int(win.wW / 42)))
+    painterF.drawText(rect1, 4, str("Y: nach links drehen\n   X: nach Rechts drehen"))
+
+    # 'Hinweise' von Rechtecken zu Formen
+    painterF.setPen(QPen(QColor(0, 0, 0), 3, Qt.SolidLine))
+    painterF.drawLine(win.wW * 150 / 800, win.wW * 250 / 800, win.wW * 150 / 800, win.wW * 315 / 800)
+    painterF.drawLine(win.wW * 150 / 800, win.wW * 250 / 800, win.wW * 200 / 800, win.wW * 300 / 800)
+    painterF.drawLine(win.wW * 400 / 800, win.wW * 250 / 800, win.wW * 350 / 800, win.wW * 300 / 800)
+    painterF.drawLine(win.wW * 400 / 800, win.wW * 250 / 800, win.wW * 400 / 800, win.wW * 315 / 800)
+    painterF.drawLine(win.wW * 400 / 800, win.wW * 250 / 800, win.wW * 450 / 800, win.wW * 300 / 800)
+    painterF.drawLine(win.wW * 650 / 800, win.wW * 250 / 800, win.wW * 600 / 800, win.wW * 300 / 800)
+    painterF.drawLine(win.wW * 650 / 800, win.wW * 250 / 800, win.wW * 650 / 800, win.wW * 315 / 800)
+
+    # schwarzen Hintergrund zeichnen
+    painterF.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
+    painterF.setBrush(QColor(0, 0, 0))
+    painterF.drawPolygon(QPolygon([win.wW * 60 / 800, win.wW * 490 / 800, win.wW * 165 / 800, win.wW * 386 / 800,
+                                   win.wW * 234 / 800, win.wW * 456 / 800, win.wW * 130 / 800, win.wW * 561 / 800,
+                                   win.wW * 165 / 800, win.wW * 455 / 800]))
+    painterF.drawPolygon(QPolygon([win.wW * 350 / 800, win.wW * 390 / 800, win.wW * 350 / 800, win.wW * 540 / 800,
+                                   win.wW * 450 / 800, win.wW * 540 / 800, win.wW * 450 / 800, win.wW * 390 / 800,
+                                   win.wW * 400 / 800, win.wW * 490 / 800]))
+    painterF.drawPolygon(QPolygon([win.wW * 670 / 800, win.wW * 560 / 800, win.wW * 565 / 800, win.wW * 455 / 800,
+                                   win.wW * 635 / 800, win.wW * 385 / 800, win.wW * 740 / 800, win.wW * 490 / 800,
+                                   win.wW * 635 / 800, win.wW * 455 / 800]))
 
 
 # Funktionen für die Levelerstellung
@@ -418,3 +504,26 @@ def level13Erstellen(self) -> Levelstruktur:
         level.enthalteneFormen[dreieckIndex].rotation = level.internerSpeicherL[ersteForm - 5][dreieckIndex]
     return level
 
+def level14Erstellen(self) -> Levelstruktur:
+    """ 3 Formen zum drehen mit X und Y vorhanden """
+    level = Levelstruktur(self)
+    for xRechteck in range(3):
+        level.form_hinzufuegen(Rechteck(len(level.enthalteneFormen),
+                                        self.wW / 8 + self.wW * (5 / 16) * xRechteck,
+                                        self.wW / 5,
+                                        self.wW / 8, self.wW / 8, QColor(0, 90, 0), nothing))
+    level.enthalteneFormen[0].func = funcL14_1
+    level.enthalteneFormen[1].func = funcL14_2
+    level.enthalteneFormen[2].func = funcL14_3
+    for xPolygon in range(3):
+        level.form_hinzufuegen(Polygon(len(level.enthalteneFormen),
+                                       (self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
+                                        self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
+                                        self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
+                                        self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
+                                        self.wW * 3 / 16 + self.wW * (5 / 16) * xPolygon, self.wW * 9 / 16),
+                                       QColor(0, 90, 0), nothing))
+    level.tastenGesteuert = True
+    level.internerSpeicherL = [funcL14_1Level, funcL14_2Level, 1]
+    level.weiteresZeichnen = func14WeiteresZeichnen
+    return level

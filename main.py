@@ -40,7 +40,7 @@ class Window(QWidget):
         warte : bool = False
 
         # Level zeichnen
-        self.levels[self.levelCounter].weiteresZeichnen(painter)
+        self.levels[self.levelCounter].weiteresZeichnen(painter, self)
         # Rechtecke und Kreise einzeichnen
         painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))      # Umrandung der Kreise
         for form in self.levels[self.levelCounter].enthalteneFormen:
@@ -173,6 +173,20 @@ class Window(QWidget):
                 self.levelCounter += 1
                 self.update()
 
+        if e.key() == Qt.Key_Y:
+            """ Fuer Steuerung im Level """
+            momentanesLevel : Levelstruktur = self.levels[self.levelCounter]
+            if momentanesLevel.tastenGesteuert:
+                momentanesLevel.internerSpeicherL[0](momentanesLevel)
+                self.update()
+
+        if e.key() == Qt.Key_X:
+            """ Fuer Steuerung im Level """
+            momentanesLevel : Levelstruktur = self.levels[self.levelCounter]
+            if momentanesLevel.tastenGesteuert:
+                momentanesLevel.internerSpeicherL[1](momentanesLevel)
+                self.update()
+
 
     def mousePressEvent(self, QMouseEvent) -> None:
         pos = QMouseEvent.pos()
@@ -200,11 +214,12 @@ class Window(QWidget):
         level11 : Levelstruktur = fb.level11Erstellen(self)
         level12 : Levelstruktur = fb.level12Erstellen(self)
         level13 : Levelstruktur = fb.level13Erstellen(self)
+        level14 : Levelstruktur = fb.level14Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
         self.originalLevels = [level00, level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
-                               level10, level11, level12, level13]
+                               level10, level11, level12, level13, level14]
 
         # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
         for lev in self.originalLevels:
