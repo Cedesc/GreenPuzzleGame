@@ -103,8 +103,8 @@ class Polygon(Form):
         # Waere der Gewichtspunkt des Polygons, bisher aber noch nicht noetig
         # self.mittelpunkt = (int(sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2),
         #                     int(sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2))
-        self.xRelZuMitte = self.xKoordinate - self.mittelpunkt[0]
-        self.yRelZuMitte = self.yKoordinate - self.mittelpunkt[1]
+        # self.xRelZuMitte = self.xKoordinate - self.mittelpunkt[0]
+        # self.yRelZuMitte = self.yKoordinate - self.mittelpunkt[1]
 
         hilfsListe = []
         for index in range(len(self.eckpunkte)):
@@ -229,12 +229,12 @@ class Levelstruktur:
                         neue.enthalteneFormen[formAlt.nummer].verbundeneFormen.append(formNeu)
         return neue
 
-    def formReferenzenHinzufuegen(self, anzahlFormen: int, formRefsNummern: List[List[int]]) -> None:
+    def formReferenzenHinzufuegen(self, formRefsNummern: List[List[int]]) -> None:
         """ Schnell mehrere Referenzen auf mehrere Formen hinzufuegen
-        'anzahlFormen' ist die Anzahl an Formen (also letzter Index + 1)
         'formRefsNummern' ist Liste von Listen mit den jeweilig zuzuweisenden Referenzen
         Wichtig ist, dass die Indizes uebereinstimmen, heisst:
         0. Form bekommt formRefsNummern[0] zugewiesen, 1. Form bekommt formRefsNummern[1] zugewiesen, etc. """
+        anzahlFormen = len(self.enthalteneFormen)
         for clickedFormNummer in range(anzahlFormen):
             for bindFormNummer in formRefsNummern[clickedFormNummer]:
                 self.enthalteneFormen[clickedFormNummer].verbundeneFormen.append(self.enthalteneFormen[bindFormNummer])
