@@ -100,8 +100,9 @@ class Polygon(Form):
         self.welcheForm = 3
         self.klickbar = False
         self.eckpunkte = eckpunktKoordinaten
-        self.mittelpunkt = (int(sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2),
-                            int(sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2))
+        # Waere der Gewichtspunkt des Polygons, bisher aber noch nicht noetig
+        # self.mittelpunkt = (int(sum(self.eckpunkte[0::2]) // len(self.eckpunkte) * 2),
+        #                     int(sum(self.eckpunkte[1::2]) // len(self.eckpunkte) * 2))
         self.xRelZuMitte = self.xKoordinate - self.mittelpunkt[0]
         self.yRelZuMitte = self.yKoordinate - self.mittelpunkt[1]
 

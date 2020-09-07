@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtGui import QPainter, QColor, QFont, QPen, QPolygon, QPainterPath, QBrush, QMatrix3x3, QMatrix2x2
+from PyQt5.QtGui import QPainter, QColor, QFont, QPen, QPolygon
 from PyQt5.QtCore import Qt, QRect, QTimer
 import functionsBib as fb
 import settings
@@ -108,11 +108,9 @@ class Window(QWidget):
                 self.debugKoordinatenPrinten = True
         if e.key() == Qt.Key_3:
             self.levels[self.levelCounter].enthalteneFormen[0].rotation -= 1
-            print(self.levels[self.levelCounter].enthalteneFormen[0].rotation)
             self.update()
         if e.key() == Qt.Key_4:
             self.levels[self.levelCounter].enthalteneFormen[0].rotation += 1
-            print(self.levels[self.levelCounter].enthalteneFormen[0].rotation)
             self.update()
 
 
@@ -218,10 +216,10 @@ class Window(QWidget):
         level15 : Levelstruktur = fb.level15Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level15, level01, level02, level03, level04,
+        self.originalLevels = [level00, level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
-                               level15]
+                               level15, level00]
 
         # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
         for lev in self.originalLevels:

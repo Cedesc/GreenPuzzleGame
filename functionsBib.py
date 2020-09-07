@@ -180,45 +180,43 @@ def funcL14_3(self: Form) -> None:
 def funcL14_1Level(self: Levelstruktur) -> None:
     """ nach links drehen """
     if self.internerSpeicherL[2] == 0:
-        self.enthalteneFormen[3].rotation -= 3
-        self.enthalteneFormen[4].rotation -= 3
+        self.enthalteneFormen[6].rotation -= 3
+        self.enthalteneFormen[7].rotation -= 3
     elif self.internerSpeicherL[2] == 1:
-        self.enthalteneFormen[3].rotation -= 3
-        self.enthalteneFormen[4].rotation -= 3
-        self.enthalteneFormen[5].rotation -= 3
+        self.enthalteneFormen[6].rotation -= 3
+        self.enthalteneFormen[7].rotation -= 3
+        self.enthalteneFormen[8].rotation -= 3
     elif self.internerSpeicherL[2] == 2:
-        self.enthalteneFormen[4].rotation -= 3
-        self.enthalteneFormen[5].rotation -= 3
+        self.enthalteneFormen[7].rotation -= 3
+        self.enthalteneFormen[8].rotation -= 3
 
-    if self.enthalteneFormen[3].rotation % 360 == 45 \
-            and self.enthalteneFormen[4].rotation % 360 == 180 \
-            and self.enthalteneFormen[5].rotation % 360 == 315:
+    if self.enthalteneFormen[6].rotation % 360 == 45 \
+            and self.enthalteneFormen[7].rotation % 360 == 180 \
+            and self.enthalteneFormen[8].rotation % 360 == 315:
         self.alleRichtigFaerben()
         self.zugehoerigesFenster.levelGewonnen = True
 
 def funcL14_2Level(self: Levelstruktur) -> None:
     """ nach rechts drehen """
     if self.internerSpeicherL[2] == 0:
-        self.enthalteneFormen[3].rotation += 3
-        self.enthalteneFormen[4].rotation += 3
+        self.enthalteneFormen[6].rotation += 3
+        self.enthalteneFormen[7].rotation += 3
     elif self.internerSpeicherL[2] == 1:
-        self.enthalteneFormen[3].rotation += 3
-        self.enthalteneFormen[4].rotation += 3
-        self.enthalteneFormen[5].rotation += 3
+        self.enthalteneFormen[6].rotation += 3
+        self.enthalteneFormen[7].rotation += 3
+        self.enthalteneFormen[8].rotation += 3
     elif self.internerSpeicherL[2] == 2:
-        self.enthalteneFormen[4].rotation += 3
-        self.enthalteneFormen[5].rotation += 3
+        self.enthalteneFormen[7].rotation += 3
+        self.enthalteneFormen[8].rotation += 3
 
-    if self.enthalteneFormen[3].rotation % 360 == 45 \
-            and self.enthalteneFormen[4].rotation % 360 == 180 \
-            and self.enthalteneFormen[5].rotation % 360 == 315:
+    if self.enthalteneFormen[6].rotation % 360 == 45 \
+            and self.enthalteneFormen[7].rotation % 360 == 180 \
+            and self.enthalteneFormen[8].rotation % 360 == 315:
         self.alleRichtigFaerben()
         self.zugehoerigesFenster.levelGewonnen = True
 
 def funcL14WeiteresZeichnen(painterF: QPainter, win) -> None:
-
-
-    # Nummer des derzeitigen Levels oben schreiben
+    # Steuerungshinweis im Level
     rect1 = QRect(0, int(win.wW * 8 / 10), win.wW, int(win.wW / 10))
     painterF.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
     painterF.setFont(QFont("Times", int(win.wW / 42)))
@@ -234,19 +232,6 @@ def funcL14WeiteresZeichnen(painterF: QPainter, win) -> None:
     painterF.drawLine(win.wW * 650 / 800, win.wW * 250 / 800, win.wW * 600 / 800, win.wW * 300 / 800)
     painterF.drawLine(win.wW * 650 / 800, win.wW * 250 / 800, win.wW * 650 / 800, win.wW * 315 / 800)
 
-    # schwarzen Hintergrund zeichnen
-    painterF.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))
-    painterF.setBrush(QColor(0, 0, 0))
-    painterF.drawPolygon(QPolygon([win.wW * 60 / 800, win.wW * 490 / 800, win.wW * 165 / 800, win.wW * 386 / 800,
-                                   win.wW * 234 / 800, win.wW * 456 / 800, win.wW * 130 / 800, win.wW * 561 / 800,
-                                   win.wW * 165 / 800, win.wW * 455 / 800]))
-    painterF.drawPolygon(QPolygon([win.wW * 350 / 800, win.wW * 390 / 800, win.wW * 350 / 800, win.wW * 540 / 800,
-                                   win.wW * 450 / 800, win.wW * 540 / 800, win.wW * 450 / 800, win.wW * 390 / 800,
-                                   win.wW * 400 / 800, win.wW * 490 / 800]))
-    painterF.drawPolygon(QPolygon([win.wW * 670 / 800, win.wW * 560 / 800, win.wW * 565 / 800, win.wW * 455 / 800,
-                                   win.wW * 635 / 800, win.wW * 385 / 800, win.wW * 740 / 800, win.wW * 490 / 800,
-                                   win.wW * 635 / 800, win.wW * 455 / 800]))
-
 # Level 15
 def funcL15(self: Form, xKlick: int, yKlick: int) -> None:
     momentanesLevel : Levelstruktur = self.zugehoerigesLevel
@@ -254,38 +239,37 @@ def funcL15(self: Form, xKlick: int, yKlick: int) -> None:
     # Wenn erster Klick (relative Position  nicht wichtig)
     if self.internerSpeicherF == (0, 0):
         self.internerSpeicherF = (xKlick, yKlick)
+        self.richtig_faerben_ohneAufleuchten()
         return
 
     vorgabe = momentanesLevel.internerSpeicherL[0]
     zustand = momentanesLevel.internerSpeicherL[1]
 
-    richtig : bool = False
+    richtigGeklickt : bool = False
 
     # Soll rechts davon sein
     if vorgabe[zustand] == 0:
         if xKlick > self.internerSpeicherF[0]:
-            richtig = True
+            richtigGeklickt = True
     # Soll drunter sein
     elif vorgabe[zustand] == 1:
         if yKlick > self.internerSpeicherF[1]:
-            richtig = True
+            richtigGeklickt = True
     # Soll links davon sein
     elif vorgabe[zustand] == 2:
         if xKlick < self.internerSpeicherF[0]:
-            richtig = True
+            richtigGeklickt = True
     # Soll drueber sein
     elif vorgabe[zustand] == 3:
         if yKlick < self.internerSpeicherF[1]:
-            richtig = True
+            richtigGeklickt = True
 
-    if richtig:
-        print('richtig  ', self.zugehoerigesLevel.internerSpeicherL[1])
+    if richtigGeklickt:
         self.internerSpeicherF = (xKlick, yKlick)
         self.zugehoerigesLevel.internerSpeicherL[1] += 1
+        self.zugehoerigesLevel.enthalteneFormen[self.zugehoerigesLevel.internerSpeicherL[1]].richtig_faerben()
     else:
-        print('falsch   ', self.zugehoerigesLevel.internerSpeicherL[1])
-        self.zugehoerigesLevel.internerSpeicherL[1] = 0
-        self.internerSpeicherF = (0, 0)
+        self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
 
     # Gewinnbedingung
     if momentanesLevel.internerSpeicherL[1] == 10:
@@ -530,6 +514,20 @@ def level14Erstellen(self) -> Levelstruktur:
     level.enthalteneFormen[0].func = funcL14_1
     level.enthalteneFormen[1].func = funcL14_2
     level.enthalteneFormen[2].func = funcL14_3
+
+    # schwarzer Hintergrund fuer die Polygone
+    for xPolygon in range(3):
+        level.form_hinzufuegen(Polygon((self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
+                                        self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
+                                        self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
+                                        self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
+                                        self.wW * 3 / 16 + self.wW * (5 / 16) * xPolygon, self.wW * 9 / 16),
+                                       QColor(0, 0, 0), nothing))
+    level.enthalteneFormen[-3].rotation = 45
+    level.enthalteneFormen[-2].rotation = 180
+    level.enthalteneFormen[-1].rotation = 315
+
+    # drehbare Polygone
     for xPolygon in range(3):
         level.form_hinzufuegen(Polygon((self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
                                         self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
@@ -540,14 +538,33 @@ def level14Erstellen(self) -> Levelstruktur:
     level.tastenGesteuert = True
     level.internerSpeicherL = [funcL14_1Level, funcL14_2Level, 1]
     level.weiteresZeichnen = funcL14WeiteresZeichnen
+
     return level
 
 def level15Erstellen(self) -> Levelstruktur:
     """ Nur interessant wo relativ zum vorherigen Klick geklickt wurde """
     level = Levelstruktur(self)
     level.form_hinzufuegen(Rechteck(0, 0, self.wW, self.wW, QColor(0, 90, 0), funcL15))
+    for i in range(10):
+        level.form_hinzufuegen(Polygon((38 + 75 * i, 400,
+                                        63 + 75 * i, 350,
+                                        88 + 75 * i, 400,
+                                        75 + 75 * i, 400,
+                                        75 + 75 * i, 412,
+                                        50 + 75 * i, 412,
+                                        50 + 75 * i, 400), QColor(0, 0, 0), nothing))
+        # Bestimmte Polygone drehen
+        letzteForm : Form = level.enthalteneFormen[-1]
+        # nach rechts
+        if i == 4 or i == 9:
+            letzteForm.rotation = 90
+        # nach unten
+        elif i == 2 or i == 7:
+            letzteForm.rotation = 180
+        # nach links
+        elif i == 3 or i == 5 or i == 6:
+            letzteForm.rotation = 270
     level.enthalteneFormen[0].internerSpeicherF = (0, 0)
     level.enthalteneFormen[0].klickKoordinatenMerken = True
     level.internerSpeicherL = [ (3, 3, 1, 2, 0, 2, 2, 1, 3, 0), 0]
-    print(level.internerSpeicherL)
     return level
