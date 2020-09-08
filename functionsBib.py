@@ -161,11 +161,14 @@ def funcL13(self: Form) -> None:
     """ Wenn auf das richtige Feld geklickt wurde, wird zufaellig das naechste bestimmt und die Dreiecke
     entsprechend ausgerichtet """
     self.richtig_faerben()
+    # erneutes klicken auf das (nun gefaerbtes) Feld waere ein Fehler
     self.func = level_zuruecksetzen
+    # naechstes Feld zufaellig bestimmen
     naechstesFeld = randint(5, 8)
+    # so lange das neu zufaellig ausgewaehlte Feld ein bereits gedruecktes ist, wird ein neues zufaelliges bestimmt
     while self.zugehoerigesLevel.enthalteneFormen[naechstesFeld].farbe == QColor(0, 180, 0):
         naechstesFeld = randint(5, 8)
-        # pruefen ob schon fertig
+        # sind jedoch alle Felder bereits richtig gefaerbt, wird das Level abgeschlossen (ineffizient, aber ok)
         anzahlRichtigeFelder = 0
         for i in range(4):
             if self.zugehoerigesLevel.enthalteneFormen[i + 5].farbe == QColor(0, 180, 0):
@@ -173,7 +176,7 @@ def funcL13(self: Form) -> None:
         if anzahlRichtigeFelder == 4:
             self.zugehoerigesLevel.alleRichtigFaerben()
             return
-    # wenn naechstes Feld gefunden wurde
+    # wenn naechstes Feld gefunden wurde, wird diesem die Funktion neu zugeordnet und die Dreiecke werden ausgerichtet
     self.zugehoerigesLevel.enthalteneFormen[naechstesFeld].func = funcL13
     for dreieckIndex in range(5):
         self.zugehoerigesLevel.enthalteneFormen[dreieckIndex].rotation = \
@@ -181,19 +184,23 @@ def funcL13(self: Form) -> None:
 
 # Level 14
 def funcL14_1(self: Form) -> None:
+    """ Zustand zu 0, also 'links-und-mitte-drehen' aendern """
     self.aufleuchten = True
     self.zugehoerigesLevel.internerSpeicherL[2] = 0
 
 def funcL14_2(self: Form) -> None:
+    """ Zustand zu 1, also 'alle-drehen' aendern """
     self.aufleuchten = True
     self.zugehoerigesLevel.internerSpeicherL[2] = 1
 
 def funcL14_3(self: Form) -> None:
+    """ Zustand zu 2, also 'mitte-und-links-drehen' aendern """
     self.aufleuchten = True
     self.zugehoerigesLevel.internerSpeicherL[2] = 2
 
 def funcL14_1Level(self: Levelstruktur) -> None:
     """ nach links drehen """
+    # je nach Zustand werden andere Formen gedreht
     if self.internerSpeicherL[2] == 0:
         self.enthalteneFormen[6].rotation -= 3
         self.enthalteneFormen[7].rotation -= 3
@@ -205,14 +212,17 @@ def funcL14_1Level(self: Levelstruktur) -> None:
         self.enthalteneFormen[7].rotation -= 3
         self.enthalteneFormen[8].rotation -= 3
 
+    # pruefen ob alle richtig gedreht
     if self.enthalteneFormen[6].rotation % 360 == 45 \
             and self.enthalteneFormen[7].rotation % 360 == 180 \
             and self.enthalteneFormen[8].rotation % 360 == 315:
         self.alleRichtigFaerben()
+        # manuell Level als gewonnen kennzeichnen ist noetig, da 'beruehrt' von 'Levelstruktur' nicht aufgerufen wird
         self.zugehoerigesFenster.levelGewonnen = True
 
 def funcL14_2Level(self: Levelstruktur) -> None:
     """ nach rechts drehen """
+    # je nach Zustand werden andere Formen gedreht
     if self.internerSpeicherL[2] == 0:
         self.enthalteneFormen[6].rotation += 3
         self.enthalteneFormen[7].rotation += 3
@@ -224,10 +234,12 @@ def funcL14_2Level(self: Levelstruktur) -> None:
         self.enthalteneFormen[7].rotation += 3
         self.enthalteneFormen[8].rotation += 3
 
+    # pruefen ob alle richtig gedreht
     if self.enthalteneFormen[6].rotation % 360 == 45 \
             and self.enthalteneFormen[7].rotation % 360 == 180 \
             and self.enthalteneFormen[8].rotation % 360 == 315:
         self.alleRichtigFaerben()
+        # manuell Level als gewonnen kennzeichnen ist noetig, da 'beruehrt' von 'Levelstruktur' nicht aufgerufen wird
         self.zugehoerigesFenster.levelGewonnen = True
 
 def funcL14WeiteresZeichnen(painterF: QPainter, win) -> None:
@@ -249,17 +261,16 @@ def funcL14WeiteresZeichnen(painterF: QPainter, win) -> None:
 
 # Level 15
 def funcL15(self: Form, xKlick: int, yKlick: int) -> None:
+    """ testet, je nach Zustand, ob der Klick rechts/links oder ueber/unter dem vorherigen Klick ist """
     momentanesLevel : Levelstruktur = self.zugehoerigesLevel
-
-    # Wenn erster Klick (relative Position  nicht wichtig)
-    if self.internerSpeicherF == (0, 0):
+    # Wenn erster Klick ist relative Position nicht wichtig und wird nur fuer naechsten Klick gespeichert
+    if self.internerSpeicherF == (-1, -1):
         self.internerSpeicherF = (xKlick, yKlick)
         self.richtig_faerben_ohneAufleuchten()
         return
 
-    vorgabe = momentanesLevel.internerSpeicherL[0]
-    zustand = momentanesLevel.internerSpeicherL[1]
-
+    vorgabe : tuple = momentanesLevel.internerSpeicherL[0]
+    zustand : int = momentanesLevel.internerSpeicherL[1]
     richtigGeklickt : bool = False
 
     # Soll rechts davon sein
@@ -279,16 +290,17 @@ def funcL15(self: Form, xKlick: int, yKlick: int) -> None:
         if yKlick < self.internerSpeicherF[1]:
             richtigGeklickt = True
 
+    # wenn die relative Position richtig ist, wird der Klick gespeichert und der Zustand wechselt in den naechsten
     if richtigGeklickt:
         self.internerSpeicherF = (xKlick, yKlick)
         self.zugehoerigesLevel.internerSpeicherL[1] += 1
         self.zugehoerigesLevel.enthalteneFormen[self.zugehoerigesLevel.internerSpeicherL[1]].richtig_faerben()
+        # abgeschlossen, wenn der vorgesehene Ablauf komplett durchgelaufen ist
+        if momentanesLevel.internerSpeicherL[1] == 10:
+            momentanesLevel.alleRichtigFaerben()
+    # wenn nicht, wird das Level zurueckgesetzt
     else:
         self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
-
-    # Gewinnbedingung
-    if momentanesLevel.internerSpeicherL[1] == 10:
-        momentanesLevel.alleRichtigFaerben()
 
 
 # Funktionen für die Levelerstellung
@@ -520,21 +532,27 @@ def level12Erstellen(self) -> Levelstruktur:
     return level
 
 def level13Erstellen(self) -> Levelstruktur:
-    """ Dreiecke zeigen auf den Kreis, den man als naechstes druecken muss """
+    """ Dreiecke zeigen auf den Kreis, den man als naechstes druecken muss. Dabei wird das naechst zu drueckende
+    Dreieck zufaellig bestimmt. """
     level = Levelstruktur(self)
+    # nicht klickbare Dreiecke erstellen
     for xDreieck in range(5):
         level.form_hinzufuegen(Polygon((self.wW / 8 + self.wW * 3 / 16 * xDreieck, self.wW / 10 + self.wW / 12,
                                         self.wW / 16 + self.wW * 3 / 16 * xDreieck, self.wW / 4  + self.wW / 12,
                                         self.wW * 3 / 16 +  self.wW * 3 / 16 * xDreieck, self.wW / 4 + self.wW / 12),
                                        QColor(0, 90, 0), nothing))
+    # Kreise erstellen
     for xKreis in range(4):
         level.form_hinzufuegen(Kreis(self.wW * 5 / 32 + self.wW * 3 / 16 * xKreis, self.wW / 2,
                                      self.wW / 8, self.wW / 8,
                                      QColor(0, 90, 0), level_zuruecksetzen))
+    # Rotationen der Dreiecke, die sie annehmen, je nach dem welcher Kreis als naechster ist, vorab speichern
     level.internerSpeicherL = ( (162, 199, 225, 240, 247) , (135, 162, 199, 225, 240) ,
                                 (120, 135, 162, 199, 225) , (113, 120, 135, 162, 199) )
+    # erste Form zufaellig bestimmen, der die richtige Funktion zugewiesen wird
     ersteForm : int = randint(5, 8)
     level.enthalteneFormen[ersteForm].func = funcL13
+    # Dreiecke auf ersten Kreis ausrichten
     for dreieckIndex in range(5):
         level.enthalteneFormen[dreieckIndex].rotation = level.internerSpeicherL[ersteForm - 5][dreieckIndex]
     return level
@@ -542,15 +560,17 @@ def level13Erstellen(self) -> Levelstruktur:
 def level14Erstellen(self) -> Levelstruktur:
     """ 3 Formen zum drehen mit X und Y vorhanden """
     level = Levelstruktur(self)
+    # obere Knoepfe hinzufuegen
     for xRechteck in range(3):
         level.form_hinzufuegen(Rechteck(self.wW / 8 + self.wW * (5 / 16) * xRechteck,
                                         self.wW / 5,
                                         self.wW / 8, self.wW / 8, QColor(0, 90, 0), nothing))
+    # jeweilige Funktionen zuordnen
     level.enthalteneFormen[0].func = funcL14_1
     level.enthalteneFormen[1].func = funcL14_2
     level.enthalteneFormen[2].func = funcL14_3
 
-    # schwarzer Hintergrund fuer die Polygone
+    # schwarze bereits korrekt gedrehte Polygone hinter den drehbaren zur Orientierung zuerst hinzufuegen ...
     for xPolygon in range(3):
         level.form_hinzufuegen(Polygon((self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
                                         self.wW / 8 + self.wW * (5 / 16) * xPolygon, self.wW / 2,
@@ -558,9 +578,10 @@ def level14Erstellen(self) -> Levelstruktur:
                                         self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
                                         self.wW * 3 / 16 + self.wW * (5 / 16) * xPolygon, self.wW * 9 / 16),
                                        QColor(0, 0, 0), nothing))
-    level.enthalteneFormen[-3].rotation = 45
-    level.enthalteneFormen[-2].rotation = 180
-    level.enthalteneFormen[-1].rotation = 315
+    # ... dann drehen
+    level.enthalteneFormen[3].rotation = 45
+    level.enthalteneFormen[4].rotation = 180
+    level.enthalteneFormen[5].rotation = 315
 
     # drehbare Polygone
     for xPolygon in range(3):
@@ -570,16 +591,21 @@ def level14Erstellen(self) -> Levelstruktur:
                                         self.wW / 4 + self.wW * (5 / 16) * xPolygon, self.wW * 11 / 16,
                                         self.wW * 3 / 16 + self.wW * (5 / 16) * xPolygon, self.wW * 9 / 16),
                                        QColor(0, 90, 0), nothing))
-    level.tastenGesteuert = True
-    level.internerSpeicherL = [funcL14_1Level, funcL14_2Level, 1]
-    level.weiteresZeichnen = funcL14WeiteresZeichnen
 
+    level.tastenGesteuert = True
+    # [0] und [1] sind die Levelfunktionen, damit diese von den Tasten ausgefuehrt werden koennen
+    # [2] ist Zustand des Levels:   0: links und mitte bewegen, 1: alle bewegen, 2: mitte und rechts bewegen
+    level.internerSpeicherL = [funcL14_1Level, funcL14_2Level, 1]
+    # Hinweislinien an den Knoepfen zeichnen und Steuerungshinweis drunter schreiben
+    level.weiteresZeichnen = funcL14WeiteresZeichnen
     return level
 
 def level15Erstellen(self) -> Levelstruktur:
     """ Nur interessant wo relativ zum vorherigen Klick geklickt wurde """
     level = Levelstruktur(self)
-    level.form_hinzufuegen(Rechteck(0, 0, self.wW, self.wW, QColor(0, 90, 0), funcL15))
+    # als Hintergrund einen fenstergrossen Kreis hinzufuegen, auf dem geklickt werden kann
+    level.form_hinzufuegen(Kreis(0, 0, self.wW, self.wW, QColor(0, 90, 0), funcL15))
+    # alle Pfeile (nach oben gerichtet) hinzufuegen
     for i in range(10):
         level.form_hinzufuegen(Polygon((self.wW / 800 * 38 + self.wW / 800 * 75 * i, self.wW / 800 * 400,
                                         self.wW / 800 * 63 + self.wW / 800 * 75 * i, self.wW / 800 * 350,
@@ -589,7 +615,7 @@ def level15Erstellen(self) -> Levelstruktur:
                                         self.wW / 800 * 50 + self.wW / 800 * 75 * i, self.wW / 800 * 412,
                                         self.wW / 800 * 50 + self.wW / 800 * 75 * i, self.wW / 800 * 400),
                                        QColor(0, 0, 0), nothing))
-        # Bestimmte Polygone drehen
+        # Bestimmte Pfeile drehen, damit die Hinweise Sinn ergeben
         letzteForm : Form = level.enthalteneFormen[-1]
         # nach rechts
         if i == 4 or i == 9:
@@ -600,7 +626,9 @@ def level15Erstellen(self) -> Levelstruktur:
         # nach links
         elif i == 3 or i == 5 or i == 6:
             letzteForm.rotation = 270
-    level.enthalteneFormen[0].internerSpeicherF = (0, 0)
-    level.enthalteneFormen[0].klickKoordinatenMerken = True
+    # als ersten Klickpunkt wird (-1, -1) als Platzhalter gespeicht, da dies gar nicht hier angeklickt werden kann
+    level.enthalteneFormen[0].internerSpeicherF = (-1, -1)
+    # [0] ist der vorgesehene Ablauf  ,  [1] ist der Index, also der Zeiger, in welchem Zustand man nun ist
     level.internerSpeicherL = [ (3, 3, 1, 2, 0, 2, 2, 1, 3, 0), 0]
+    level.enthalteneFormen[0].klickKoordinatenMerken = True
     return level

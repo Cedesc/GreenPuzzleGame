@@ -109,9 +109,9 @@ class Polygon(Form):
         hilfsListe = []
         for index in range(len(self.eckpunkte)):
             if index % 2 == 0:
-                hilfsListe.append(self.eckpunkte[index] - self.mittelpunkt[0])
+                hilfsListe.append(int(self.eckpunkte[index] - self.mittelpunkt[0]))
             else:
-                hilfsListe.append(self.eckpunkte[index] - self.mittelpunkt[1])
+                hilfsListe.append(int(self.eckpunkte[index] - self.mittelpunkt[1]))
         self.eckpunkteRelZuMitte = tuple(hilfsListe)
 
 
