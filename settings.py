@@ -11,3 +11,9 @@ AUFLEUCHTZEIT : int = 100
 
 # Farbe, die beim aufleuchten angezeigt wird
 AUFLEUCHTFARBE : QColor = QColor(200, 200, 200)
+
+# Bestimmt ob Musik laeuft
+MUSIK : bool = False
+
+# Bestimmt welcher Track im Hintergrund laeuft
+MUSIKTRACK : str = 'Re_ii-Mantra.wav'

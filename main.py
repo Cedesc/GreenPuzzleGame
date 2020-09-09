@@ -5,6 +5,8 @@ from PyQt5.QtCore import Qt, QRect, QTimer
 import functionsBib as fb
 import settings
 from classes import Levelstruktur, List
+from sounddevice import play
+from soundfile import read
 
 
 class Window(QWidget):
@@ -25,6 +27,9 @@ class Window(QWidget):
         self.keyPressEvent = self.fn
 
         self.debugKoordinatenPrinten : bool = False
+
+        if settings.MUSIK:
+            self.musikAnmachen()
 
         self.show()
 
@@ -194,6 +199,10 @@ class Window(QWidget):
         if self.levels[self.levelCounter].beruehrt(pos.x(), pos.y()):
             self.update()
 
+
+    def musikAnmachen(self) -> None:
+        data, fs = read(settings.MUSIKTRACK, dtype='float32')
+        play(data, fs)
 
     def initalisierung(self) -> None:
         """ Anfaengliche Erstellung der Level """
