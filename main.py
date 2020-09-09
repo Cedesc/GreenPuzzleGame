@@ -22,6 +22,7 @@ class Window(QWidget):
         self.levelCounter : int = 0                     # Index des momentan zu bearbeitendem Level
         self.maxLevel : int = 0                         # den maximal zu erreichenden Index der level-Liste
         self.levelGewonnen : bool = False
+        self.spielGewonnen : bool = False
 
         self.initalisierung()
         self.keyPressEvent = self.fn
@@ -89,17 +90,57 @@ class Window(QWidget):
             painter.setFont(QFont("Times", int(self.wW / 22)))
             painter.drawText(rect2, 4, "Glückwunsch,\n "
                                        "du hast Level " + str(self.levelCounter) + " geschafft")
-            self.levelGewonnen = False
-            QTimer.singleShot(settings.UEBERGANGSZEIT, self.update)
-            # pruefen ob gesamtes Spiel beendet wurde
-            self.levelCounter += 1
-            if self.levelCounter > self.maxLevel:
-                print("Glueckwunsch, du hast alle Level abgeschlossen")
-                self.close()
+            # pruefen ob es das letzte Level ist
+            if self.levelCounter < self.maxLevel:
+                QTimer.singleShot(settings.UEBERGANGSZEIT, self.update)
+                self.levelGewonnen = False
+                self.levelCounter += 1
+
+            # Falls letztes Level und Endscreen noch nicht angezeigt wird, kommt noch einmal der Glueckwunsch-Screen
+            elif not self.spielGewonnen:
+                QTimer.singleShot(settings.UEBERGANGSZEIT, self.update)
+                self.spielGewonnen = True
+            # falls Spiel vorbei, eigener Gewinnscreen
+            elif self.spielGewonnen:
+                painter.fillRect(0, 0, self.wW, self.wW, QColor(0, 160, 0))
+                rect3 = QRect(0, 0, self.wW, self.wW)
+                painter.setFont(QFont("Times", int(self.wW / 22)))
+                painter.drawText(rect3, 4, "Sehr gut!\n"
+                                           "Du hast alle Level\n"
+                                           "erfolgreich abgeschlossen\n\n")
+                rect4 = QRect(0, int(self.wW / 3), self.wW, self.wW)
+                painter.setFont(QFont("Times", int(self.wW / 50)))
+                painter.drawText(rect4, 4,"Credits\n"
+                                           "Creative Director:  Cedesc\n"
+                                           "Production Director:  Cedesc\n"
+                                           "Game Director:  Cedesc\n"
+                                           "Technology Director:  Cedesc\n"
+                                           "Art Director:  Cedesc\n"
+                                           "Narrative Director:  Cedesc\n"
+                                           "Story By:  Cedesc\n"
+                                           "Lead Programmer:  Cedesc\n"
+                                           "Technical Architect:  Cedesc\n"
+                                           "Geiler Typ: Cedesc\n"
+                                           "Camera Specialist:  Cedesc\n"
+                                           "Lead Level Designer:  Cedesc\n"
+                                           "Build Master:  Cedesc\n"
+                                           "Music Composition:  Re_ii\n"
+                                           "Lead Development Tester:  Cedesc\n"
+                                           "Production Manager:  Cedesc\n"
+                                           "Territory Manager:  Cedesc\n"
+                                           "Production Support Coordinator:  Cedesc\n")
+
+                print("Das Spiel wurde erfolgreich abgeschlossen.\n"
+                      "Druecke Esc um das Fenster zu schliessen.")
             return
 
 
     def fn(self, e) -> None:
+
+        # Im Endscreen sind Tastenbelegungen nicht vorgesehen, deshalb vorab dies zum Abfangen
+        if self.spielGewonnen and e.key() != Qt.Key_Escape:
+            print("Das Spiel ist zuende, Eingaben ausser Esc funktionieren hier nicht")
+            return
 
         # Keybindings fuers Debuggen
         if e.key() == Qt.Key_1:
