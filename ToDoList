@@ -23,10 +23,8 @@ Unwichtig:
 
 
 Levelideen:
-- [4] (wie bei yellow level 20) jeweils kleiner hinweis auf dem feld, welches als naechstes kommt
 - [4] (wie bei yellow level 49) unsichtbares Feld, was nur kurz aufleuchtet
 - [5] (wie bei yellow level 9) form ausfuellen, nicht sich wie bei snake selbst beissen
 - [5] (wie bei yellow level 33) schwer zu erklaeren... ist die grosse 8 mit den schwarzen Punkten drum herum und den
   zwei Kreisen als Eingabe (entweder links oder rechts von der Linie)
-- [1] Jede Form hat eine andere zugewiesene Form (nicht alle Gegenstuecke). Einige Formen sind jedoch bereits gefaerbt,
-  andere nicht, sodass man sich letztlich etwas verliert, wenn man sich nicht die anfangs gefaerbten gemerkt hat
+- [5] (wie bei yellow) drei regler, die rot, gelb und blau hinzufuegen (hier zb wieder mit klicken und x/y zu loesen)

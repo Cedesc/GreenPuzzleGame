@@ -302,6 +302,25 @@ def funcL15(self: Form, xKlick: int, yKlick: int) -> None:
     else:
         self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
 
+# Level 16
+def funcL16(self: Form) -> None:
+    """ Verbundene Form umkehren """
+    self.verbundeneFormen[0].umkehren()
+
+# Level 17
+def funcL17(self: Form) -> None:
+    """ Eine andere Form (einzig verbundene) wird korrekt gefaerbt,
+    alle Formen bekommen die Funktion 'level_zuruecksetzen' ausser der naechst-vorgesehenen """
+    self.richtig_faerben()
+    self.zugehoerigesLevel.formFuncsAendern(level_zuruecksetzen)
+    self.verbundeneFormen[0].func = funcL17
+    # Pruefen ob, bis auf die Polygone, alles korrekt gefaerbt ist
+    formen : List[Form] = self.zugehoerigesLevel.enthalteneFormen
+    for i in range(12):
+        if formen[i].farbe != QColor(0, 180, 0):
+            return
+    self.zugehoerigesLevel.alleRichtigFaerben()
+
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
@@ -355,15 +374,13 @@ def level4Erstellen(self) -> Levelstruktur:
     """ Beim anklicken eines Rechtecks wird ein anderes Rechteck korrekt gefaerbt. Wird dieses gefaerbte dann geklickt,
     wird ein anderes korrekt gefaerbt usw. Bei anklicken eines anderen Felds, wird das Level zurueckgesetzt. """
     level = Levelstruktur(self)
-    for y in range(4):
-        for x in range(4):
-            level.form_hinzufuegen(Rechteck(self.wW / 6.4 + self.wW * (3 / 16) * x,
-                                            self.wW / 6.4 + self.wW * (3 / 16) * y,
+    for y in range(3):
+        for x in range(3):
+            level.form_hinzufuegen(Rechteck(self.wW / 8 + self.wW * (5 / 16) * x,
+                                            self.wW / 8 + self.wW * (5 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL4))
     # verbundene Rechtecke zuweisen (soll letztlich ein Durchlauf am Stueck sein)
-    zuweisungsListe = [ [15], [14], [3], [12], [13], [8], [11], [9],
-                        [2],  [1],  [0], [10], [7],  [5], [6],  [4] ]
-    level.formReferenzenHinzufuegen(zuweisungsListe)
+    level.formReferenzenHinzufuegen([ [4], [6], [3], [7], [5], [8], [0], [1], [2] ])
     return level
 
 def level5Erstellen(self) -> Levelstruktur:
@@ -412,7 +429,7 @@ def level7Erstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
     for y in range(3):
         for x in range(3):
-            level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16) * x,
+            level.form_hinzufuegen(Kreis(self.wW / 4 + self.wW * (3 / 16) * x,
                                             self.wW / 4.5 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL7))
     # internen Speicher des Levels mit einem Platzhalter fuellen
@@ -631,4 +648,96 @@ def level15Erstellen(self) -> Levelstruktur:
     # [0] ist der vorgesehene Ablauf  ,  [1] ist der Index, also der Zeiger, in welchem Zustand man nun ist
     level.internerSpeicherL = [ (3, 3, 1, 2, 0, 2, 2, 1, 3, 0), 0]
     level.enthalteneFormen[0].klickKoordinatenMerken = True
+    return level
+
+def level16Erstellen(self) -> Levelstruktur:
+    """ Jede Form hat eine andere zugewiesene Form. Einige Formen sind bereits gefaerbt, andere nicht, sodass man
+    sich letztlich etwas verliert, wenn man sich nicht die anfangs gefaerbten gemerkt hat """
+    level = Levelstruktur(self)
+    for y in range(3):
+        for x in range(4):
+            # bestimmte Felder werden bereits richtig gefaerbt
+            genutzteFarbe : QColor = QColor(0, 90, 0)
+            if (x,y) in [ (0,3), (1,0), (1,2), (1,3), (2,1), (2,2), (3,0), (3,1) ]:
+                genutzteFarbe = QColor(0, 180, 0)
+            level.form_hinzufuegen(Rechteck(self.wW / 6.4 + self.wW * (3 / 16) * x,
+                                            self.wW / 5 + self.wW * (3 / 16) * y,
+                                            self.wW / 8, self.wW / 8, genutzteFarbe, funcL16))
+    # je verbundenes Rechteck zuweisen
+    level.formReferenzenHinzufuegen([ [2], [4], [5], [0], [10], [1], [6], [3], [9], [11], [7], [8] ])
+    return level
+
+def level17Erstellen(self) -> Levelstruktur:
+    """ jeweils kleiner Hinweis auf dem Feld, welches als naechstes kommt """
+    level = Levelstruktur(self)
+    # klickbare Rechtecke hinzufuegen
+    for y in range(4):
+        for x in range(3):
+            level.form_hinzufuegen(Rechteck(self.wW / 4 + self.wW * (3 / 16) * x,
+                                            self.wW / 6 + self.wW * (3 / 16) * y,
+                                            self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL17))
+    # zu jeder Form eine verbundene hinzufuegen
+    level.formReferenzenHinzufuegen([ [1], [10], [8], [6], [5], [3], [0], [4], [7], [11], [9], [2] ])
+    # schwarze Dreiecke als Hinweise auf den Rechtecken hinzufuegen
+    for y in range(4):
+        for x in range(3):
+            level.form_hinzufuegen(Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * x,
+                                            self.wW / 800 * 155 + self.wW * (3 / 16) * y,
+                                            self.wW / 800 * 225 + self.wW * (3 / 16) * x,
+                                            self.wW / 800 * 205 + self.wW * (3 / 16) * y,
+                                            self.wW / 800 * 275 + self.wW * (3 / 16) * x,
+                                            self.wW / 800 * 205 + self.wW * (3 / 16) * y ),
+                                            QColor(0, 0, 0), nothing))
+            # korrekt drehen
+            letzteForm : Form = level.enthalteneFormen[-1]
+            # nach rechts
+            if (x,y) in [(0,0), (0,3), (1,1)]:
+                letzteForm.rotation = 90
+            # nach unten
+            elif (x, y) in [(0, 1), (1, 0), (2, 0)]:
+                letzteForm.rotation = 180
+            # nach links
+            elif (x, y) in [(1, 3), (2, 1), (2, 2)]:
+                letzteForm.rotation = 270
+
+    # weitere Dreiecke fuer die doppelten und dreifachen hinzufuegen
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 0, self.wW / 800 * 165 + self.wW * (3 / 16) * 2,
+                 self.wW / 800 * 225 + self.wW * (3 / 16) * 0, self.wW / 800 * 215 + self.wW * (3 / 16) * 2,
+                 self.wW / 800 * 275 + self.wW * (3 / 16) * 0, self.wW / 800 * 215 + self.wW * (3 / 16) * 2),
+                QColor(0, 0, 0), nothing))
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 240 + self.wW * (3 / 16) * 0, self.wW / 800 * 155 + self.wW * (3 / 16) * 3,
+                 self.wW / 800 * 215 + self.wW * (3 / 16) * 0, self.wW / 800 * 205 + self.wW * (3 / 16) * 3,
+                 self.wW / 800 * 265 + self.wW * (3 / 16) * 0, self.wW / 800 * 205 + self.wW * (3 / 16) * 3),
+                QColor(0, 0, 0), nothing))
+    level.enthalteneFormen[-1].rotation = 90
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 1, self.wW / 800 * 145 + self.wW * (3 / 16) * 0,
+                 self.wW / 800 * 225 + self.wW * (3 / 16) * 1, self.wW / 800 * 195 + self.wW * (3 / 16) * 0,
+                 self.wW / 800 * 275 + self.wW * (3 / 16) * 1, self.wW / 800 * 195 + self.wW * (3 / 16) * 0),
+                QColor(0, 0, 0), nothing))
+    level.enthalteneFormen[-1].rotation = 180
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 1, self.wW / 800 * 135 + self.wW * (3 / 16) * 0,
+                 self.wW / 800 * 225 + self.wW * (3 / 16) * 1, self.wW / 800 * 185 + self.wW * (3 / 16) * 0,
+                 self.wW / 800 * 275 + self.wW * (3 / 16) * 1, self.wW / 800 * 185 + self.wW * (3 / 16) * 0),
+                QColor(0, 0, 0), nothing))
+    level.enthalteneFormen[-1].rotation = 180
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 2, self.wW / 800 * 145 + self.wW * (3 / 16) * 0,
+                 self.wW / 800 * 225 + self.wW * (3 / 16) * 2, self.wW / 800 * 195 + self.wW * (3 / 16) * 0,
+                 self.wW / 800 * 275 + self.wW * (3 / 16) * 2, self.wW / 800 * 195 + self.wW * (3 / 16) * 0),
+                QColor(0, 0, 0), nothing))
+    level.enthalteneFormen[-1].rotation = 180
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 2, self.wW / 800 * 165 + self.wW * (3 / 16) * 3,
+                 self.wW / 800 * 225 + self.wW * (3 / 16) * 2, self.wW / 800 * 215 + self.wW * (3 / 16) * 3,
+                 self.wW / 800 * 275 + self.wW * (3 / 16) * 2, self.wW / 800 * 215 + self.wW * (3 / 16) * 3),
+                QColor(0, 0, 0), nothing))
+    level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 2, self.wW / 800 * 175 + self.wW * (3 / 16) * 3,
+                 self.wW / 800 * 225 + self.wW * (3 / 16) * 2, self.wW / 800 * 225 + self.wW * (3 / 16) * 3,
+                 self.wW / 800 * 275 + self.wW * (3 / 16) * 2, self.wW / 800 * 225 + self.wW * (3 / 16) * 3),
+                QColor(0, 0, 0), nothing))
     return level
