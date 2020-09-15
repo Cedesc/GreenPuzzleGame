@@ -321,6 +321,15 @@ def funcL17(self: Form) -> None:
             return
     self.zugehoerigesLevel.alleRichtigFaerben()
 
+# Level 18
+def funcL18(self: Form) -> None:
+    """ """
+    pass
+
+def funcL18WeiteresZeichnen(painterF: QPainter, win) -> None:
+    """ Form, die aus einer Linie besteht, zeichnen """
+    pass
+
 
 # Funktionen für die Levelerstellung
 # Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
@@ -740,4 +749,19 @@ def level17Erstellen(self) -> Levelstruktur:
                  self.wW / 800 * 225 + self.wW * (3 / 16) * 2, self.wW / 800 * 225 + self.wW * (3 / 16) * 3,
                  self.wW / 800 * 275 + self.wW * (3 / 16) * 2, self.wW / 800 * 225 + self.wW * (3 / 16) * 3),
                 QColor(0, 0, 0), nothing))
+    return level
+
+def level18Erstellen(self) -> Levelstruktur:
+    """ Form, die aus einer Linie besteht, abgebildet, an der links und rechts von der Linie unregelmaessig Kreise sind.
+    diese sind Hinweise, ob man nun den linken oder rechten Knopf druecken muss. """
+    level = Levelstruktur(self)
+    # zwei untere Knoepfe erstellen
+    for x in range(2):
+        level.form_hinzufuegen(Kreis(self.wW * 11 / 32 + self.wW * 3 / 16 * x,
+                                     self.wW * 3 / 4,
+                                     self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL18))
+    # Kreise, welche die Hinweise darstellen, hinzufuegen
+    pass
+    # Form, die an den Hinweisen liegt, hinzufuegen
+    level.weiteresZeichnen = funcL18WeiteresZeichnen
     return level

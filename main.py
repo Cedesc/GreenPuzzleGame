@@ -266,12 +266,13 @@ class Window(QWidget):
         level15 : Levelstruktur = fb.level15Erstellen(self)
         level16 : Levelstruktur = fb.level16Erstellen(self)
         level17 : Levelstruktur = fb.level17Erstellen(self)
+        level18 : Levelstruktur = fb.level18Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level00, level01, level02, level03, level04,
+        self.originalLevels = [level18, level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
-                               level15, level16, level17, level00]
+                               level15, level16, level17, level18, level00]
 
         # fuer jedes Level eine Kopie in self.levels erstellen, die letztlich die spielbaren Level sind
         for lev in self.originalLevels:
