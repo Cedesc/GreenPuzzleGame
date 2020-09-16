@@ -323,12 +323,32 @@ def funcL17(self: Form) -> None:
 
 # Level 18
 def funcL18(self: Form) -> None:
-    """ """
-    pass
+    """ je nach dem ob man den linken oder rechten Knopf drueckt, wird getestet, ob der richtige gedrueckt wurde """
+    # level.internerSpeicherL = [(1, 0, 1, 1, 1, 0, 0), 0]
+    vorgesehenerAblauf = self.zugehoerigesLevel.internerSpeicherL[0]
+    zustandsPointer = self.zugehoerigesLevel.internerSpeicherL[1]
+    # pruefen ob das korrekte geklickt wurde
+    if vorgesehenerAblauf[zustandsPointer] == self.internerSpeicherF:
+        pass
+    # falls die falsche Seite geklickt wurde
+    else:
+        pass
 
 def funcL18WeiteresZeichnen(painterF: QPainter, win) -> None:
-    """ Form, die aus einer Linie besteht, zeichnen """
-    pass
+    """ Form, die aus einer Linie besteht, zeichnen und Pfeil fuer den Anfang """
+    # Fenstergroesse
+    wW : int = win.wW
+    # mittige Form
+    painterF.setPen(QPen(QColor(0, 0, 0), wW / 80, Qt.SolidLine))
+    painterF.drawPolyline(QPolygon([wW / 8, wW * 5 / 8, wW * 65 / 80, wW * 3 / 8,
+                                    wW * 55 / 80, wW / 8, wW * 25 / 80, wW / 8,
+                                    wW * 15 / 80, wW * 3 / 8, wW * 7 / 8, wW * 5 / 8]))
+    # Anfangspfeil
+    painterF.setPen(QPen(QColor(0, 0, 0), wW / 200, Qt.SolidLine))
+    painterF.drawPolygon(QPolygon([wW * 7 / 80, wW * 57 / 80, wW / 8, wW * 52 / 80,
+                                   wW * 13 / 80, wW * 57/ 80, wW * 11 / 80, wW * 57 / 80,
+                                   wW * 11 / 80, wW * 59 / 80, wW * 9 / 80, wW * 59 / 80,
+                                   wW * 9 / 80, wW * 57 / 80]))
 
 
 # Funktionen für die Levelerstellung
@@ -755,13 +775,35 @@ def level18Erstellen(self) -> Levelstruktur:
     """ Form, die aus einer Linie besteht, abgebildet, an der links und rechts von der Linie unregelmaessig Kreise sind.
     diese sind Hinweise, ob man nun den linken oder rechten Knopf druecken muss. """
     level = Levelstruktur(self)
+
+    # Kreise, welche die Hinweise darstellen, hinzufuegen
+    level.form_hinzufuegen(Kreis(self.wW / 4, self.wW * 46 / 80,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+    level.form_hinzufuegen(Kreis(self.wW * 5 / 8, self.wW * 29 / 80,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+    level.form_hinzufuegen(Kreis(self.wW * 535 / 800, self.wW * 16 / 80,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+    level.form_hinzufuegen(Kreis(self.wW * 375 / 800, self.wW * 103 / 800,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+    level.form_hinzufuegen(Kreis(self.wW * 15 / 80, self.wW * 16 / 80,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+    level.form_hinzufuegen(Kreis(self.wW * 25 / 80 , self.wW * 29 / 80,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+    level.form_hinzufuegen(Kreis(self.wW * 55 / 80, self.wW * 4 / 8,
+                                 self.wW / 16, self.wW / 16, QColor(0, 90, 0), nothing))
+
     # zwei untere Knoepfe erstellen
     for x in range(2):
         level.form_hinzufuegen(Kreis(self.wW * 11 / 32 + self.wW * 3 / 16 * x,
                                      self.wW * 3 / 4,
                                      self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL18))
-    # Kreise, welche die Hinweise darstellen, hinzufuegen
-    pass
-    # Form, die an den Hinweisen liegt, hinzufuegen
+    # internen Speicher der Knoepfe zur Unterscheidung in funcL18 fuellen (0: links, 1: rechts)
+    level.enthalteneFormen[-2].internerSpeicherF = 0
+    level.enthalteneFormen[-1].internerSpeicherF = 1
+
+    # Form, die an den Hinweisen liegt, und Anfangspfeil hinzufuegen
     level.weiteresZeichnen = funcL18WeiteresZeichnen
+
+    # [0] ist der festgelegte Ablauf, [1] ist der Pointer, welcher Zustand nun dran ist
+    level.internerSpeicherL = [(1, 0, 1, 1, 1, 0, 0), 0]
     return level
