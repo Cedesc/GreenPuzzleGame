@@ -812,3 +812,11 @@ def level18Erstellen(self) -> Levelstruktur:
     # [0] ist der festgelegte Ablauf, [1] ist der Pointer, welcher Zustand nun dran ist
     level.internerSpeicherL = [(1, 0, 0, 0, 1, 0, 0), 0]
     return level
+
+def menueErstellen(self) -> Levelstruktur:
+    """ Ideen:
+    - Level als Rechtecke angezeigt, eventuell sogar als Bilder, ansonsten per Nummern
+    - Haken an den Rechtecken, deren Level schon abgeschlossen ist """
+    level = Levelstruktur(self)
+
+    return level
