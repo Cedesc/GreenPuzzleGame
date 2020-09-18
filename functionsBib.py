@@ -324,15 +324,20 @@ def funcL17(self: Form) -> None:
 # Level 18
 def funcL18(self: Form) -> None:
     """ je nach dem ob man den linken oder rechten Knopf drueckt, wird getestet, ob der richtige gedrueckt wurde """
-    # level.internerSpeicherL = [(1, 0, 1, 1, 1, 0, 0), 0]
     vorgesehenerAblauf = self.zugehoerigesLevel.internerSpeicherL[0]
     zustandsPointer = self.zugehoerigesLevel.internerSpeicherL[1]
     # pruefen ob das korrekte geklickt wurde
     if vorgesehenerAblauf[zustandsPointer] == self.internerSpeicherF:
-        pass
+        # zugehoerigen Kreis faerben
+        self.zugehoerigesLevel.enthalteneFormen[zustandsPointer].richtig_faerben()
+        # Pointer eins weiter bewegen
+        self.zugehoerigesLevel.internerSpeicherL[1] += 1
+        # Gewinnbedingung
+        if self.zugehoerigesLevel.internerSpeicherL[1] >= 7:
+            self.zugehoerigesLevel.alleRichtigFaerben()
     # falls die falsche Seite geklickt wurde
     else:
-        pass
+        self.zugehoerigesLevel.zugehoerigesFenster.levelReset()
 
 def funcL18WeiteresZeichnen(painterF: QPainter, win) -> None:
     """ Form, die aus einer Linie besteht, zeichnen und Pfeil fuer den Anfang """
@@ -805,5 +810,5 @@ def level18Erstellen(self) -> Levelstruktur:
     level.weiteresZeichnen = funcL18WeiteresZeichnen
 
     # [0] ist der festgelegte Ablauf, [1] ist der Pointer, welcher Zustand nun dran ist
-    level.internerSpeicherL = [(1, 0, 1, 1, 1, 0, 0), 0]
+    level.internerSpeicherL = [(1, 0, 0, 0, 1, 0, 0), 0]
     return level

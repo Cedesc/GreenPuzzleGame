@@ -109,7 +109,7 @@ class Window(QWidget):
                                            "Du hast alle Level\n"
                                            "erfolgreich abgeschlossen\n\n")
                 rect4 = QRect(0, int(self.wW / 3), self.wW, self.wW)
-                painter.setFont(QFont("Times", int(self.wW / 50)))
+                painter.setFont(QFont("Times", int(self.wW / 55)))
                 painter.drawText(rect4, 4,"Credits\n"
                                            "Creative Director:  Cedesc\n"
                                            "Production Director:  Cedesc\n"
@@ -269,7 +269,7 @@ class Window(QWidget):
         level18 : Levelstruktur = fb.level18Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [level18, level01, level02, level03, level04,
+        self.originalLevels = [level00, level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
                                level15, level16, level17, level18, level00]
