@@ -765,6 +765,12 @@ def level17Erstellen(self) -> Levelstruktur:
                 QColor(0, 0, 0), nothing))
     level.enthalteneFormen[-1].rotation = 180
     level.form_hinzufuegen(
+        Polygon((self.wW / 800 * 240 + self.wW * (3 / 16) * 2, self.wW / 800 * 155 + self.wW * (3 / 16) * 1,
+                 self.wW / 800 * 215 + self.wW * (3 / 16) * 2, self.wW / 800 * 205 + self.wW * (3 / 16) * 1,
+                 self.wW / 800 * 265 + self.wW * (3 / 16) * 2, self.wW / 800 * 205 + self.wW * (3 / 16) * 1),
+                QColor(0, 0, 0), nothing))
+    level.enthalteneFormen[-1].rotation = 270
+    level.form_hinzufuegen(
         Polygon((self.wW / 800 * 250 + self.wW * (3 / 16) * 2, self.wW / 800 * 165 + self.wW * (3 / 16) * 3,
                  self.wW / 800 * 225 + self.wW * (3 / 16) * 2, self.wW / 800 * 215 + self.wW * (3 / 16) * 3,
                  self.wW / 800 * 275 + self.wW * (3 / 16) * 2, self.wW / 800 * 215 + self.wW * (3 / 16) * 3),
@@ -813,10 +819,56 @@ def level18Erstellen(self) -> Levelstruktur:
     level.internerSpeicherL = [(1, 0, 0, 0, 1, 0, 0), 0]
     return level
 
-def menueErstellen(self) -> Levelstruktur:
+
+
+
+
+def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
+
+    painterF.fillRect(0, 0, win.wW, win.wW, QColor(200, 200, 200))
+
+def interfaceSeiteWechseln(self: Form) -> None:
+    """  """
+    self.zugehoerigesLevel.internerSpeicherL[0] = \
+        (self.zugehoerigesLevel.internerSpeicherL[0] + self.internerSpeicherF) % 4
+
+def interfaceZuLevelSpringen(self: Form) -> None:
+    """  """
+
+    # jumpTarget wird berechnet aus der Nummer des Rechtecks plus eins (da sonst das erste
+    jumpTarget = self.nummer + 1 + self.zugehoerigesLevel.internerSpeicherL[0] * 12
+    if 0 <= jumpTarget <= self.zugehoerigesLevel.zugehoerigesFenster.maxLevel:  # pruefen ob vorhandenes Level eingegeben wurde
+        self.zugehoerigesLevel.zugehoerigesFenster.gameReset()
+        self.zugehoerigesLevel.zugehoerigesFenster.levelCounter = jumpTarget
+    else:
+        print("Fehler! Eingabe war kein Index eines bestenden Levels")
+
+
+
+def interfaceErstellen(self) -> Levelstruktur:
     """ Ideen:
     - Level als Rechtecke angezeigt, eventuell sogar als Bilder, ansonsten per Nummern
-    - Haken an den Rechtecken, deren Level schon abgeschlossen ist """
+    - 12 Rechtecke pro Seite
+    - Haken an den Rechtecken, deren Level schon abgeschlossen ist
+    - Einstellungen aendern koennen """
     level = Levelstruktur(self)
 
+    # Rechtecke um zu den Leveln zu springen
+    for y in range(3):
+        for x in range(4):
+            level.form_hinzufuegen(Rechteck(self.wW / 10 + self.wW * (3.6 / 16) * x,
+                                            self.wW / 8 + self.wW * (3 / 16) * y,
+                                            self.wW / 8, self.wW / 8, QColor(100, 0, 0), interfaceZuLevelSpringen))
+    # zwei Rechtecke, eins um eine Seite nach links, das andere um eine Seite nach rechts zu wechseln
+    level.form_hinzufuegen(Rechteck(self.wW / 10, self.wW * (11 / 16),
+                                    self.wW / 8, self.wW / 8, QColor(0, 0, 100), interfaceSeiteWechseln))
+    level.enthalteneFormen[-1].internerSpeicherF = -1
+    level.form_hinzufuegen(Rechteck(self.wW / 10 + self.wW * (3.6 / 16) * 3, self.wW * (11 / 16),
+                                    self.wW / 8, self.wW / 8, QColor(0, 0, 100), interfaceSeiteWechseln))
+    level.enthalteneFormen[-1].internerSpeicherF = 1
+
+    # [0] gibt an welche Seite der Level nun angezeigt werden soll
+    level.internerSpeicherL = [1]
+
+    level.weiteresZeichnen = interfaceWeiteresZeichnen
     return level
