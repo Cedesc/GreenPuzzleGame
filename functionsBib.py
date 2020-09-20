@@ -854,11 +854,11 @@ def interfaceErstellen(self) -> Levelstruktur:
     level = Levelstruktur(self)
 
     # Rechtecke um zu den Leveln zu springen
-    for y in range(3):
-        for x in range(4):
-            level.form_hinzufuegen(Rechteck(self.wW / 10 + self.wW * (3.6 / 16) * x,
-                                            self.wW / 8 + self.wW * (3 / 16) * y,
-                                            self.wW / 8, self.wW / 8, QColor(100, 0, 0), interfaceZuLevelSpringen))
+    for yRec in range(3):
+        for xRec in range(4):
+            level.form_hinzufuegen(Rechteck(self.wW / 10 + self.wW * (3.6 / 16) * xRec,
+                                            self.wW / 8 + self.wW * (3 / 16) * yRec,
+                                            self.wW / 8, self.wW / 8, QColor(100, 0, 0), nothing))
     # zwei Rechtecke, eins um eine Seite nach links, das andere um eine Seite nach rechts zu wechseln
     level.form_hinzufuegen(Rechteck(self.wW / 10, self.wW * (11 / 16),
                                     self.wW / 8, self.wW / 8, QColor(0, 0, 100), interfaceSeiteWechseln))
@@ -866,6 +866,25 @@ def interfaceErstellen(self) -> Levelstruktur:
     level.form_hinzufuegen(Rechteck(self.wW / 10 + self.wW * (3.6 / 16) * 3, self.wW * (11 / 16),
                                     self.wW / 8, self.wW / 8, QColor(0, 0, 100), interfaceSeiteWechseln))
     level.enthalteneFormen[-1].internerSpeicherF = 1
+
+    # Pfeile hinzufuegen
+    for yPfeil in range(3):
+        for xPfeil in range(4):
+            level.form_hinzufuegen(Polygon( (150 + self.wW * (3.6 / 16) * xPfeil,
+                                             195 + self.wW * (3 / 16) * yPfeil,
+                                             175 + self.wW * (3.6 / 16) * xPfeil,
+                                             165 + self.wW * (3 / 16) * yPfeil,
+                                             170 + self.wW * (3.6 / 16) * xPfeil,
+                                             155 + self.wW * (3 / 16) * yPfeil,
+                                             150 + self.wW * (3.6 / 16) * xPfeil,
+                                             180 + self.wW * (3 / 16) * yPfeil,
+                                             142 + self.wW * (3.6 / 16) * xPfeil,
+                                             172 + self.wW * (3 / 16) * yPfeil,
+                                             135 + self.wW * (3.6 / 16) * xPfeil,
+                                             180 + self.wW * (3 / 16) * yPfeil) ,
+                                            QColor(0, 200, 0), nothing))
+            level.enthalteneFormen[-1].sichtbar = False
+
 
     # [0] gibt an welche Seite der Level nun angezeigt werden soll
     level.internerSpeicherL = [1]

@@ -19,10 +19,11 @@ class Window(QWidget):
         self.setWindowTitle("Spaß mit grünem")
         self.originalLevels : List[Levelstruktur] = []  # Speicher fuer urspruengliche Level (relevant beim level reset)
         self.levels : List[Levelstruktur] = []          # Speicher fuer Level
-        self.levelCounter : int = 1                     # Index des momentan zu bearbeitendem Level
+        self.levelCounter : int = 0                     # Index des momentan zu bearbeitendem Level
         self.maxLevel : int = 0                         # den maximal zu erreichenden Index der level-Liste
         self.levelGewonnen : bool = False
         self.spielGewonnen : bool = False
+        self.gewonneneLevel : List[bool] = [None]
 
         self.initalisierung()
         self.keyPressEvent = self.fn
@@ -80,7 +81,10 @@ class Window(QWidget):
         rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))
         painter.setPen(QPen(QColor(0, 40, 0), 1, Qt.SolidLine))
         painter.setFont(QFont("Times", int(self.wW / 32)))
-        painter.drawText(rect1, 4, str(self.levelCounter))
+        if self.levelCounter == 0:
+            painter.drawText(rect1, 4, "Interface")
+        else:
+            painter.drawText(rect1, 4, str(self.levelCounter))
 
         # Glueckwuensche, falls Level beendet wurde
         if not warte and self.levelGewonnen:
@@ -136,6 +140,9 @@ class Window(QWidget):
 
 
     def fn(self, e) -> None:
+
+        if e.key() == Qt.Key_8:
+            print(self.gewonneneLevel)
 
         # Im Endscreen sind Tastenbelegungen nicht vorgesehen, deshalb vorab dies zum Abfangen
         if self.spielGewonnen and e.key() != Qt.Key_Escape:
@@ -277,6 +284,12 @@ class Window(QWidget):
         # hoechstes Level festlegen
         self.maxLevel = len(self.originalLevels) - 1
 
+        # Liste ob Level gewonnen wurden initialisieren
+        for i in range(self.maxLevel - 1):
+            self.gewonneneLevel.append(False)
+        print(len(self.gewonneneLevel))
+        print(self.gewonneneLevel)
+
         # Interface spaeter hinzufuegen, da dort das maxLevel benoetigt wird
         interface : Levelstruktur = fb.interfaceErstellen(self)
         self.originalLevels[0] = interface
@@ -297,10 +310,14 @@ class Window(QWidget):
             print("Die Eingabe ist Schwachsinn")
 
     def gameReset(self) -> None:
-        """ Alle Level zuruecksetzen
-        simple Implementation: levelReset auf jedes Level angewandt """
+        """ Alle Level zuruecksetzen """
+        # levelReset auf jedes Level angewandt
         for i in range(self.maxLevel + 1):
             self.levelReset(i)
+        # Liste der gewonnen Level zuruecksetzen
+        self.gewonneneLevel = [None]
+        for i in range(self.maxLevel - 1):
+            self.gewonneneLevel.append(False)
 
 
 

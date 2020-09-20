@@ -179,6 +179,7 @@ class Levelstruktur:
                 # pruefen ob Level gewonnen, da hier auf jeden Fall eine Form getroffen wurde
                 if self.gewinnbedingung():
                     self.zugehoerigesFenster.levelGewonnen = True
+                    self.zugehoerigesFenster.gewonneneLevel[self.zugehoerigesFenster.levelCounter] = True
                 return True
 
         return False
