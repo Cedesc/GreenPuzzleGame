@@ -823,33 +823,69 @@ def level18Erstellen(self) -> Levelstruktur:
 
 
 
+# Beschreibung hinzufuegen, Haken pro Seite abhaengig machen
 def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
-
+    """  """
+    momentaneSeite = win.levels[0].internerSpeicherL[0]
+    # anderer Hintergrund
     painterF.fillRect(0, 0, win.wW, win.wW, QColor(200, 200, 200))
 
+    # zugehoerige Levelnummer zu jedem Rechteck schreiben
+    painterF.setPen(QColor(0, 0, 0))
+    painterF.setFont(QFont("Times", int(win.wW / 32)))
+    for yText in range(3):
+        for xText in range(4):
+            if yText * 4 + xText + 1 + (momentaneSeite - 1) * 12 <= win.maxLevel:
+                painterF.drawText(win.wW * 35 / 800 + win.wW * (3.6 / 16) * xText,
+                                  win.wW * 90 / 800 + win.wW *(3 / 16) * yText,
+                                  win.wW * 40 / 800, win.wW * 50 / 800, 2,
+                                  str(yText * 4 + xText + 1 + (momentaneSeite - 1) * 12))
+
+    # Bestimmt anhand der gewonnenen Level die Haken, die angezeigt werden
+    """for gewonnenOderNichtIndex in range(len(win.gewonneneLevel)):
+        if win.gewonneneLevel[gewonnenOderNichtIndex]:
+            win.levels[0].enthalteneFormen[13 + gewonnenOderNichtIndex].sichtbar = True"""
+    for gewonnenOderNichtIndex in range(1, min(win.maxLevel - (momentaneSeite - 1) * 12, 12) ):
+        if win.gewonneneLevel[gewonnenOderNichtIndex + (momentaneSeite - 1) * 12]:
+            win.levels[0].enthalteneFormen[13 + gewonnenOderNichtIndex].sichtbar = True
+
+    # Seite anzeigen
+    painterF.setFont(QFont("Times", int(win.wW / 45)))
+    painterF.drawText(0, win.wW * 525 / 800, win.wW, win.wW * 30 / 800, 4,
+                      str(momentaneSeite) + "/" + str((win.maxLevel - 1) // 12 + 1))
+
+# Beschreibung hinzufuegen
 def interfaceSeiteWechseln(self: Form) -> None:
     """  """
+    maximalesLevel : int = self.zugehoerigesLevel.zugehoerigesFenster.maxLevel
+    # maximale Seiten herausfinden
+    maxSeiten : int = (maximalesLevel - 1) // 12 + 1
+    # internen Speicher um 1 erhoehen
     self.zugehoerigesLevel.internerSpeicherL[0] = \
-        (self.zugehoerigesLevel.internerSpeicherL[0] + self.internerSpeicherF) % 4
+        (self.zugehoerigesLevel.internerSpeicherL[0] + self.internerSpeicherF - 1) % maxSeiten + 1
+    # unnoetige Rechtecke entfernen
+    if self.zugehoerigesLevel.internerSpeicherL[0] * 12 > maximalesLevel:
+        print("hallo")
+        for rec in self.zugehoerigesLevel.enthalteneFormen[maximalesLevel % 12 :12]:
+            rec.sichtbar = False
+    else:
+        for rec in self.zugehoerigesLevel.enthalteneFormen[:12]:
+            rec.sichtbar = True
 
 def interfaceZuLevelSpringen(self: Form) -> None:
     """  """
 
     # jumpTarget wird berechnet aus der Nummer des Rechtecks plus eins (da sonst das erste
-    jumpTarget = self.nummer + 1 + self.zugehoerigesLevel.internerSpeicherL[0] * 12
+    jumpTarget = self.nummer + 1 + (self.zugehoerigesLevel.internerSpeicherL[0] - 1) * 12
     if 0 <= jumpTarget <= self.zugehoerigesLevel.zugehoerigesFenster.maxLevel:  # pruefen ob vorhandenes Level eingegeben wurde
         self.zugehoerigesLevel.zugehoerigesFenster.gameReset()
         self.zugehoerigesLevel.zugehoerigesFenster.levelCounter = jumpTarget
-    else:
-        print("Fehler! Eingabe war kein Index eines bestenden Levels")
 
 
 
 def interfaceErstellen(self) -> Levelstruktur:
     """ Ideen:
-    - Level als Rechtecke angezeigt, eventuell sogar als Bilder, ansonsten per Nummern
-    - 12 Rechtecke pro Seite
-    - Haken an den Rechtecken, deren Level schon abgeschlossen ist
+    - Level als Rechtecke angezeigt, eventuell sogar als Bilder
     - Einstellungen aendern koennen """
     level = Levelstruktur(self)
 
@@ -858,7 +894,7 @@ def interfaceErstellen(self) -> Levelstruktur:
         for xRec in range(4):
             level.form_hinzufuegen(Rechteck(self.wW / 10 + self.wW * (3.6 / 16) * xRec,
                                             self.wW / 8 + self.wW * (3 / 16) * yRec,
-                                            self.wW / 8, self.wW / 8, QColor(100, 0, 0), nothing))
+                                            self.wW / 8, self.wW / 8, QColor(100, 0, 0), interfaceZuLevelSpringen))
     # zwei Rechtecke, eins um eine Seite nach links, das andere um eine Seite nach rechts zu wechseln
     level.form_hinzufuegen(Rechteck(self.wW / 10, self.wW * (11 / 16),
                                     self.wW / 8, self.wW / 8, QColor(0, 0, 100), interfaceSeiteWechseln))
@@ -870,18 +906,18 @@ def interfaceErstellen(self) -> Levelstruktur:
     # Pfeile hinzufuegen
     for yPfeil in range(3):
         for xPfeil in range(4):
-            level.form_hinzufuegen(Polygon( (150 + self.wW * (3.6 / 16) * xPfeil,
-                                             195 + self.wW * (3 / 16) * yPfeil,
-                                             175 + self.wW * (3.6 / 16) * xPfeil,
-                                             165 + self.wW * (3 / 16) * yPfeil,
-                                             170 + self.wW * (3.6 / 16) * xPfeil,
-                                             155 + self.wW * (3 / 16) * yPfeil,
-                                             150 + self.wW * (3.6 / 16) * xPfeil,
-                                             180 + self.wW * (3 / 16) * yPfeil,
-                                             142 + self.wW * (3.6 / 16) * xPfeil,
-                                             172 + self.wW * (3 / 16) * yPfeil,
-                                             135 + self.wW * (3.6 / 16) * xPfeil,
-                                             180 + self.wW * (3 / 16) * yPfeil) ,
+            level.form_hinzufuegen(Polygon( (150 / 800 * self.wW + self.wW * (3.6 / 16) * xPfeil,
+                                             195 / 800 * self.wW + self.wW * (3 / 16) * yPfeil,
+                                             175 / 800 * self.wW + self.wW * (3.6 / 16) * xPfeil,
+                                             165 / 800 * self.wW + self.wW * (3 / 16) * yPfeil,
+                                             170 / 800 * self.wW + self.wW * (3.6 / 16) * xPfeil,
+                                             155 / 800 * self.wW + self.wW * (3 / 16) * yPfeil,
+                                             150 / 800 * self.wW + self.wW * (3.6 / 16) * xPfeil,
+                                             180 / 800 * self.wW + self.wW * (3 / 16) * yPfeil,
+                                             142 / 800 * self.wW + self.wW * (3.6 / 16) * xPfeil,
+                                             172 / 800 * self.wW + self.wW * (3 / 16) * yPfeil,
+                                             135 / 800 * self.wW + self.wW * (3.6 / 16) * xPfeil,
+                                             180 / 800 * self.wW + self.wW * (3 / 16) * yPfeil) ,
                                             QColor(0, 200, 0), nothing))
             level.enthalteneFormen[-1].sichtbar = False
 

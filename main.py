@@ -176,7 +176,8 @@ class Window(QWidget):
                   "\n    - N (New) : Komplettes Spiel von neuem starten",
                   "\n    - J (Jump) : Zu gewuenschtem Level springen",
                   "\n    - Pfeiltaste Links : Zum vorigen Level springen",
-                  "\n    - Pfeiltaste Rechts : Zum naechsten Level springen")
+                  "\n    - Pfeiltaste Rechts : Zum naechsten Level springen",
+                  "\n    - Leertaste : Zum Interface springen")
 
         if e.key() == Qt.Key_Escape:
             """ Esc druecken um Fenster zu schliessen """
@@ -190,6 +191,11 @@ class Window(QWidget):
         if e.key() == Qt.Key_N:
             """ N druecken um Spiel neuzustarten """
             self.gameReset()
+            # Liste der gewonnenen Level zuruecksetzen
+            self.gewonneneLevel = [None]
+            for i in range(self.maxLevel - 1):
+                self.gewonneneLevel.append(False)
+            # Auf erstes Level zuruecksetzen
             self.levelCounter = 1
             self.update()
 
@@ -207,8 +213,10 @@ class Window(QWidget):
 
         if e.key() == Qt.Key_Left:
             """ Pfeiltaste Links druecken um ein Level zurueck zu springen """
-            if self.levelCounter == 0:
-                print("Fehler! Erstes Level wird bereits angezeigt")
+            if self.levelCounter == 1:
+                print("Erstes Level wird bereits angezeigt")
+            elif self.levelCounter == 0:
+                print("Interface wird angezeigt, nicht moeglich zum vorigen Level zu springen")
             else:
                 self.levelReset()   # momentanes Level zuruecksetzen
                 self.levelCounter -= 1
@@ -218,11 +226,19 @@ class Window(QWidget):
         if e.key() == Qt.Key_Right:
             """ Pfeiltaste Rechts druecken um zum naechsten Level zu springen """
             if self.levelCounter == self.maxLevel:
-                print("Fehler! Letztes Level wird bereits angezeigt")
+                print("Letztes Level wird bereits angezeigt")
+            elif self.levelCounter == 0:
+                print("Interface wird angezeigt, nicht moeglich zum naechsten Level zu springen")
             else:
                 self.levelReset()   # momentanes Level zuruecksetzen (unnoetig, aber "schoener")
                 self.levelCounter += 1
                 self.update()
+
+        if e.key() == Qt.Key_Space:
+            """ Leertaste druecken um zum Interface zu springen """
+            self.levelReset()   # momentanes Level zuruecksetzen (unnoetig, aber "schoener")
+            self.levelCounter = 0
+            self.update()
 
         if e.key() == Qt.Key_Y:
             """ Fuer Steuerung im Level """
@@ -279,7 +295,7 @@ class Window(QWidget):
         self.originalLevels = [None   , level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
-                               level15, level16, level17, level18, level00]
+                               level15, level16, level17, level18, level00, level00, level00, level00, level00, level00, level00, level00]
 
         # hoechstes Level festlegen
         self.maxLevel = len(self.originalLevels) - 1
@@ -314,10 +330,6 @@ class Window(QWidget):
         # levelReset auf jedes Level angewandt
         for i in range(self.maxLevel + 1):
             self.levelReset(i)
-        # Liste der gewonnen Level zuruecksetzen
-        self.gewonneneLevel = [None]
-        for i in range(self.maxLevel - 1):
-            self.gewonneneLevel.append(False)
 
 
 
