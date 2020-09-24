@@ -823,10 +823,9 @@ def level18Erstellen(self) -> Levelstruktur:
 
 
 
-# Beschreibung hinzufuegen, Haken pro Seite abhaengig machen
 def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
-    """  """
-    momentaneSeite = win.levels[0].internerSpeicherL[0]
+    """ Hintergrund, Levelnummern, Haken und Seitennummer zeichnen """
+    momentaneSeite = win.levels[0].internerSpeicherL
     # anderer Hintergrund
     painterF.fillRect(0, 0, win.wW, win.wW, QColor(200, 200, 200))
 
@@ -835,17 +834,19 @@ def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
     painterF.setFont(QFont("Times", int(win.wW / 32)))
     for yText in range(3):
         for xText in range(4):
+            # prueft ob es nicht schon weiter als das maximale Level geht
             if yText * 4 + xText + 1 + (momentaneSeite - 1) * 12 <= win.maxLevel:
                 painterF.drawText(win.wW * 35 / 800 + win.wW * (3.6 / 16) * xText,
                                   win.wW * 90 / 800 + win.wW *(3 / 16) * yText,
                                   win.wW * 40 / 800, win.wW * 50 / 800, 2,
                                   str(yText * 4 + xText + 1 + (momentaneSeite - 1) * 12))
 
+    # Erst alle Haken entfernen
+    for haken in win.levels[0].enthalteneFormen[14:]:
+        haken.sichtbar = False
     # Bestimmt anhand der gewonnenen Level die Haken, die angezeigt werden
-    """for gewonnenOderNichtIndex in range(len(win.gewonneneLevel)):
-        if win.gewonneneLevel[gewonnenOderNichtIndex]:
-            win.levels[0].enthalteneFormen[13 + gewonnenOderNichtIndex].sichtbar = True"""
     for gewonnenOderNichtIndex in range(1, min(win.maxLevel - (momentaneSeite - 1) * 12, 12) ):
+        # prueft ob das gerade gemeinte Level gewonnen ist
         if win.gewonneneLevel[gewonnenOderNichtIndex + (momentaneSeite - 1) * 12]:
             win.levels[0].enthalteneFormen[13 + gewonnenOderNichtIndex].sichtbar = True
 
@@ -854,18 +855,16 @@ def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
     painterF.drawText(0, win.wW * 525 / 800, win.wW, win.wW * 30 / 800, 4,
                       str(momentaneSeite) + "/" + str((win.maxLevel - 1) // 12 + 1))
 
-# Beschreibung hinzufuegen
 def interfaceSeiteWechseln(self: Form) -> None:
-    """  """
+    """ Im Interface zu naechster oder voriger Seite springen """
     maximalesLevel : int = self.zugehoerigesLevel.zugehoerigesFenster.maxLevel
     # maximale Seiten herausfinden
     maxSeiten : int = (maximalesLevel - 1) // 12 + 1
     # internen Speicher um 1 erhoehen
-    self.zugehoerigesLevel.internerSpeicherL[0] = \
-        (self.zugehoerigesLevel.internerSpeicherL[0] + self.internerSpeicherF - 1) % maxSeiten + 1
+    self.zugehoerigesLevel.internerSpeicherL = \
+        (self.zugehoerigesLevel.internerSpeicherL + self.internerSpeicherF - 1) % maxSeiten + 1
     # unnoetige Rechtecke entfernen
-    if self.zugehoerigesLevel.internerSpeicherL[0] * 12 > maximalesLevel:
-        print("hallo")
+    if self.zugehoerigesLevel.internerSpeicherL * 12 > maximalesLevel:
         for rec in self.zugehoerigesLevel.enthalteneFormen[maximalesLevel % 12 :12]:
             rec.sichtbar = False
     else:
@@ -873,19 +872,19 @@ def interfaceSeiteWechseln(self: Form) -> None:
             rec.sichtbar = True
 
 def interfaceZuLevelSpringen(self: Form) -> None:
-    """  """
-
-    # jumpTarget wird berechnet aus der Nummer des Rechtecks plus eins (da sonst das erste
-    jumpTarget = self.nummer + 1 + (self.zugehoerigesLevel.internerSpeicherL[0] - 1) * 12
-    if 0 <= jumpTarget <= self.zugehoerigesLevel.zugehoerigesFenster.maxLevel:  # pruefen ob vorhandenes Level eingegeben wurde
+    """ Bei Klick auf eines der Rechtecke springt man zum dazugehoerigen Level """
+    # jumpTarget wird berechnet aus der Nummer des Rechtecks plus die derzeitige Seite mal 12
+    jumpTarget = self.nummer + 1 + (self.zugehoerigesLevel.internerSpeicherL - 1) * 12
+    # pruefen ob Eingabe legeitim ist (was gar nicht anders moeglich sein sollte, daher kein else)
+    if 0 <= jumpTarget <= self.zugehoerigesLevel.zugehoerigesFenster.maxLevel:
+        # alle Level zuruecksetzen und dann zum Ziel springen
         self.zugehoerigesLevel.zugehoerigesFenster.gameReset()
         self.zugehoerigesLevel.zugehoerigesFenster.levelCounter = jumpTarget
 
-
-
 def interfaceErstellen(self) -> Levelstruktur:
-    """ Ideen:
-    - Level als Rechtecke angezeigt, eventuell sogar als Bilder
+    """ Interface, in dem man schauen kann welche Level bereits abgeschlossen wurden und man zu Level springen kann
+    Weitere Ideen:
+    - Level als Bilder anzeigen
     - Einstellungen aendern koennen """
     level = Levelstruktur(self)
 
@@ -921,9 +920,8 @@ def interfaceErstellen(self) -> Levelstruktur:
                                             QColor(0, 200, 0), nothing))
             level.enthalteneFormen[-1].sichtbar = False
 
-
     # [0] gibt an welche Seite der Level nun angezeigt werden soll
-    level.internerSpeicherL = [1]
+    level.internerSpeicherL = 1
 
     level.weiteresZeichnen = interfaceWeiteresZeichnen
     return level

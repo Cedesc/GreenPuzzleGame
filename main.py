@@ -19,7 +19,7 @@ class Window(QWidget):
         self.setWindowTitle("Spaß mit grünem")
         self.originalLevels : List[Levelstruktur] = []  # Speicher fuer urspruengliche Level (relevant beim level reset)
         self.levels : List[Levelstruktur] = []          # Speicher fuer Level
-        self.levelCounter : int = 0                     # Index des momentan zu bearbeitendem Level
+        self.levelCounter : int = 1                     # Index des momentan zu bearbeitendem Level
         self.maxLevel : int = 0                         # den maximal zu erreichenden Index der level-Liste
         self.levelGewonnen : bool = False
         self.spielGewonnen : bool = False
@@ -175,8 +175,8 @@ class Window(QWidget):
                   "\n    - R (Reset) : Momentanes Level neustarten",
                   "\n    - N (New) : Komplettes Spiel von neuem starten",
                   "\n    - J (Jump) : Zu gewuenschtem Level springen",
-                  "\n    - Pfeiltaste Links : Zum vorigen Level springen",
-                  "\n    - Pfeiltaste Rechts : Zum naechsten Level springen",
+                  "\n    - Links : Zum vorigen Level springen",
+                  "\n    - Rechts : Zum naechsten Level springen",
                   "\n    - Leertaste : Zum Interface springen")
 
         if e.key() == Qt.Key_Escape:
@@ -295,7 +295,7 @@ class Window(QWidget):
         self.originalLevels = [None   , level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
-                               level15, level16, level17, level18, level00, level00, level00, level00, level00, level00, level00, level00]
+                               level15, level16, level17, level18, level00]
 
         # hoechstes Level festlegen
         self.maxLevel = len(self.originalLevels) - 1
