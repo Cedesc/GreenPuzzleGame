@@ -171,3 +171,9 @@ Interface fast fertig
 
 C
 Interface grundlegend fertig
+
+C
+self.gewonneneLevel hatte 1 Element zu wenig
+Haken bei 12 wurde nicht angezeigt
+Level00 vereinfacht
+ToDoList angepasst

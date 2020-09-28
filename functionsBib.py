@@ -363,7 +363,7 @@ def level0Erstellen(self) -> Levelstruktur:
     """ Testlevel """
     level = Levelstruktur(self)
     for y in range(2):
-        for x in range(3):
+        for x in range(1):
             level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW * (3 / 16) * x,
                                             self.wW / 16 + self.wW * (3 / 16) * y,
                                             self.wW / 8, self.wW / 8, QColor(0, 90, 0), richtig_fertig))
@@ -845,7 +845,7 @@ def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
     for haken in win.levels[0].enthalteneFormen[14:]:
         haken.sichtbar = False
     # Bestimmt anhand der gewonnenen Level die Haken, die angezeigt werden
-    for gewonnenOderNichtIndex in range(1, min(win.maxLevel - (momentaneSeite - 1) * 12, 12) ):
+    for gewonnenOderNichtIndex in range(1, min(win.maxLevel - (momentaneSeite - 1) * 12, 13) ):
         # prueft ob das gerade gemeinte Level gewonnen ist
         if win.gewonneneLevel[gewonnenOderNichtIndex + (momentaneSeite - 1) * 12]:
             win.levels[0].enthalteneFormen[13 + gewonnenOderNichtIndex].sichtbar = True

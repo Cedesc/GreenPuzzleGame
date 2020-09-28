@@ -1,9 +1,13 @@
 
-immer wenn man interface aufruft (extrataste) wird spezielle funktion aufgerufen, die fuer richtige anordnung der haken
-sorgt
-
 Interessant:
-- [3] Interface mit Anzeige, welche Level geloest sind, einbauen
+- [3] Statt nach letztem Level Credits, nachdem alle abgeschlossen wurden Credits
+    - [1] Debug Tastenbelegung um alle Level gleichzeitig abzuschliessen
+- [3] Interface erweitern
+    - [4] Bilder der Level anzeigen
+    - [2] Einstellungen aendern koennen
+    - Interface Tastenbelegung hinzufuegen:
+        - [2] Nach links und rechts Seiten bewegen
+        - [4] irgendwie auf die Level zugreifen
 - [5] Drag and Drop einbauen
 - [5] klicken bei Rotationen richtig hinbekommen
 - [5] klicken auf Polygone richtig hinbekommen

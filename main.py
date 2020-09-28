@@ -141,9 +141,6 @@ class Window(QWidget):
 
     def fn(self, e) -> None:
 
-        if e.key() == Qt.Key_8:
-            print(self.gewonneneLevel)
-
         # Im Endscreen sind Tastenbelegungen nicht vorgesehen, deshalb vorab dies zum Abfangen
         if self.spielGewonnen and e.key() != Qt.Key_Escape:
             print("Das Spiel ist zuende, Eingaben ausser Esc funktionieren hier nicht")
@@ -154,7 +151,9 @@ class Window(QWidget):
             print("- Debug-Hilfen :",
                   "\n    - 2 (Position printen) : Position des Klicks printen An",
                   "\n    - 3 (Drehen Links) : (Die erste) Form des Levels nach links drehen",
-                  "\n    - 4 (Drehen Rechts) : (Die erste) Form des Levels nach rechts drehen")
+                  "\n    - 4 (Drehen Rechts) : (Die erste) Form des Levels nach rechts drehen",
+                  "\n    - 5 (Alles faerben) : Alle Formen korrekt faerben",
+                  "\n    - 8 : self.gewonnenenLevel anzeigen")
         if e.key() == Qt.Key_2:
             if not self.debugKoordinatenPrinten:
                 print("Position des Klicks wird ab jetzt geprintet")
@@ -165,6 +164,11 @@ class Window(QWidget):
         if e.key() == Qt.Key_4:
             self.levels[self.levelCounter].enthalteneFormen[0].rotation += 1
             self.update()
+        if e.key() == Qt.Key_5:
+            self.levels[self.levelCounter].alleRichtigFaerben()
+            self.update()
+        if e.key() == Qt.Key_8:
+            print(self.gewonneneLevel)
 
 
         if e.key() == Qt.Key_H:
@@ -301,7 +305,7 @@ class Window(QWidget):
         self.maxLevel = len(self.originalLevels) - 1
 
         # Liste ob Level gewonnen wurden initialisieren
-        for i in range(self.maxLevel - 1):
+        for i in range(self.maxLevel):
             self.gewonneneLevel.append(False)
         print(len(self.gewonneneLevel))
         print(self.gewonneneLevel)
