@@ -76,6 +76,7 @@ class Window(QWidget):
                 # Fuers rotieren
                 painter.rotate(- form.rotation)
                 painter.translate(- form.mittelpunkt[0], - form.mittelpunkt[1])
+        self.levels[self.levelCounter].weiteresZeichnenNachher(painter, self)
 
         # Nummer des derzeitigen Levels oben schreiben
         rect1 = QRect(0, int(self.wW / 100), self.wW, int(self.wW / 20))

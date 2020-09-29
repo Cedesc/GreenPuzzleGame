@@ -197,6 +197,7 @@ class Levelstruktur:
         neue.internerSpeicherL = copy(self.internerSpeicherL)
         neue.tastenGesteuert = self.tastenGesteuert
         neue.weiteresZeichnen = self.weiteresZeichnen
+        neue.weiteresZeichnenNachher = self.weiteresZeichnenNachher
 
         """ neue Rechtecke und Kreise erstellen und dann den internen Speicher beim gerade erstellten uebernehmen"""
         for form in self.enthalteneFormen:

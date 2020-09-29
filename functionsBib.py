@@ -858,8 +858,8 @@ def level19Erstellen(self) -> Levelstruktur:
     """ Suchwortraetsel, also Buchstaben so verteilt wie bei Kreuzwortraetsel, wobei man 'green' daraus suchen muss.
     Per Klick faerbt sich das geklickte Feld um und es soll nur 'green' korrekt gefaerbt sein """
     level = Levelstruktur(self)
-    for y in range(0):
-        for x in range(1):
+    for y in range(7):
+        for x in range(7):
             level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW / 8 * x,
                                          self.wW / 16 + self.wW / 8 * y,
                                          self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL19))
@@ -871,7 +871,7 @@ def level19Erstellen(self) -> Levelstruktur:
     # vorgegebene Loesung definieren
     level.internerSpeicherL = [12, 19, 26, 33, 40]
     # Buchstaben zeichnen
-    level.weiteresZeichnen = funcL19WeiteresZeichnen
+    level.weiteresZeichnenNachher = funcL19WeiteresZeichnen
 
     return level
 
