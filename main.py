@@ -294,12 +294,14 @@ class Window(QWidget):
         level16 : Levelstruktur = fb.level16Erstellen(self)
         level17 : Levelstruktur = fb.level17Erstellen(self)
         level18 : Levelstruktur = fb.level18Erstellen(self)
+        level19 : Levelstruktur = fb.level19Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [None   , level01, level02, level03, level04,
+        self.originalLevels = [None   , level19, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
-                               level15, level16, level17, level18, level00]
+                               level15, level16, level17, level18, level19,
+                               level00]
 
         # hoechstes Level festlegen
         self.maxLevel = len(self.originalLevels) - 1

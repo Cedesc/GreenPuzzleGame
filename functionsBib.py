@@ -355,9 +355,44 @@ def funcL18WeiteresZeichnen(painterF: QPainter, win) -> None:
                                    wW * 11 / 80, wW * 59 / 80, wW * 9 / 80, wW * 59 / 80,
                                    wW * 9 / 80, wW * 57 / 80]))
 
+# Level 19
+def funcL19(self: Form) -> None:
+    """ je nach dem ob man den linken oder rechten Knopf drueckt, wird getestet, ob der richtige gedrueckt wurde """
+    # bei Klick normal umkehren
+    self.umkehren()
 
-# Funktionen für die Levelerstellung
-# Koordinaten sollten keine genauen Zahlen sein, sondern immer in Abhaengigkeit der Fenstergroesse
+    # pruefen ob richtige Rechtecke gedrueckt und falsche Rechtecke nicht gedrueckt sind
+    gewinnbedingung : bool = True
+    for rec in self.zugehoerigesLevel.enthalteneFormen[:-1]:
+        # pruefen ob Rechteck in Loesungsmenge
+        if rec.nummer in self.zugehoerigesLevel.internerSpeicherL:
+            # pruefen ob das Rechteck nicht korrekt gefaerbt ist
+            if rec.farbe != QColor(0, 180, 0):
+                # Gewinnbedingung ist nicht erfuellt
+                gewinnbedingung = False
+                break
+        else:
+            # pruefen ob das Rechteck nicht korrekt gefaerbt ist
+            if rec.farbe == QColor(0, 180, 0):
+                # Gewinnbedingung ist nicht erfuellt
+                gewinnbedingung = False
+                break
+
+    # falls Gewinnbedingung erfuellt ist, wird das Level korrekt gefaerbt
+    if gewinnbedingung:
+        self.zugehoerigesLevel.alleRichtigFaerben()
+
+def funcL19WeiteresZeichnen(painterF: QPainter, win) -> None:
+    wW: int = win.wW
+    # mittige Form
+    painterF.setPen(QPen(QColor(0, 0, 0), wW / 80, Qt.SolidLine))
+    painterF.drawPolyline(QPolygon([0, 0, wW * 65 / 80, wW * 3 / 8,
+                                    wW * 55 / 80, wW / 8, wW * 25 / 80, wW / 8,
+                                    wW * 15 / 80, wW * 3 / 8, wW * 7 / 8, wW * 5 / 8]))
+    painterF.drawPolyline(QPolygon([0, 0, 80, 50]))
+
+
+# Funktionen für die Levelerstellung (Koordinaten sollten immer in Abhaengigkeit der Fenstergroesse sein)
 
 def level0Erstellen(self) -> Levelstruktur:
     """ Testlevel """
@@ -819,9 +854,43 @@ def level18Erstellen(self) -> Levelstruktur:
     level.internerSpeicherL = [(1, 0, 0, 0, 1, 0, 0), 0]
     return level
 
+def level19Erstellen(self) -> Levelstruktur:
+    """ Suchwortraetsel, also Buchstaben so verteilt wie bei Kreuzwortraetsel, wobei man 'green' daraus suchen muss.
+    Per Klick faerbt sich das geklickte Feld um und es soll nur 'green' korrekt gefaerbt sein """
+    level = Levelstruktur(self)
+    for y in range(0):
+        for x in range(1):
+            level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW / 8 * x,
+                                         self.wW / 16 + self.wW / 8 * y,
+                                         self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL19))
+    # zusaetzliches unsichtbares und unklickbares Rechteck hinzufuegen, damit das Level nicht durch "alle gruen machen"
+    # beendet werden kann
+    level.form_hinzufuegen(Rechteck(0, 0, 0, 0, QColor(0, 90, 0), nothing))
+    level.enthalteneFormen[-1].sichtbar = False
+    level.enthalteneFormen[-1].klickbar = False
+    # vorgegebene Loesung definieren
+    level.internerSpeicherL = [12, 19, 26, 33, 40]
+    # Buchstaben zeichnen
+    level.weiteresZeichnen = funcL19WeiteresZeichnen
+
+    return level
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Interface erstellen
 
 def interfaceWeiteresZeichnen(painterF: QPainter, win) -> None:
     """ Hintergrund, Levelnummern, Haken und Seitennummer zeichnen """

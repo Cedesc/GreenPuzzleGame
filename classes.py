@@ -133,7 +133,10 @@ class Levelstruktur:
         self.enthalteneFormen.append(form)
 
     def weiteresZeichnen(self, painterF, win) -> None:
-        """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll """
+        """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll und unter den Formen liegt"""
+        pass
+    def weiteresZeichnenNachher(self, painterF, win) -> None:
+        """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll und ueber den Formen liegt"""
         pass
 
     def gewinnbedingung(self) -> bool:
