@@ -383,13 +383,23 @@ def funcL19(self: Form) -> None:
         self.zugehoerigesLevel.alleRichtigFaerben()
 
 def funcL19WeiteresZeichnen(painterF: QPainter, win) -> None:
-    wW: int = win.wW
-    # mittige Form
-    painterF.setPen(QPen(QColor(0, 0, 0), wW / 80, Qt.SolidLine))
-    painterF.drawPolyline(QPolygon([0, 0, wW * 65 / 80, wW * 3 / 8,
-                                    wW * 55 / 80, wW / 8, wW * 25 / 80, wW / 8,
-                                    wW * 15 / 80, wW * 3 / 8, wW * 7 / 8, wW * 5 / 8]))
-    painterF.drawPolyline(QPolygon([0, 0, 80, 50]))
+    """ Buchstaben in Rechtecke zeichnen """
+    # Inhalt des Gitters festlegen
+    inhalt = ['X', 'C', 'N', 'N', 'P', 'W', 'P',
+             'I', 'I', 'B', 'Z', 'E', 'G', 'V',
+             'D', 'B', 'E', 'T', 'L', 'R', 'S',
+             'K', 'U', 'A', 'F', 'V', 'E', 'A',
+             'I', 'A', 'O', 'U', 'J', 'E', 'G',
+             'F', 'L', 'H', 'E', 'W', 'N', 'O',
+             'L', 'R', 'U', 'G', 'R', 'H', 'T']
+    # Buchstaben in die Rechtecke zeichnen
+    painterF.setPen(QColor(0, 0, 0))
+    painterF.setFont(QFont("Times", int(win.wW / 16)))
+    for yText in range(7):
+        for xText in range(7):
+            painterF.drawText(win.wW / 16 + win.wW / 8 * xText, win.wW / 15 + win.wW / 8 * yText,
+                              win.wW / 8, win.wW / 8, 4, inhalt[yText * 7 + xText])
+
 
 
 # Funktionen für die Levelerstellung (Koordinaten sollten immer in Abhaengigkeit der Fenstergroesse sein)
@@ -683,7 +693,7 @@ def level14Erstellen(self) -> Levelstruktur:
     # [2] ist Zustand des Levels:   0: links und mitte bewegen, 1: alle bewegen, 2: mitte und rechts bewegen
     level.internerSpeicherL = [funcL14_1Level, funcL14_2Level, 1]
     # Hinweislinien an den Knoepfen zeichnen und Steuerungshinweis drunter schreiben
-    level.weiteresZeichnen = funcL14WeiteresZeichnen
+    level.weiteresZeichnenVorher = funcL14WeiteresZeichnen
     return level
 
 def level15Erstellen(self) -> Levelstruktur:
@@ -848,7 +858,7 @@ def level18Erstellen(self) -> Levelstruktur:
     level.enthalteneFormen[-1].internerSpeicherF = 1
 
     # Form, die an den Hinweisen liegt, und Anfangspfeil hinzufuegen
-    level.weiteresZeichnen = funcL18WeiteresZeichnen
+    level.weiteresZeichnenVorher = funcL18WeiteresZeichnen
 
     # [0] ist der festgelegte Ablauf, [1] ist der Pointer, welcher Zustand nun dran ist
     level.internerSpeicherL = [(1, 0, 0, 0, 1, 0, 0), 0]
@@ -856,15 +866,15 @@ def level18Erstellen(self) -> Levelstruktur:
 
 def level19Erstellen(self) -> Levelstruktur:
     """ Suchwortraetsel, also Buchstaben so verteilt wie bei Kreuzwortraetsel, wobei man 'green' daraus suchen muss.
-    Per Klick faerbt sich das geklickte Feld um und es soll nur 'green' korrekt gefaerbt sein """
+    Per Klick faerbt sich das geklickte Feld um und es soll nur 'GREEN' korrekt gefaerbt sein """
     level = Levelstruktur(self)
     for y in range(7):
         for x in range(7):
             level.form_hinzufuegen(Rechteck(self.wW / 16 + self.wW / 8 * x,
                                          self.wW / 16 + self.wW / 8 * y,
                                          self.wW / 8, self.wW / 8, QColor(0, 90, 0), funcL19))
-    # zusaetzliches unsichtbares und unklickbares Rechteck hinzufuegen, damit das Level nicht durch "alle gruen machen"
-    # beendet werden kann
+    # zusaetzliches unsichtbares und unklickbares Rechteck hinzufuegen, damit das Level nicht beendet wird wenn alle
+    # sichtbaren Rechtecke gruen sind
     level.form_hinzufuegen(Rechteck(0, 0, 0, 0, QColor(0, 90, 0), nothing))
     level.enthalteneFormen[-1].sichtbar = False
     level.enthalteneFormen[-1].klickbar = False
@@ -992,5 +1002,5 @@ def interfaceErstellen(self) -> Levelstruktur:
     # [0] gibt an welche Seite der Level nun angezeigt werden soll
     level.internerSpeicherL = 1
 
-    level.weiteresZeichnen = interfaceWeiteresZeichnen
+    level.weiteresZeichnenVorher = interfaceWeiteresZeichnen
     return level

@@ -132,7 +132,7 @@ class Levelstruktur:
         form.nummer = len(self.enthalteneFormen)
         self.enthalteneFormen.append(form)
 
-    def weiteresZeichnen(self, painterF, win) -> None:
+    def weiteresZeichnenVorher(self, painterF, win) -> None:
         """ Funktion, die Nicht-Rechtecke und Nicht-Kreise zeichnen soll und unter den Formen liegt"""
         pass
     def weiteresZeichnenNachher(self, painterF, win) -> None:
@@ -196,7 +196,7 @@ class Levelstruktur:
         """ internen Speicher und tastenGesteuert vom alten Level uebernehmen """
         neue.internerSpeicherL = copy(self.internerSpeicherL)
         neue.tastenGesteuert = self.tastenGesteuert
-        neue.weiteresZeichnen = self.weiteresZeichnen
+        neue.weiteresZeichnenVorher = self.weiteresZeichnenVorher
         neue.weiteresZeichnenNachher = self.weiteresZeichnenNachher
 
         """ neue Rechtecke und Kreise erstellen und dann den internen Speicher beim gerade erstellten uebernehmen"""

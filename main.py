@@ -47,7 +47,8 @@ class Window(QWidget):
         warte : bool = False
 
         # Level zeichnen
-        self.levels[self.levelCounter].weiteresZeichnen(painter, self)
+        # sonstiges unter Formen zeichnen
+        self.levels[self.levelCounter].weiteresZeichnenVorher(painter, self)
         # Rechtecke und Kreise einzeichnen
         painter.setPen(QPen(QColor(0, 0, 0), 1, Qt.SolidLine))      # Umrandung der Kreise
         for form in self.levels[self.levelCounter].enthalteneFormen:
@@ -76,6 +77,7 @@ class Window(QWidget):
                 # Fuers rotieren
                 painter.rotate(- form.rotation)
                 painter.translate(- form.mittelpunkt[0], - form.mittelpunkt[1])
+        # sonstiges ueber Formen zeichnen
         self.levels[self.levelCounter].weiteresZeichnenNachher(painter, self)
 
         # Nummer des derzeitigen Levels oben schreiben
@@ -298,7 +300,7 @@ class Window(QWidget):
         level19 : Levelstruktur = fb.level19Erstellen(self)
 
         # alle Level separat in originalLevels abspeichern fuers zuruecksetzen
-        self.originalLevels = [None   , level19, level02, level03, level04,
+        self.originalLevels = [None   , level01, level02, level03, level04,
                                level05, level06, level07, level08, level09,
                                level10, level11, level12, level13, level14,
                                level15, level16, level17, level18, level19,
